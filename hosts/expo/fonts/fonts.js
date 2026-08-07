@@ -55,7 +55,7 @@ const FONT_MANIFEST = Object.assign(
 // Each custom entry uses the asset source (requireable .ttf).
 const CustomKeys = Object.keys(CustomFonts);
 for (let i = 0; i < CustomKeys.length; i++) {
-  var key = CustomKeys[i];
+  const key = CustomKeys[i];
   FONT_MANIFEST[key] = {
     styles: {
       normal: {
@@ -103,7 +103,7 @@ module.exports = function loader (shared_libs) {
   Font.registerFamilies(FONT_MANIFEST);
 
   // 'System' is always available; the rest are whatever the manifest registers
-  var manifestResult = Font.getManifest();
+  const manifestResult = Font.getManifest();
   if (manifestResult.success) {
     Fonts.families = ['System'].concat(Object.keys(manifestResult.manifest));
   }
@@ -142,7 +142,7 @@ const Fonts = { // Public font-manifest interface accessible by the host
   loadFonts: async function () {
 
     // Nothing to load asynchronously -> ready immediately
-    var manifestResult = Font.getManifest();
+    const manifestResult = Font.getManifest();
     if (!manifestResult.success || Object.keys(manifestResult.manifest).length === 0) {
       return { success: true, error: null };
     }
@@ -160,7 +160,7 @@ const Fonts = { // Public font-manifest interface accessible by the host
   *********************************************************************/
   isReady: function () {
 
-    var result = FontAdapter.isReady();
+    const result = FontAdapter.isReady();
     return result.success && result.ready;
 
   }
