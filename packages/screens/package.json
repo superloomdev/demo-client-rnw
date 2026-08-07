@@ -1,0 +1,12 @@
+{
+  "name": "@nimbus/screens",
+  "description": "Nimbus screen components for main, tasks, and notes apps. Independently testable.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "peerDependencies": {
+    "react": "18.3.1",
+    "react-native": "0.76.9",
+    "expo-router": "~4.0.9"
+  }
+}

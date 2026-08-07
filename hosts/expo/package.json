@@ -1,0 +1,41 @@
+{
+  "name": "nimbus-demo-client-rnw",
+  "version": "1.0.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "web": "expo start --web --host localhost",
+    "android": "expo start --android",
+    "ios": "expo start --ios"
+  },
+  "dependencies": {
+    "@expo-google-fonts/poppins": "^0.2.3",
+    "@expo/vector-icons": "~14.0.4",
+    "@superloomdev/js-client-helper-font": "^1.0.0",
+    "@superloomdev/js-client-helper-font-ext-expo": "file:../../codebase-js-helper-modules/src/helper-modules-client/js-client-helper-font-ext-expo",
+    "@superloomdev/js-client-helper-themer": "^1.0.0",
+    "@superloomdev/js-helper-debug": "^1.0.0",
+    "@superloomdev/js-helper-utils": "^1.0.0",
+    "expo": "~52.0.0",
+    "expo-asset": "~11.0.5",
+    "expo-constants": "~17.0.3",
+    "expo-font": "~13.0.4",
+    "expo-linking": "~7.0.3",
+    "expo-router": "~4.0.9",
+    "expo-status-bar": "~2.0.1",
+    "expo-system-ui": "~4.0.6",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-native": "0.76.9",
+    "react-native-safe-area-context": "4.12.0",
+    "react-native-screens": "~4.4.0",
+    "react-native-web": "~0.19.13"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

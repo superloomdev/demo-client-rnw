@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "Nimbus Screens Test",
+    "slug": "nimbus-screens-test",
+    "version": "1.0.0",
+    "web": { "bundler": "metro", "output": "single" },
+    "plugins": ["expo-router", "expo-asset", "expo-font"],
+    "experiments": { "typedRoutes": false }
+  }
+}
