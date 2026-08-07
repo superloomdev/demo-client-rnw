@@ -13,7 +13,7 @@
     "@expo-google-fonts/poppins": "^0.2.3",
     "@expo/vector-icons": "~14.0.4",
     "@superloomdev/js-client-helper-font": "^1.0.0",
-    "@superloomdev/js-client-helper-font-ext-expo": "file:../../codebase-js-helper-modules/src/helper-modules-client/js-client-helper-font-ext-expo",
+    "@superloomdev/js-client-helper-font-ext-expo": "file:../../../codebase-js-helper-modules/src/helper-modules-client/js-client-helper-font-ext-expo",
     "@superloomdev/js-client-helper-themer": "^1.0.0",
     "@superloomdev/js-helper-debug": "^1.0.0",
     "@superloomdev/js-helper-utils": "^1.0.0",
