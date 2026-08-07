@@ -102,7 +102,45 @@ const Extension = { // Public theming interface accessible by the host
       const baseLayer = themerBridge.schemeToLayer(baseScheme, 'base');
       const variantLayer = themerBridge.schemeToLayer(variant, 'variant');
       const built = Lib.Themer.buildTheme(themerTemplate, [baseLayer, variantLayer], 'native');
-      const theme = themerBridge.bridgeTheme(built.tokens);
+      let theme = themerBridge.bridgeTheme(built.tokens);
+
+      // Validate font families against the font core registry.
+      // Unregistered families fall back to 'System' and trigger async loading.
+      if (theme.Font && theme.Font.family) {
+        const familyRoles = Object.keys(theme.Font.family);
+        for (let i = 0; i < familyRoles.length; i++) {
+          const role = familyRoles[i];
+          const familyName = theme.Font.family[role];
+
+          // Check if the family is registered in the font core
+          if (Lib.Font && Lib.Font.isRegistered) {
+            const regResult = Lib.Font.isRegistered(familyName);
+            if (regResult.success && !regResult.registered && familyName !== 'System') {
+
+              // Log warning for the unregistered family
+              if (Lib.Debug) {
+                Lib.Debug.warn('theme-context: family "' + familyName + '" not registered, falling back to System');
+              }
+
+              // Fall back to System for now
+              theme.Font.family[role] = 'System';
+
+              // Trigger async loading of the family
+              if (Lib.Fonts && Lib.Fonts.ensureFamily) {
+                Lib.Fonts.ensureFamily(familyName).then(function (result) {
+                  if (result.success) {
+
+                    // Re-assemble the theme now that the font is loaded
+                    setVariant({ ...variant });
+
+                  }
+                });
+              }
+
+            }
+          }
+        }
+      }
 
       // Build the themed component library from the app's component source
       if (!combineComponent) {

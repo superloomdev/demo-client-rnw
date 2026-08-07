@@ -38,8 +38,10 @@ module.exports = Object.freeze({
   // ~~~~~~~~~~ Font ~~~~~~~~~~
   // FONT SYSTEM 1 of 3 — SYSTEM font. No asset to load; instant on every platform.
   font: {
-    primaryFamily: 'System',
-    secondaryFamily: 'System'
+    roles: {
+      primary: 'System',
+      secondary: 'System'
+    }
   }
 
 });

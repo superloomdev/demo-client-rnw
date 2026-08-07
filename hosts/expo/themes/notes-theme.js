@@ -28,8 +28,10 @@ module.exports = Object.freeze({
   // ~~~~~~~~~~ Font ~~~~~~~~~~
   // Lora (custom bundled serif). Registered under the family name 'Lora'.
   font: {
-    primaryFamily: 'Lora',
-    secondaryFamily: 'Lora'
+    roles: {
+      primary: 'Lora',
+      secondary: 'Lora'
+    }
   }
 
 });

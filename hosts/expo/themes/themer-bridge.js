@@ -29,7 +29,9 @@ const DIMENSION_KEYS = {
   lineHeightRatio: 'dimension.line_height_ratio'
 };
 
-const FONT_KEYS = {
+// Legacy font keys for backward compatibility with schemes using
+// primaryFamily/secondaryFamily instead of font.roles.
+const LEGACY_FONT_KEYS = {
   primaryFamily: 'font.family.primary',
   secondaryFamily: 'font.family.secondary'
 };
@@ -77,10 +79,18 @@ function schemeToLayer (scheme, name) {
     }
   }
 
-  // Font families
-  for (const [schemeKey, tokenName] of Object.entries(FONT_KEYS)) {
-    if (font[schemeKey] !== undefined) {
-      tokens[tokenName] = font[schemeKey];
+  // Font families — prefer font.roles (per-theme), fall back to legacy keys
+  if (font.roles && typeof font.roles === 'object') {
+    for (const [roleName, familyName] of Object.entries(font.roles)) {
+      if (familyName !== undefined) {
+        tokens['font.family.' + roleName] = familyName;
+      }
+    }
+  } else {
+    for (const [schemeKey, tokenName] of Object.entries(LEGACY_FONT_KEYS)) {
+      if (font[schemeKey] !== undefined) {
+        tokens[tokenName] = font[schemeKey];
+      }
     }
   }
 

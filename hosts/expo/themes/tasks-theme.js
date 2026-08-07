@@ -23,8 +23,10 @@ module.exports = Object.freeze({
   // Poppins (Google). Regular drives body; the manifest also loads SemiBold so
   // weighted utilities resolve to a real face on native.
   font: {
-    primaryFamily: 'Poppins_400Regular',
-    secondaryFamily: 'Poppins_600SemiBold'
+    roles: {
+      primary: 'Poppins_400Regular',
+      secondary: 'Poppins_600SemiBold'
+    }
   }
 
 });

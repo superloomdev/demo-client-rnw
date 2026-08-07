@@ -103,11 +103,7 @@ module.exports = function loader () {
   //   Lib.ThemeContext - React theming hub (ThemeProvider + hooks); needs Themes + Themer
 
   Lib.Font = require('@superloomdev/js-client-helper-font')(Lib, {
-    DEFAULT_FAMILY: 'System',
-    roles: {
-      primary: 'Poppins_400Regular',
-      secondary: 'Poppins_600SemiBold'
-    }
+    DEFAULT_FAMILY: 'System'
   });
   Lib.FontAdapter = require('@superloomdev/js-client-helper-font-ext-expo')(Lib, {});
   Lib.Fonts = require('../fonts/fonts')(Lib);

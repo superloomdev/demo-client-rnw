@@ -163,6 +163,60 @@ const Fonts = { // Public font-manifest interface accessible by the host
     const result = FontAdapter.isReady();
     return result.success && result.ready;
 
+  },
+
+
+  /********************************************************************
+  Async: register and load a single font family at runtime. Used by
+  the theme context when a theme references a family that is not yet
+  loaded. Skips 'System' (always available) and families already
+  loaded by the adapter.
+
+  @param {String} familyName - The family name to ensure
+
+  @return {Promise<Object>} - { success, error }
+  *********************************************************************/
+  ensureFamily: async function (familyName) {
+
+    // System is always available, no loading needed
+    if (familyName === 'System') {
+      return { success: true, error: null };
+    }
+
+    // Check if the family is already loaded by the adapter
+    const loadedResult = FontAdapter.isFamilyLoaded(familyName);
+    if (loadedResult.loaded) {
+      return { success: true, error: null };
+    }
+
+    // Check if the family is in the font manifest
+    if (!FONT_MANIFEST[familyName]) {
+
+      // Family not in manifest, cannot load it
+      return {
+        success: false,
+        error: {
+          type: 'fonts/family-not-in-manifest',
+          message: 'Family "' + familyName + '" is not in the font manifest'
+        }
+      };
+
+    }
+
+    // Register the family in the font core if not already registered
+    const regResult = Font.isRegistered(familyName);
+    if (regResult.success && !regResult.registered) {
+      const singleManifest = {};
+      singleManifest[familyName] = FONT_MANIFEST[familyName];
+      Font.registerFamilies(singleManifest);
+    }
+
+    // Load just this family via the adapter
+    const singleManifest = {};
+    singleManifest[familyName] = FONT_MANIFEST[familyName];
+
+    return FontAdapter.loadManifest(singleManifest);
+
   }
 
 
