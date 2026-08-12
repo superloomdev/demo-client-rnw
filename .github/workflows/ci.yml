@@ -1,0 +1,164 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+
+  # =========================================================================
+  # Gate job: portability fence + unit tests. Gates all build jobs.
+  # The fence is a grep that runs before npm ci, so a coupling leak fails
+  # in seconds, not minutes. Unit tests use the real loader + stub adapters.
+  # =========================================================================
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Portability fence
+        run: bash scripts/check-portability.sh
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+      - name: Install and test
+        working-directory: src/_test
+        run: |
+          npm ci
+          npm test
+
+  # =========================================================================
+  # Build jobs: all depend on test, run in parallel.
+  # =========================================================================
+
+  # Expo web export via Metro bundler
+  expo-web:
+    needs: [test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+      - name: Expo web export
+        working-directory: hosts/expo
+        run: |
+          npm ci
+          npx expo export --platform web --output-dir dist
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: expo-web
+          path: hosts/expo/dist
+          retention-days: 7
+
+  # React Native Web build via Vite: proves src/ has no framework coupling
+  rnw-web:
+    needs: [test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+      - name: Vite build
+        working-directory: hosts/web
+        run: |
+          npm ci
+          npx vite build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: rnw-web
+          path: hosts/web/dist
+          retention-days: 7
+
+  # Expo Android: prebuild generates native project, Gradle compiles debug APK
+  expo-android:
+    needs: [test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GRADLE_OPTS: -Xmx4g
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install and prebuild
+        working-directory: hosts/expo
+        run: |
+          npm ci
+          npx expo prebuild --platform android
+      - name: Assemble debug APK
+        working-directory: hosts/expo/android
+        run: ./gradlew assembleDebug
+      - name: Upload APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: expo-android-apk
+          path: hosts/expo/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
+
+  # Expo iOS: prebuild generates native project, pod install, xcodebuild compile.
+  # Repo is public, so macOS runners are free and unlimited.
+  expo-ios:
+    needs: [test]
+    runs-on: macos-latest
+    permissions:
+      contents: read
+      packages: read
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+      - name: Install and prebuild
+        working-directory: hosts/expo
+        run: |
+          npm ci
+          npx expo prebuild --platform ios
+      - name: Install pods
+        working-directory: hosts/expo/ios
+        run: pod install
+      - name: Build iOS (unsigned)
+        working-directory: hosts/expo/ios
+        run: |
+          WORKSPACE=$(ls -1 *.xcworkspace | head -1)
+          SCHEME=$(xcodebuild -list -workspace "$WORKSPACE" 2>/dev/null | awk '/Schemes:/{found=1;next} found && NF{print $1;exit}')
+          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Debug -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO
