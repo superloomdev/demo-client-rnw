@@ -1,0 +1,27 @@
+{
+  "name": "nimbus-demo-client-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-native": "0.76.9",
+    "react-native-web": "~0.19.13",
+    "react-native-safe-area-context": "4.12.0",
+    "@superloomdev/js-client-helper-font": "^1.0.0",
+    "@superloomdev/js-client-helper-themer": "^1.0.0",
+    "@superloomdev/js-client-helper-themer-ext-react": "^1.0.0",
+    "@superloomdev/js-helper-debug": "^1.0.0",
+    "@superloomdev/js-helper-utils": "^1.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.0"
+  }
+}

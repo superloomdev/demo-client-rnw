@@ -159,3 +159,33 @@ All Superloom helper modules are consumed from the GitHub Packages registry as
 normal npm dependencies. No Metro `watchFolders` or `extraNodeModules` aliases.
 This proves the app is a realistic consumer — it installs packages exactly as a
 third-party application would.
+
+---
+
+## Shared source in `src/`, hosts are thin builders
+
+All application source lives in `src/` with no `package.json` and is never
+published. Hosts (`hosts/expo`, `hosts/web`) are thin builders that wire
+platform-specific dependencies and render shared screens. The dependency
+direction is one-way: `src/` never imports from `hosts/`.
+
+---
+
+## Second web host is a portability harness, not a shipping pipeline
+
+`hosts/web/` uses Vite and React Native Web to prove that `src/` contains no
+framework coupling. It builds from the same `src/` the Expo host uses. Its
+only job is to fail loudly when shared source acquires app-framework coupling.
+It is not a production web build.
+
+---
+
+## Host-specific implementations enter through three validated adapter slots
+
+Three capabilities cannot be shared across hosts: Navigation, Icons, and Fonts.
+Each enters `src/` through an adapter — a factory function with the signature
+`(Lib, config) => ready object`. The three slot names are `Navigation`,
+`Icons`, and `Fonts`. Adapters return a value; the loader assigns every `Lib`
+key, so no adapter can introduce a vendor-named slot. A missing or malformed
+adapter throws `TypeError` at boot through `validateAdapters` in
+`src/app-core/loader.validators.js`, before any component renders.

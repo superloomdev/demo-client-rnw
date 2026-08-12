@@ -1,0 +1,17 @@
+{
+  "name": "demo-client-test",
+  "private": true,
+  "scripts": {
+    "test": "NODE_PATH=./node_modules node --test test-smoke.js test-atoms.js test-molecules.js test-loader.js test-themes.js"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-test-renderer": "18.3.1",
+    "react-native": "npm:react-native-web@~0.19.13",
+    "@superloomdev/js-helper-utils": "^1.0.0",
+    "@superloomdev/js-helper-debug": "^1.0.0",
+    "@superloomdev/js-client-helper-themer": "^1.0.0",
+    "@superloomdev/js-client-helper-themer-ext-react": "^1.0.0",
+    "@superloomdev/js-client-helper-font": "^1.0.0"
+  }
+}

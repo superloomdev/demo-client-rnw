@@ -4,7 +4,7 @@
 
 const React = require('react');
 const { View, Text, ScrollView, Pressable, StyleSheet } = require('react-native');
-const { useLib } = require('../../contexts/lib-context');
+const { useLib } = require('../../../../src/app-core/contexts/lib-context');
 
 // Color swatch component
 function ColorSwatch({ name, color }) {

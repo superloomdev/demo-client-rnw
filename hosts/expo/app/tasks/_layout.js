@@ -4,7 +4,7 @@
 // visibly re-themes everything from one variant value.
 import { Stack } from 'expo-router';
 
-const { useLib } = require('../../contexts/lib-context');
+const { useLib } = require('../../../../src/app-core/contexts/lib-context');
 
 
 // Inner stack so we can read the derived theme for header styling

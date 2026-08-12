@@ -3,7 +3,7 @@
 // color and the numeric scale from the same engine.
 import { Stack } from 'expo-router';
 
-const { useLib } = require('../../contexts/lib-context');
+const { useLib } = require('../../../../src/app-core/contexts/lib-context');
 
 
 function ThemedStack () {

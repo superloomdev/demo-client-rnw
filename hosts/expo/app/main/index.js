@@ -1,2 +1,2 @@
 // Routing alias — zero logic. Points to the real screen in src/screens/.
-export { default } from '../../../../packages/screens/main/Launcher';
+export { default } from '../../../../src/screens/main/Launcher';

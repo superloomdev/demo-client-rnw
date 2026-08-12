@@ -3,7 +3,7 @@
 // and the theming hooks come from the DI container (Lib.ThemeContext).
 import { Stack } from 'expo-router';
 
-const { useLib } = require('../../contexts/lib-context');
+const { useLib } = require('../../../../src/app-core/contexts/lib-context');
 
 
 // Inner stack so we can read the derived theme for header styling

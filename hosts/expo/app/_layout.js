@@ -9,7 +9,10 @@
 import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-const { LibProvider, useLib } = require('../contexts/lib-context');
+const { LibProvider, useLib } = require('../../../src/app-core/contexts/lib-context');
+const navigationAdapter = require('../adapters/navigation');
+const fontsAdapter = require('../adapters/fonts');
+const iconsAdapter = require('../adapters/icons');
 
 
 // Inner boot: hold render until host fonts are ready, then provide the base theme
@@ -53,7 +56,7 @@ function Boot () {
 
 export default function RootLayout () {
   return (
-    <LibProvider>
+    <LibProvider adapters={{ Navigation: navigationAdapter, Fonts: fontsAdapter, Icons: iconsAdapter }}>
       <SafeAreaProvider>
         <Boot />
       </SafeAreaProvider>
