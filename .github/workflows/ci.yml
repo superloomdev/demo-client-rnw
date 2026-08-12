@@ -159,6 +159,18 @@ jobs:
       - name: Build iOS (unsigned)
         working-directory: hosts/expo/ios
         run: |
-          WORKSPACE=$(ls -1 *.xcworkspace | head -1)
+          WORKSPACE=$(find . -maxdepth 1 -name "*.xcworkspace" -print -quit)
+          if [ -z "$WORKSPACE" ]; then
+            echo "No .xcworkspace found in hosts/expo/ios"
+            ls -la
+            exit 1
+          fi
+          echo "Workspace: $WORKSPACE"
           SCHEME=$(xcodebuild -list -workspace "$WORKSPACE" 2>/dev/null | awk '/Schemes:/{found=1;next} found && NF{print $1;exit}')
+          if [ -z "$SCHEME" ]; then
+            echo "No scheme found in $WORKSPACE"
+            xcodebuild -list -workspace "$WORKSPACE"
+            exit 1
+          fi
+          echo "Scheme: $SCHEME"
           xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Debug -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO
