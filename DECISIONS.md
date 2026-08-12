@@ -189,3 +189,17 @@ Each enters `src/` through an adapter — a factory function with the signature
 key, so no adapter can introduce a vendor-named slot. A missing or malformed
 adapter throws `TypeError` at boot through `validateAdapters` in
 `src/app-core/loader.validators.js`, before any component renders.
+
+---
+
+## Unified CI with five jobs, iOS on macOS
+
+A single `.github/workflows/ci.yml` runs on every push and PR to `main`. The
+`test` job (portability fence + unit tests) gates four parallel build jobs:
+`expo-web`, `rnw-web`, `expo-android` (all ubuntu), and `expo-ios` (macOS).
+All `superloomdev` repos are public, so macOS runners are free and unlimited.
+The `test` job gates all builds because a coupling leak or unit test failure
+invalidates every downstream artifact. iOS runs on every push, not
+dispatch-only, because the cost is zero on a public repo. The APK artifact is
+retained for 7 days so it can be downloaded and installed on a physical device
+without a simulator.

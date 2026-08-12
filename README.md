@@ -12,7 +12,7 @@ The demo currently validates the architecture with two placeholder shapes (Tasks
 |---|---|---|---|
 | Expo device | `npx expo start --offline` then scan the QR code | iOS, Android | None |
 | Expo web | `npx expo export --platform web` from `hosts/expo` | Browser | None |
-| Harness web | `npx vite build` from `hosts/web` | Browser | None |
+| RNW web | `npx vite build` from `hosts/web` | Browser | None |
 | Native Android | `expo prebuild` then `./gradlew assembleDebug` from `hosts/expo/android` | APK | None |
 | Native iOS | `expo prebuild` then `xcodebuild -workspace *.xcworkspace -scheme <scheme> -configuration Debug -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO` from `hosts/expo/ios` | Compile check | None |
 | Tests | `npm test` from `src/_test` | Node | None |
@@ -72,6 +72,26 @@ All Superloom helper modules are consumed from the GitHub Packages registry as n
 - `@superloomdev/js-client-helper-font-ext-expo`
 
 The themer engine resolves templates against layered overrides (base + variant) and emits platform-ready tokens. The app's theme assembly uses `buildTheme(template, [baseLayer, variantLayer], PLATFORM)` where `PLATFORM` is defined in `src/themes/assemble.js`.
+
+## CI
+
+A single workflow (`.github/workflows/ci.yml`) runs on every push and PR to `main`. The `test` job gates all build jobs.
+
+| Job | Runner | What it proves | Artifact |
+|---|---|---|---|
+| `test` | ubuntu | Portability fence + 57 unit tests | none |
+| `expo-web` | ubuntu | Expo web export via Metro | `expo-web` (7 days) |
+| `rnw-web` | ubuntu | React Native Web build via Vite | `rnw-web` (7 days) |
+| `expo-android` | ubuntu | Expo prebuild + Gradle debug APK | `expo-android-apk` (7 days) |
+| `expo-ios` | macOS | Expo prebuild + pod install + xcodebuild compile | none |
+
+All `superloomdev` repos are public, so macOS runners are free. To download the APK from a run:
+
+```bash
+gh run download --name expo-android-apk --dir /tmp/apk
+```
+
+The APK is a debug build signed with the auto-generated debug keystore. Install it directly on an Android phone.
 
 ## Contributing
 
