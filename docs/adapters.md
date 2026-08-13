@@ -4,6 +4,13 @@ Internal reference for the host adapter system. Covers the three slots, their
 contracts, the standard adapter shape, how to add a fourth host, and how to
 add a fourth slot.
 
+> **Full doctrine:** the language-agnostic composition and adapters doctrine
+> lives in the Superloom constitution at
+> [`docs/principles/composition-and-adapters.md`](https://github.com/superloomdev/superloom/blob/main/docs/principles/composition-and-adapters.md).
+> The JavaScript implementation with worked examples is at
+> [`docs/languages/js/composition-and-adapters.md`](https://github.com/superloomdev/superloom/blob/main/docs/languages/js/composition-and-adapters.md).
+> This file is the application-specific reference; those files are the rules.
+
 ## The three slots
 
 | Slot | Returns | Consumers |
