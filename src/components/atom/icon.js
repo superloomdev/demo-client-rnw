@@ -15,13 +15,19 @@ module.exports = function (Component, CommonStyle, theme, Lib) {
 
     // Resolve size: token -> px, number -> px, default md
     let px = theme.Dimension.fontSize.md;
-    if (typeof size === 'number') { px = size; }
-    else if (size && theme.Dimension.fontSize[size]) { px = theme.Dimension.fontSize[size]; }
+    if (typeof size === 'number') {
+      px = size;
+    } else if (size && theme.Dimension.fontSize[size]) {
+      px = theme.Dimension.fontSize[size];
+    }
 
     // Resolve color: hex -> as-is, token -> palette, default TEXT_PRIMARY
     let hex = theme.Color.TEXT_PRIMARY;
-    if (color && color.charAt(0) === '#') { hex = color; }
-    else if (color && theme.Color[color.toUpperCase()]) { hex = theme.Color[color.toUpperCase()]; }
+    if (color && color.charAt(0) === '#') {
+      hex = color;
+    } else if (color && theme.Color[color.toUpperCase()]) {
+      hex = theme.Color[color.toUpperCase()];
+    }
 
     return React.createElement(
       Lib.Icons.Glyph,

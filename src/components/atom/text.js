@@ -9,11 +9,11 @@ const React = require('react');
 const { Text: RNText, StyleSheet } = require('react-native');
 
 const Style = StyleSheet.create({
-  rtlIOS: { writingDirection: 'rtl' },
+  rtlIOS: { writingDirection: 'rtl' }
 });
 
 
-module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disable-line no-unused-vars
+module.exports = function (Component, CommonStyle, theme, Lib) {
 
   return function Text (props) {
 
@@ -25,14 +25,18 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
     const cls = [
       CommonStyle['font_size_' + (size || 'md')],
       CommonStyle['font_' + (color || 'text_primary')],
-      CommonStyle['font_weight_' + (weight || 'regular')],
+      CommonStyle['font_weight_' + (weight || 'regular')]
     ];
 
     // Alignment (plain inline; not a token)
-    if (align) { cls.push({ textAlign: align }); }
+    if (align) {
+      cls.push({ textAlign: align });
+    }
 
     // iOS RTL writing direction
-    if (isRtlActive && Lib.Client.isIOS()) { cls.push(Style.rtlIOS); }
+    if (isRtlActive && Lib.Client.isIOS()) {
+      cls.push(Style.rtlIOS);
+    }
 
     return React.createElement(
       RNText,

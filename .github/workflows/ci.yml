@@ -40,12 +40,33 @@ jobs:
           npm test
 
   # =========================================================================
+  # Gate job: ESLint via shared config. Runs in parallel with test.
+  # =========================================================================
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+      - name: Install and lint
+        run: |
+          npm ci
+          npm run lint
+
+  # =========================================================================
   # Build jobs: all depend on test, run in parallel.
   # =========================================================================
 
   # Expo web export via Metro bundler
   expo-web:
-    needs: [test]
+    needs: [test, lint]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -72,7 +93,7 @@ jobs:
 
   # React Native Web build via Vite: proves src/ has no framework coupling
   rnw-web:
-    needs: [test]
+    needs: [test, lint]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -99,7 +120,7 @@ jobs:
 
   # Expo Android: prebuild generates native project, Gradle compiles debug APK
   expo-android:
-    needs: [test]
+    needs: [test, lint]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -135,7 +156,7 @@ jobs:
   # Expo iOS: prebuild generates native project, pod install, xcodebuild compile.
   # Repo is public, so macOS runners are free and unlimited.
   expo-ios:
-    needs: [test]
+    needs: [test, lint]
     runs-on: macos-latest
     permissions:
       contents: read

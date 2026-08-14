@@ -9,7 +9,7 @@ module.exports = function (api) {
 
   // Return the preset set
   return {
-    presets: ['babel-preset-expo'],
+    presets: ['babel-preset-expo']
   };
 
 };

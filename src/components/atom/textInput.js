@@ -22,7 +22,7 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
       CommonStyle['p_v_sm'],
       CommonStyle['font_size_md'],
       CommonStyle['font_text_primary'],
-      focused ? CommonStyle['border_primary'] : CommonStyle['border_default'],
+      focused ? CommonStyle['border_primary'] : CommonStyle['border_default']
     ];
 
     return React.createElement(
@@ -30,8 +30,16 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
       Object.assign({
         style: [...base, style],
         placeholderTextColor: theme.Color.TEXT_MUTED,
-        onFocus: function (e) { setFocused(true); if (rest.onFocus) { rest.onFocus(e); } },
-        onBlur: function (e) { setFocused(false); if (rest.onBlur) { rest.onBlur(e); } },
+        onFocus: function (e) {
+          setFocused(true); if (rest.onFocus) {
+            rest.onFocus(e);
+          }
+        },
+        onBlur: function (e) {
+          setFocused(false); if (rest.onBlur) {
+            rest.onBlur(e);
+          }
+        }
       }, rest)
     );
 

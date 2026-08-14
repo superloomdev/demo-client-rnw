@@ -42,7 +42,7 @@ module.exports = function loader (shared_libs, config) { // eslint-disable-line 
     // Raw platform string: 'web' | 'ios' | 'android'
     os: function () {
       return Platform.OS;
-    },
+    }
 
   };
 

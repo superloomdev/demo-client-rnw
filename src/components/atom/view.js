@@ -15,9 +15,15 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
 
     // Resolve token props to utility classes
     const cls = [];
-    if (background) { cls.push(CommonStyle['background_' + background]); }
-    if (radius) { cls.push(CommonStyle['br_' + radius]); }
-    if (border) { cls.push(CommonStyle['border_' + (border === true ? 'default' : border)]); }
+    if (background) {
+      cls.push(CommonStyle['background_' + background]);
+    }
+    if (radius) {
+      cls.push(CommonStyle['br_' + radius]);
+    }
+    if (border) {
+      cls.push(CommonStyle['border_' + (border === true ? 'default' : border)]);
+    }
 
     return React.createElement(
       RNView,

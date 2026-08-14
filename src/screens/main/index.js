@@ -2,5 +2,5 @@
 'use strict';
 
 module.exports = {
-  Launcher: require('./Launcher'),
+  Launcher: require('./Launcher')
 };

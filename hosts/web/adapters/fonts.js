@@ -4,13 +4,19 @@
 'use strict';
 
 
-module.exports = function (Lib, config) {
+module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // Minimal no-op font adapter satisfying the font extension contract
   const adapter = {
-    loadManifest: function () { return Promise.resolve({ success: true, error: null }); },
-    isReady: function () { return { success: true, ready: true }; },
-    isFamilyLoaded: function () { return { loaded: true }; }
+    loadManifest: function () {
+      return Promise.resolve({ success: true, error: null });
+    },
+    isReady: function () {
+      return { success: true, ready: true };
+    },
+    isFamilyLoaded: function () {
+      return { loaded: true };
+    }
   };
 
   // No bundled font assets in the harness

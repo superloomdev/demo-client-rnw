@@ -5,7 +5,7 @@
 const { Ionicons } = require('@expo/vector-icons');
 
 
-module.exports = function (Lib, config) {
+module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // Capability-named member; the vendor name stops at this file
   return {

@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "check:portability": "bash scripts/check-portability.sh"
+    "check:portability": "bash scripts/check-portability.sh",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "eslint": "^10.2.0",
+    "@eslint/js": "^10.0.1",
+    "@superloomdev/js-helper-eslint-config": "^1.0.0"
   }
 }

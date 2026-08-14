@@ -4,10 +4,12 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const TestRenderer = require('react-test-renderer');
 
-const { Component: C, CommonStyle, theme, React } = require('./loader');
+const { Component: C, React } = require('./loader');
 
 if (typeof global.document === 'undefined') {
-  global.document = { createElement: function () { return { style: {} }; } };
+  global.document = { createElement: function () {
+    return { style: {} };
+  } };
 }
 
 // Card molecule

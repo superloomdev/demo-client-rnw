@@ -96,18 +96,30 @@ function schemeToLayer (scheme, name) {
 
   // Font weights
   if (font.weight) {
-    if (font.weight.regular) tokens['font.weight.regular'] = font.weight.regular;
-    if (font.weight.medium) tokens['font.weight.medium'] = font.weight.medium;
-    if (font.weight.semibold) tokens['font.weight.semibold'] = font.weight.semibold;
-    if (font.weight.bold) tokens['font.weight.bold'] = font.weight.bold;
+    if (font.weight.regular) {
+      tokens['font.weight.regular'] = font.weight.regular;
+    }
+    if (font.weight.medium) {
+      tokens['font.weight.medium'] = font.weight.medium;
+    }
+    if (font.weight.semibold) {
+      tokens['font.weight.semibold'] = font.weight.semibold;
+    }
+    if (font.weight.bold) {
+      tokens['font.weight.bold'] = font.weight.bold;
+    }
   }
 
   // Scale overrides go into the scales property
   const scales = {};
   if (dimension.fontBase !== undefined || dimension.fontRatio !== undefined) {
     scales.geometric = {};
-    if (dimension.fontBase !== undefined) scales.geometric.base = dimension.fontBase;
-    if (dimension.fontRatio !== undefined) scales.geometric.ratio = dimension.fontRatio;
+    if (dimension.fontBase !== undefined) {
+      scales.geometric.base = dimension.fontBase;
+    }
+    if (dimension.fontRatio !== undefined) {
+      scales.geometric.ratio = dimension.fontRatio;
+    }
   }
   if (dimension.spaceUnit !== undefined) {
     scales.miniUnit = { base: dimension.spaceUnit };
@@ -157,7 +169,9 @@ function bridgeTheme (flat) {
 
       if (parts.length === 3) {
         // dimension.font_size.xs -> Dimension.fontSize.xs
-        const scaleName = parts[1].replace(/_([a-z])/g, function (_, c) { return c.toUpperCase(); });
+        const scaleName = parts[1].replace(/_([a-z])/g, function (_, c) {
+          return c.toUpperCase();
+        });
         if (!Dimension[scaleName]) {
           Dimension[scaleName] = {};
         }
@@ -165,7 +179,9 @@ function bridgeTheme (flat) {
         Dimension[scaleName][parts[2]] = (scaleName === 'fontSize') ? Math.round(value) : value;
       } else {
         // dimension.line_height_ratio -> Dimension.lineHeightRatio
-        const camelKey = parts[1].replace(/_([a-z])/g, function (_, c) { return c.toUpperCase(); });
+        const camelKey = parts[1].replace(/_([a-z])/g, function (_, c) {
+          return c.toUpperCase();
+        });
         Dimension[camelKey] = value;
       }
 

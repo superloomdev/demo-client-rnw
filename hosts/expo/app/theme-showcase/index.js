@@ -3,11 +3,11 @@
 'use strict';
 
 const React = require('react');
-const { View, Text, ScrollView, Pressable, StyleSheet } = require('react-native');
+const { View, Text, ScrollView, StyleSheet } = require('react-native');
 const { useLib } = require('../../../../src/app-core/contexts/lib-context');
 
 // Color swatch component
-function ColorSwatch({ name, color }) {
+function ColorSwatch ({ name, color }) {
   return (
     <View style={styles.swatchContainer}>
       <View style={[styles.swatch, { backgroundColor: color }]} />
@@ -18,7 +18,7 @@ function ColorSwatch({ name, color }) {
 }
 
 // Typography sample
-function TypeSample({ name, size, lineHeight, Font }) {
+function TypeSample ({ name, size, lineHeight, Font }) {
   return (
     <View style={styles.typeRow}>
       <Text style={styles.typeLabel}>{name}</Text>
@@ -30,7 +30,7 @@ function TypeSample({ name, size, lineHeight, Font }) {
 }
 
 // Spacing sample
-function SpaceSample({ name, value }) {
+function SpaceSample ({ name, value }) {
   return (
     <View style={styles.spaceRow}>
       <Text style={styles.spaceLabel}>{name}</Text>
@@ -41,7 +41,7 @@ function SpaceSample({ name, value }) {
 }
 
 // Radius sample
-function RadiusSample({ name, value, Color }) {
+function RadiusSample ({ name, value, Color }) {
   return (
     <View style={styles.radiusRow}>
       <Text style={styles.radiusLabel}>{name}</Text>
@@ -53,7 +53,7 @@ function RadiusSample({ name, value, Color }) {
 }
 
 // Main showcase using current theme
-function ThemeShowcaseContent() {
+function ThemeShowcaseContent () {
   const theme = useLib().ThemeContext.useTheme();
   const { Color, Dimension, Font } = theme;
 
@@ -78,7 +78,7 @@ function ThemeShowcaseContent() {
     ['STATUS_WARNING', Color.STATUS_WARNING],
     ['STATUS_WARNING_SUBTLE', Color.STATUS_WARNING_SUBTLE],
     ['STATUS_INFO', Color.STATUS_INFO],
-    ['STATUS_INFO_SUBTLE', Color.STATUS_INFO_SUBTLE],
+    ['STATUS_INFO_SUBTLE', Color.STATUS_INFO_SUBTLE]
   ];
 
   return (
@@ -99,7 +99,7 @@ function ThemeShowcaseContent() {
           Color Tokens ({colorTokens.length})
         </Text>
         <View style={styles.grid}>
-          {colorTokens.map(function([name, color]) {
+          {colorTokens.map(function ([name, color]) {
             return <ColorSwatch key={name} name={name} color={color} />;
           })}
         </View>
@@ -113,7 +113,7 @@ function ThemeShowcaseContent() {
         <Text style={[styles.sectionSubtitle, { color: Color.TEXT_SECONDARY }]}>
           Base: {Dimension.fontSize.md}px • Ratio: {Dimension.lineHeightRatio}
         </Text>
-        {Object.entries(Dimension.fontSize).map(function([key, size]) {
+        {Object.entries(Dimension.fontSize).map(function ([key, size]) {
           return (
             <TypeSample
               key={key}
@@ -140,7 +140,7 @@ function ThemeShowcaseContent() {
         <Text style={[styles.sectionTitle, { marginTop: 16, color: Color.TEXT_PRIMARY }]}>
           Font Weights
         </Text>
-        {Object.entries(Font.weight).map(function([key, weight]) {
+        {Object.entries(Font.weight).map(function ([key, weight]) {
           return (
             <Text key={key} style={[styles.infoText, { color: Color.TEXT_SECONDARY }]}>
               {key}: {weight}
@@ -154,7 +154,7 @@ function ThemeShowcaseContent() {
         <Text style={[styles.sectionTitle, { color: Color.TEXT_PRIMARY }]}>
           Spacing Scale (Unit: {Dimension.space.xs}px)
         </Text>
-        {Object.entries(Dimension.space).map(function([key, value]) {
+        {Object.entries(Dimension.space).map(function ([key, value]) {
           return <SpaceSample key={key} name={key} value={value} />;
         })}
       </View>
@@ -164,7 +164,7 @@ function ThemeShowcaseContent() {
         <Text style={[styles.sectionTitle, { color: Color.TEXT_PRIMARY }]}>
           Border Radius
         </Text>
-        {Object.entries(Dimension.radius).map(function([key, value]) {
+        {Object.entries(Dimension.radius).map(function ([key, value]) {
           return <RadiusSample key={key} name={key} value={value} Color={Color} />;
         })}
       </View>
@@ -174,65 +174,65 @@ function ThemeShowcaseContent() {
   );
 }
 
-export default function ThemeShowcase() {
+export default function ThemeShowcase () {
   return <ThemeShowcaseContent />;
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   section: {
     padding: 16,
-    marginTop: 8,
+    marginTop: 8
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 12,
+    marginBottom: 12
   },
   sectionSubtitle: {
     fontSize: 14,
-    marginBottom: 12,
+    marginBottom: 12
   },
   hero: {
     padding: 32,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   heroText: {
     fontSize: 48,
-    fontWeight: '700',
+    fontWeight: '700'
   },
   heroSubtext: {
     fontSize: 16,
     marginTop: 8,
-    opacity: 0.8,
+    opacity: 0.8
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: 8
   },
   swatchContainer: {
     width: '23%',
-    marginBottom: 12,
+    marginBottom: 12
   },
   swatch: {
     width: '100%',
     height: 48,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: '#E5E7EB'
   },
   swatchLabel: {
     fontSize: 10,
     fontWeight: '500',
-    marginTop: 4,
+    marginTop: 4
   },
   swatchValue: {
     fontSize: 9,
-    fontFamily: 'monospace',
+    fontFamily: 'monospace'
   },
   typeRow: {
     flexDirection: 'row',
@@ -240,62 +240,62 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: '#F3F4F6'
   },
   typeLabel: {
     fontSize: 12,
-    width: 40,
+    width: 40
   },
   typeSample: {
-    fontWeight: '500',
+    fontWeight: '500'
   },
   spaceRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: '#F3F4F6'
   },
   spaceLabel: {
     fontSize: 12,
-    width: 60,
+    width: 60
   },
   spaceBox: {
     backgroundColor: '#4F46E5',
-    marginHorizontal: 12,
+    marginHorizontal: 12
   },
   spaceValue: {
     fontSize: 12,
-    fontFamily: 'monospace',
+    fontFamily: 'monospace'
   },
   radiusRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: '#F3F4F6'
   },
   radiusLabel: {
     fontSize: 12,
-    width: 60,
+    width: 60
   },
   radiusBox: {
     width: 60,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 12,
+    marginHorizontal: 12
   },
   radiusValue: {
     fontSize: 10,
     color: '#FFFFFF',
-    fontWeight: '500',
+    fontWeight: '500'
   },
   infoText: {
     fontSize: 14,
-    paddingVertical: 4,
+    paddingVertical: 4
   },
   footer: {
-    height: 32,
-  },
+    height: 32
+  }
 });

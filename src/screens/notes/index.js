@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = {
-  NotesList: require('./NotesList'),
+  NotesList: require('./NotesList')
 };

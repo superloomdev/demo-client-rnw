@@ -4,11 +4,13 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const TestRenderer = require('react-test-renderer');
 
-const { Component: C, CommonStyle, theme, React } = require('./loader');
+const { Component: C, React } = require('./loader');
 
 // react-native-web TextInput references document in a useEffect; stub it for Node
 if (typeof global.document === 'undefined') {
-  global.document = { createElement: function () { return { style: {} }; } };
+  global.document = { createElement: function () {
+    return { style: {} };
+  } };
 }
 
 

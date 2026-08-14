@@ -19,9 +19,15 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
 
     // Resolve background class from state
     const bgClass = function (pressed) {
-      if (disabled) { return CommonStyle['background_app_primary_disabled']; }
-      if (pressed) { return CommonStyle['background_app_primary_pressed']; }
-      if (hovered) { return CommonStyle['background_app_primary_hovered']; }
+      if (disabled) {
+        return CommonStyle['background_app_primary_disabled'];
+      }
+      if (pressed) {
+        return CommonStyle['background_app_primary_pressed'];
+      }
+      if (hovered) {
+        return CommonStyle['background_app_primary_hovered'];
+      }
       return CommonStyle['background_app_primary'];
     };
 
@@ -30,7 +36,7 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
       CommonStyle['p_h_lg'],
       CommonStyle['p_v_md'],
       { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
-      fullWidth ? { alignSelf: 'stretch' } : null,
+      fullWidth ? { alignSelf: 'stretch' } : null
     ];
 
     return React.createElement(
@@ -40,12 +46,18 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
         disabled: disabled,
         accessibilityRole: 'button',
         accessibilityLabel: title,
-        onHoverIn: function () { setHovered(true); },
-        onHoverOut: function () { setHovered(false); },
-        style: function (state) { return [...containerBase, bgClass(state.pressed)]; },
+        onHoverIn: function () {
+          setHovered(true);
+        },
+        onHoverOut: function () {
+          setHovered(false);
+        },
+        style: function (state) {
+          return [...containerBase, bgClass(state.pressed)];
+        }
       }, rest),
       // Children: optional leading icon + label, both in the on-primary color
-      function (state) {
+      function (state) { // eslint-disable-line no-unused-vars
         return React.createElement(
           React.Fragment,
           null,
@@ -54,13 +66,13 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
               name: icon,
               size: 'md',
               color: 'TEXT_ON_PRIMARY',
-              style: CommonStyle['m_e_sm'],
+              style: CommonStyle['m_e_sm']
             })
             : null,
           React.createElement(Component.Text, {
             color: 'text_on_primary',
             weight: 'semibold',
-            size: 'md',
+            size: 'md'
           }, title)
         );
       }

@@ -5,7 +5,7 @@
 const React = require('react');
 
 
-module.exports = function (Lib, config) {
+module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
 
   return {
     Glyph: function (props) {

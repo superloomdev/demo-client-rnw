@@ -5,7 +5,7 @@
 const { Link, Redirect } = require('expo-router');
 
 
-module.exports = function (Lib, config) {
+module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // Ready-to-use navigation surface; the loader assigns it to Lib.Navigation
   return {

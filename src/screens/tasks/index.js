@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = {
-  TasksList: require('./TasksList'),
+  TasksList: require('./TasksList')
 };

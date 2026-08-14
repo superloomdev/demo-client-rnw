@@ -29,15 +29,25 @@ export default function TasksList () {
     });
   }, [Lib]);
 
-  useEffect(function () { reload(); }, [reload]);
+  useEffect(function () {
+    reload();
+  }, [reload]);
 
   const addTask = function () {
-    if (Lib.Utils.isEmpty(draft.trim())) { return; }
-    Lib.Sdk.tasks.create(draft.trim()).then(function () { setDraft(''); reload(); });
+    if (Lib.Utils.isEmpty(draft.trim())) {
+      return;
+    }
+    Lib.Sdk.tasks.create(draft.trim()).then(function () {
+      setDraft(''); reload();
+    });
   };
 
-  const toggle = function (id) { Lib.Sdk.tasks.toggle(id).then(reload); };
-  const remove = function (id) { Lib.Sdk.tasks.remove(id).then(reload); };
+  const toggle = function (id) {
+    Lib.Sdk.tasks.toggle(id).then(reload);
+  };
+  const remove = function (id) {
+    Lib.Sdk.tasks.remove(id).then(reload);
+  };
 
   const shuffleAccent = function () {
     const next = (accentIndex + 1) % ACCENTS.length;
@@ -62,11 +72,15 @@ export default function TasksList () {
           {tasks.map(function (task, idx) {
             return (
               <C.View key={task.id} style={[styles.row, idx > 0 ? styles.rowDivider : null]}>
-                <Pressable onPress={function () { toggle(task.id); }} style={styles.check}>
+                <Pressable onPress={function () {
+                  toggle(task.id);
+                }} style={styles.check}>
                   <C.Icon name={task.done ? 'checkbox' : 'square-outline'} size="lg" color={task.done ? 'APP_PRIMARY' : 'TEXT_MUTED'} />
                 </Pressable>
                 <C.Text style={[styles.rowTitle, task.done ? styles.done : null]} color={task.done ? 'text_muted' : 'text_primary'}>{task.title}</C.Text>
-                <Pressable onPress={function () { remove(task.id); }} hitSlop={8}>
+                <Pressable onPress={function () {
+                  remove(task.id);
+                }} hitSlop={8}>
                   <C.Icon name="trash-outline" size="md" color="STATUS_DANGER" />
                 </Pressable>
               </C.View>
@@ -97,5 +111,5 @@ const styles = StyleSheet.create({
   rowTitle: { flex: 1 },
   done: { textDecorationLine: 'line-through' },
   check: {},
-  home: { alignItems: 'center', paddingVertical: 12 },
+  home: { alignItems: 'center', paddingVertical: 12 }
 });

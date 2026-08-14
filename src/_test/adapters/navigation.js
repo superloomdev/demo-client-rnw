@@ -5,13 +5,15 @@
 const React = require('react');
 
 
-module.exports = function (Lib, config) {
+module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
 
   return {
     Link: function (props) {
       return React.createElement('a', { href: props.href }, props.children);
     },
-    Redirect: function () { return null; }
+    Redirect: function () {
+      return null;
+    }
   };
 
 };

@@ -23,7 +23,7 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
       CommonStyle['p_v_md'],
       CommonStyle['border_primary'],
       { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
-      fullWidth ? { alignSelf: 'stretch' } : null,
+      fullWidth ? { alignSelf: 'stretch' } : null
     ];
 
     const bg = function (pressed) {
@@ -39,17 +39,23 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
         disabled: disabled,
         accessibilityRole: 'button',
         accessibilityLabel: title,
-        onHoverIn: function () { setHovered(true); },
-        onHoverOut: function () { setHovered(false); },
-        style: function (state) { return [...containerBase, bg(state.pressed)]; },
+        onHoverIn: function () {
+          setHovered(true);
+        },
+        onHoverOut: function () {
+          setHovered(false);
+        },
+        style: function (state) {
+          return [...containerBase, bg(state.pressed)];
+        }
       }, rest),
       icon
         ? React.createElement(Component.Icon, {
-          name: icon, size: 'md', color: 'APP_PRIMARY', style: CommonStyle['m_e_sm'],
+          name: icon, size: 'md', color: 'APP_PRIMARY', style: CommonStyle['m_e_sm']
         })
         : null,
       React.createElement(Component.Text, {
-        color: 'app_primary', weight: 'semibold', size: 'md',
+        color: 'app_primary', weight: 'semibold', size: 'md'
       }, title)
     );
 

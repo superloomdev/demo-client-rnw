@@ -56,7 +56,7 @@ module.exports = function loader (adapters) {
     ENVIRONMENT: Config.debug.ENVIRONMENT
   };
 
-  const config_sdk = {
+  const config_sdk = { // eslint-disable-line no-unused-vars
     API_LATENCY_MS: Config.sdk.API_LATENCY_MS
   };
 
@@ -188,15 +188,37 @@ function _stubSdk () {
 
   return {
     tasks: {
-      list: function () { return Promise.resolve(tasks.slice()); },
-      create: function (title) { tasks.push({ id: nextTaskId++, title: title, done: false }); return Promise.resolve(); },
-      toggle: function (id) { var t = tasks.find(function (x) { return x.id === id; }); if (t) t.done = !t.done; return Promise.resolve(); },
-      remove: function (id) { tasks = tasks.filter(function (x) { return x.id !== id; }); return Promise.resolve(); }
+      list: function () {
+        return Promise.resolve(tasks.slice());
+      },
+      create: function (title) {
+        tasks.push({ id: nextTaskId++, title: title, done: false }); return Promise.resolve();
+      },
+      toggle: function (id) {
+        const t = tasks.find(function (x) {
+          return x.id === id;
+        }); if (t) {
+          t.done = !t.done;
+        } return Promise.resolve();
+      },
+      remove: function (id) {
+        tasks = tasks.filter(function (x) {
+          return x.id !== id;
+        }); return Promise.resolve();
+      }
     },
     notes: {
-      list: function () { return Promise.resolve(notes.slice()); },
-      create: function (title, body) { notes.push({ id: nextNoteId++, title: title, body: body, updatedAt: 'just now' }); return Promise.resolve(); },
-      remove: function (id) { notes = notes.filter(function (x) { return x.id !== id; }); return Promise.resolve(); }
+      list: function () {
+        return Promise.resolve(notes.slice());
+      },
+      create: function (title, body) {
+        notes.push({ id: nextNoteId++, title: title, body: body, updatedAt: 'just now' }); return Promise.resolve();
+      },
+      remove: function (id) {
+        notes = notes.filter(function (x) {
+          return x.id !== id;
+        }); return Promise.resolve();
+      }
     }
   };
 

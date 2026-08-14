@@ -7,11 +7,13 @@ const React = require('react');
 
 function Link (props) {
   const { href, asChild, children, ...rest } = props;
+
   function navigate (e) {
     e.preventDefault();
     window.history.pushState({}, '', href);
     window.dispatchEvent(new PopStateEvent('popstate'));
   }
+
   if (asChild && React.isValidElement(children)) {
     return React.cloneElement(children, { ...rest, onPress: navigate });
   }
@@ -26,7 +28,7 @@ function Redirect (props) {
 }
 
 
-module.exports = function (Lib, config) {
+module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // Ready-to-use navigation surface; the loader assigns it to Lib.Navigation
   return {

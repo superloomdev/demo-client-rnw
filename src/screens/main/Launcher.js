@@ -64,5 +64,5 @@ const styles = StyleSheet.create({
   cardWrap: { width: '100%' },
   card: { flexDirection: 'row', alignItems: 'center', gap: 16 },
   iconWrap: { width: 56, height: 56, alignItems: 'center', justifyContent: 'center' },
-  cardText: { flex: 1, gap: 2 },
+  cardText: { flex: 1, gap: 2 }
 });

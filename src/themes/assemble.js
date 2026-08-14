@@ -46,7 +46,7 @@ function assemble (Lib, built, currentLayers, updateLayersRef) {
 
   // Bridge the themer's flat token map to { Color, Dimension, Font }
   const themerBridge = require('./themer-bridge');
-  let theme = themerBridge.bridgeTheme(built.tokens);
+  const theme = themerBridge.bridgeTheme(built.tokens);
 
   // Validate font families against the font core registry.
   // Unregistered families fall back to System and trigger async loading.

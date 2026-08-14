@@ -45,12 +45,12 @@ module.exports = function combineComponent (Lib, theme) {
 
   // ~~~~~~~~~~ Structured exceptions (variant registry) ~~~~~~~~~~
   Component.variant = {
-    ButtonPrimaryTypeA: make(require('./variant/buttonPrimaryTypeA')),
+    ButtonPrimaryTypeA: make(require('./variant/buttonPrimaryTypeA'))
   };
 
   // ~~~~~~~~~~ Unstructured exceptions (freeform; NO tokens) ~~~~~~~~~~
   Component.freeform = {
-    RawBox: require('./freeform/rawBox')(),
+    RawBox: require('./freeform/rawBox')()
   };
 
   // Return the themed library + its generated styles

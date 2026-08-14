@@ -7,7 +7,7 @@ const FontExtExpo = require('@superloomdev/js-client-helper-font-ext-expo');
 const Poppins = require('@expo-google-fonts/poppins');
 
 
-module.exports = function (Lib, config) {
+module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // The platform loader extension; needs Font, Utils and Debug off the container
   const adapter = FontExtExpo(Lib, {});

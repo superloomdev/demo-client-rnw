@@ -19,17 +19,27 @@ export default function NotesList () {
 
   const reload = useCallback(function () {
     setLoading(true);
-    Lib.Sdk.notes.list().then(function (rows) { setNotes(rows); setLoading(false); });
+    Lib.Sdk.notes.list().then(function (rows) {
+      setNotes(rows); setLoading(false);
+    });
   }, [Lib]);
 
-  useEffect(function () { reload(); }, [reload]);
+  useEffect(function () {
+    reload();
+  }, [reload]);
 
   const addNote = function () {
-    if (Lib.Utils.isEmpty(title.trim()) && Lib.Utils.isEmpty(body.trim())) { return; }
-    Lib.Sdk.notes.create(title.trim(), body.trim()).then(function () { setTitle(''); setBody(''); reload(); });
+    if (Lib.Utils.isEmpty(title.trim()) && Lib.Utils.isEmpty(body.trim())) {
+      return;
+    }
+    Lib.Sdk.notes.create(title.trim(), body.trim()).then(function () {
+      setTitle(''); setBody(''); reload();
+    });
   };
 
-  const remove = function (id) { Lib.Sdk.notes.remove(id).then(reload); };
+  const remove = function (id) {
+    Lib.Sdk.notes.remove(id).then(reload);
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.content}>
@@ -52,7 +62,9 @@ export default function NotesList () {
             <C.Card key={note.id} style={styles.note}>
               <C.View style={styles.noteHead}>
                 <C.Text size="lg" weight="semibold" style={styles.noteTitle}>{note.title}</C.Text>
-                <Pressable onPress={function () { remove(note.id); }} hitSlop={8}>
+                <Pressable onPress={function () {
+                  remove(note.id);
+                }} hitSlop={8}>
                   <C.Icon name="trash-outline" size="md" color="STATUS_DANGER" />
                 </Pressable>
               </C.View>
@@ -83,5 +95,5 @@ const styles = StyleSheet.create({
   note: { gap: 6 },
   noteHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   noteTitle: { flex: 1 },
-  home: { alignItems: 'center', paddingVertical: 12 },
+  home: { alignItems: 'center', paddingVertical: 12 }
 });

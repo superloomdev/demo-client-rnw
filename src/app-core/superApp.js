@@ -14,15 +14,15 @@ module.exports = function loader (Lib, Config) {
       label: 'Tasks',
       tagline: 'Plan your day and check it off',
       icon: 'checkbox-outline',
-      route: '/tasks',
+      route: '/tasks'
     },
     notes: {
       key: 'notes',
       label: 'Notes',
       tagline: 'Capture thoughts, fast',
       icon: 'document-text-outline',
-      route: '/notes',
-    },
+      route: '/notes'
+    }
   };
 
   const SuperApp = {
@@ -30,7 +30,9 @@ module.exports = function loader (Lib, Config) {
     // Every shape this build is allowed to host (driven by Config)
     listShapes: function () {
       return Config.super_app.AVAILABLE_SHAPES
-        .map(function (k) { return SHAPES[k]; })
+        .map(function (k) {
+          return SHAPES[k];
+        })
         .filter(Boolean);
     },
 
@@ -46,7 +48,7 @@ module.exports = function loader (Lib, Config) {
         return { mode: 'lean', shape: shape };
       }
       return { mode: 'super' };
-    },
+    }
 
   };
 

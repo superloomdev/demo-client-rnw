@@ -11,28 +11,28 @@ const { StyleSheet } = require('react-native');
 // Build the padding style object for a logical/physical side
 const paddingFor = function (side, value) {
   switch (side) {
-    case 'a': return { padding: value };
-    case 'h': return { paddingHorizontal: value };
-    case 'v': return { paddingVertical: value };
-    case 't': return { paddingTop: value };
-    case 'b': return { paddingBottom: value };
-    case 's': return { paddingStart: value };   // RTL-aware
-    case 'e': return { paddingEnd: value };      // RTL-aware
-    default: return {};
+  case 'a': return { padding: value };
+  case 'h': return { paddingHorizontal: value };
+  case 'v': return { paddingVertical: value };
+  case 't': return { paddingTop: value };
+  case 'b': return { paddingBottom: value };
+  case 's': return { paddingStart: value };   // RTL-aware
+  case 'e': return { paddingEnd: value };      // RTL-aware
+  default: return {};
   }
 };
 
 // Build the margin style object for a logical/physical side
 const marginFor = function (side, value) {
   switch (side) {
-    case 'a': return { margin: value };
-    case 'h': return { marginHorizontal: value };
-    case 'v': return { marginVertical: value };
-    case 't': return { marginTop: value };
-    case 'b': return { marginBottom: value };
-    case 's': return { marginStart: value };     // RTL-aware
-    case 'e': return { marginEnd: value };        // RTL-aware
-    default: return {};
+  case 'a': return { margin: value };
+  case 'h': return { marginHorizontal: value };
+  case 'v': return { marginVertical: value };
+  case 't': return { marginTop: value };
+  case 'b': return { marginBottom: value };
+  case 's': return { marginStart: value };     // RTL-aware
+  case 'e': return { marginEnd: value };        // RTL-aware
+  default: return {};
   }
 };
 
@@ -57,7 +57,7 @@ module.exports = function generateCommonStyles (theme) {
     const size = Dimension.fontSize[key];
     styles['font_size_' + key] = {
       fontSize: size,
-      lineHeight: Math.round(size * Dimension.lineHeightRatio),
+      lineHeight: Math.round(size * Dimension.lineHeightRatio)
     };
   });
 

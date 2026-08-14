@@ -16,7 +16,7 @@ function ThemedStack () {
         title: 'Nimbus',
         headerStyle: { backgroundColor: theme.Color.APP_PRIMARY },
         headerTintColor: theme.Color.TEXT_ON_PRIMARY,
-        headerTitleStyle: { fontWeight: '600' },
+        headerTitleStyle: { fontWeight: '600' }
       }}
     />
   );
