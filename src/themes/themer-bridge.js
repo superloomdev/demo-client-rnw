@@ -177,9 +177,10 @@ function bridgeTheme (flat) {
         if (!Dimension[scaleName]) {
           Dimension[scaleName] = {};
         }
-        // The native projection emits numbers directly. No rem-to-px
-        // conversion needed because platform() always returns 'native'.
-        Dimension[scaleName][parts[2]] = value;
+        // The native projection emits numbers directly. Round to the
+        // nearest integer because RN pixel-snaps at render time and
+        // fractional values cause sub-pixel misalignment.
+        Dimension[scaleName][parts[2]] = Math.round(value);
       } else {
         // dimension.line_height_ratio -> Dimension.lineHeightRatio
         const camelKey = parts[1].replace(/_([a-z])/g, function (_, c) {
