@@ -177,24 +177,9 @@ function bridgeTheme (flat) {
         if (!Dimension[scaleName]) {
           Dimension[scaleName] = {};
         }
-        // The themer emits rem strings (e.g. "0.69rem", "0.25rem").
-        // React Native on iOS/Android does NOT support rem strings for
-        // fontSize, padding, margin, or borderRadius — they must be numbers.
-        // Convert all rem strings to pixel numbers (16px base) here so every
-        // downstream consumer (the demo's own components AND the Carbon
-        // package) gets numeric values.
-        let px = value;
-        if (typeof value === 'string' && value.indexOf('rem') !== -1) {
-          px = parseFloat(value) * 16;
-        }
-        // Round font sizes to integers for clean native rendering.
-        // Space and radius: round to integers too (sub-pixel padding is
-        // unreliable on native and causes hairline gaps).
-        if (typeof px === 'number') {
-          Dimension[scaleName][parts[2]] = Math.round(px);
-        } else {
-          Dimension[scaleName][parts[2]] = px;
-        }
+        // The native projection emits numbers directly. No rem-to-px
+        // conversion needed because platform() always returns 'native'.
+        Dimension[scaleName][parts[2]] = value;
       } else {
         // dimension.line_height_ratio -> Dimension.lineHeightRatio
         const camelKey = parts[1].replace(/_([a-z])/g, function (_, c) {

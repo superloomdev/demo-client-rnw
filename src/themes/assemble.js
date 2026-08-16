@@ -10,20 +10,19 @@
 
 
 /********************************************************************
-Derive the themer platform string from the client environment.
+Derive the themer platform string for the component library.
 
-@param {Object} Lib - the dependency container (requires Lib.Client)
+The component library is React Native Web. RNW is itself the web projection:
+it consumes unit-free numbers and emits CSS. Requesting the themer's 'web'
+projection here would apply two projections and produce rem strings that
+React Native cannot consume on iOS or Android. See theming.md, Resolve
+Then Emit.
 
-@return {string} - 'native' or 'web'
+@return {string} - 'native'
 *********************************************************************/
-function platform (Lib) {
+function platform () {
 
-  // The client module knows whether we are on a native runtime or in a browser
-  if (Lib.Client && Lib.Client.isNative && Lib.Client.isNative()) {
-    return 'native';
-  }
-
-  return 'web';
+  return 'native';
 
 }
 
