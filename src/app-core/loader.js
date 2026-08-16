@@ -128,9 +128,9 @@ module.exports = function loader (adapters) {
 
   // ==================== SDK ======================================= //
   // The hand-written dummy SDK was retired during promotion. The real SDK
-  // (generated from the backend API surface, Plan 0046) will be injected here
-  // once it is published. Until then, a stub SDK provides in-memory data so
-  // screens can render without crashing.
+  // (generated from the backend API surface) will be injected here once it is
+  // published. Until then, a stub SDK provides in-memory data so screens can
+  // render without crashing.
 
   // Lib.Sdk = require('@superloomdev/js-demo-sdk')(Lib, config_sdk);
   Lib.Sdk = _stubSdk();
@@ -177,8 +177,8 @@ module.exports = function loader (adapters) {
 
 
 ///////////////////////////// Private Functions ////////////////////////////////
-// In-memory stub SDK. Replaces the retired dummy SDK until Plan 0046 publishes
-// the real generated SDK. Provides basic CRUD for tasks and notes.
+// In-memory stub SDK. Replaces the retired dummy SDK until the real generated
+// SDK is published. Provides basic CRUD for tasks and notes.
 
 function _stubSdk () {
 

@@ -1,6 +1,6 @@
 // Info: Theme context — the runtime-theming hub for the host app.
 //
-// This file is reference code (LD-G in Plan 0084). It demonstrates the
+// This file is reference code. It demonstrates the
 // module/app split: the extension module (helper-themer-ext-react) owns the
 // generic React plumbing (context, provider, hooks, live update). This file
 // owns the app-specific logic that runs inside the extension's transform seam:
