@@ -22,6 +22,13 @@ module.exports = function loader (Lib, Config) {
       tagline: 'Capture thoughts, fast',
       icon: 'document-text-outline',
       route: '/notes'
+    },
+    showcase: {
+      key: 'showcase',
+      label: 'Carbon Components',
+      tagline: 'Every Carbon component, live',
+      icon: 'grid-outline',
+      route: '/showcase'
     }
   };
 

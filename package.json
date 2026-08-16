@@ -7,6 +7,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
+  "dependencies": {
+    "@superloomdev/rnw-components-carbon": "^1.0.0"
+  },
   "devDependencies": {
     "eslint": "^10.2.0",
     "@eslint/js": "^10.0.1",
