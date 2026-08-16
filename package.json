@@ -1,7 +1,12 @@
 {
   "name": "nimbus-demo-client-rnw",
   "version": "1.0.0",
+  "author": {
+    "name": "sj00"
+  },
+  "contributors": [],
   "private": true,
+  "license": "MIT",
   "scripts": {
     "check:portability": "bash scripts/check-portability.sh",
     "lint": "eslint .",

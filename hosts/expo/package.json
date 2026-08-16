@@ -1,7 +1,12 @@
 {
   "name": "nimbus-demo-client-rnw",
   "version": "1.0.0",
+  "author": {
+    "name": "sj00"
+  },
+  "contributors": [],
   "private": true,
+  "license": "MIT",
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
@@ -37,8 +42,5 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
   }
 }
