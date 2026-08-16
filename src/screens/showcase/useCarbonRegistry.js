@@ -101,7 +101,8 @@ export default function useCarbonRegistry () {
       Debug: Lib.Debug,
       React: Lib.React,
       Device: createDeviceAdapter(),
-      Icons: Lib.Icons
+      Icons: Lib.Icons,
+      Font: Lib.Font
     }, {});
 
     return Components.build(contract, 'base');
