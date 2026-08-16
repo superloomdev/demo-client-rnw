@@ -19,7 +19,7 @@ module.exports = {
   super_app: {
     MODE: 'super',
     APP_SHAPE: 'tasks',
-    AVAILABLE_SHAPES: ['tasks', 'notes']
+    AVAILABLE_SHAPES: ['tasks', 'notes', 'showcase']
   },
 
 

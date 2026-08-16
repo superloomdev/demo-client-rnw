@@ -158,6 +158,13 @@ module.exports = function loader (adapters) {
   Lib.ThemeContext = require('./contexts/theme-context')(Lib);
 
 
+  // ==================== CARBON COMPONENTS ======================== //
+  // The published Carbon component library (factory). Screens build the themed
+  // registry from this via the showcase carbon-registry hook, so the showcase
+  // always iterates the live package roster instead of a hardcoded list.
+  Lib.CarbonComponents = require('@superloomdev/rnw-components-carbon');
+
+
   // First boot log
   Lib.Debug.info('Lib built', { platform: Lib.Client.os(), mode: Config.super_app.MODE });
 
