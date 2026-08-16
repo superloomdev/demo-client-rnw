@@ -16,7 +16,10 @@ const HINT_PROPS = require('@superloomdev/rnw-components-carbon/data/hint-props'
 
 
 // Components whose value prop is boolean, toggled via onValueChange
-const BOOLEAN_TOGGLE = { Toggle: true, Switch: true };
+const BOOLEAN_TOGGLE = { Toggle: true };
+
+// Components whose selected prop is boolean, toggled via onPress
+const BOOLEAN_SELECTED = { Switch: true };
 
 // Components whose checked prop is boolean, toggled via onChange
 const BOOLEAN_CHECK = { Checkbox: true, RadioButton: true };
@@ -24,8 +27,11 @@ const BOOLEAN_CHECK = { Checkbox: true, RadioButton: true };
 // Components whose value is numeric, changed via onChange
 const NUMERIC_RANGE = { Slider: true };
 
-// Components whose value is text, changed via onChangeText
-const TEXT_INPUT = { TextInput: true, TextArea: true, Search: true, ExpandableSearch: true, PasswordInput: true };
+// Components whose value is text, changed via onChangeText (raw RN TextInput)
+const TEXT_INPUT_RAW = { TextInput: true };
+
+// Components whose value is text, changed via onChange (wrapped text inputs)
+const TEXT_INPUT_WRAPPED = { TextArea: true, Search: true, ExpandableSearch: true, PasswordInput: true };
 
 
 function InteractiveSample ({ name, Comp, hint }) {
@@ -62,6 +68,11 @@ function InteractiveSample ({ name, Comp, hint }) {
     return <Comp {...merged} />;
   }
 
+  if (BOOLEAN_SELECTED[name]) {
+    const merged = Object.assign({}, hint, { selected: boolVal, onPress: onBoolChange });
+    return <Comp {...merged} />;
+  }
+
   if (BOOLEAN_CHECK[name]) {
     const merged = Object.assign({}, hint, { checked: checked, onChange: onCheckedChange });
     return <Comp {...merged} />;
@@ -72,8 +83,13 @@ function InteractiveSample ({ name, Comp, hint }) {
     return <Comp {...merged} />;
   }
 
-  if (TEXT_INPUT[name]) {
+  if (TEXT_INPUT_RAW[name]) {
     const merged = Object.assign({}, hint, { value: textVal, onChangeText: onTextChange });
+    return <Comp {...merged} />;
+  }
+
+  if (TEXT_INPUT_WRAPPED[name]) {
+    const merged = Object.assign({}, hint, { value: textVal, onChange: onTextChange });
     return <Comp {...merged} />;
   }
 
