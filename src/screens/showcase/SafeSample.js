@@ -29,8 +29,10 @@ export default class SafeSample extends React.Component {
     if (this.state.error) {
       return (
         <View style={styles.fallback}>
-          <Text style={styles.fallbackTitle}>{this.props.name}</Text>
-          <Text style={styles.fallbackNote}>Renders with required props</Text>
+          <Text style={styles.errorIcon}>x</Text>
+          <Text style={styles.errorMessage} numberOfLines={2}>
+            {String(this.state.error.message || this.state.error)}
+          </Text>
         </View>
       );
     }
@@ -42,7 +44,7 @@ export default class SafeSample extends React.Component {
 
 
 const styles = StyleSheet.create({
-  fallback: { padding: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: '#E5E7EB', borderRadius: 8, gap: 2 },
-  fallbackTitle: { fontSize: 13, fontWeight: '600', color: '#161616' },
-  fallbackNote: { fontSize: 12, color: '#8d8d8d' }
+  fallback: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  errorIcon: { fontSize: 11, fontWeight: '700', color: '#da1e28', width: 14, textAlign: 'center' },
+  errorMessage: { fontSize: 11, color: '#da1e28', flex: 1 }
 });
