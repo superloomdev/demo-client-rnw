@@ -1,69 +1,27 @@
 // Info: Atom gallery. Each atom gets a dedicated full-width row showing
 // multiple states (default, disabled, variants, sizes). The roster is
-// registry-driven — add a new atom to the package and it appears here.
+// registry-driven - add a new atom to the package and it appears here.
 import React, { useState, useCallback } from 'react';
-import { ScrollView, View, Pressable, StyleSheet, Text as RNText } from 'react-native';
+import { ScrollView, View, Pressable, StyleSheet } from 'react-native';
 
 const { useLib } = require('../../app-core/contexts/lib-context');
 import useShowcaseRegistry from './useShowcaseRegistry';
-import SafeSample from './SafeSample';
+const { ShowcaseRow, StateCell } = require('./ShowcaseRow');
 
 
 const noop = function () {};
-
-
-// One labelled state cell within an atom row
-function StateCell ({ label, children }) {
-  return (
-    <View style={cellStyles.cell}>
-      <RNText style={cellStyles.stateLabel}>{label}</RNText>
-      <View style={cellStyles.stage}>
-        <SafeSample name={label}>{children}</SafeSample>
-      </View>
-    </View>
-  );
-}
-
-const cellStyles = StyleSheet.create({
-  cell: { gap: 4, alignItems: 'flex-start', minWidth: 100 },
-  stateLabel: { fontSize: 10, color: '#8d8d8d', textTransform: 'uppercase', letterSpacing: 0.5 },
-  stage: { minHeight: 20 }
-});
-
-
-// Full-width row for one atom with multiple state cells
-function AtomRow ({ name, children }) {
-  return (
-    <View style={rowStyles.row}>
-      <RNText style={rowStyles.name}>{name}</RNText>
-      <View style={rowStyles.states}>{children}</View>
-    </View>
-  );
-}
-
-const rowStyles = StyleSheet.create({
-  row: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#E5E7EB',
-    borderRadius: 8,
-    padding: 16,
-    gap: 10
-  },
-  name: { fontSize: 13, fontWeight: '600', color: '#393939' },
-  states: { flexDirection: 'row', flexWrap: 'wrap', gap: 16, alignItems: 'center' }
-});
 
 
 // Stateful toggle row
 function ToggleRow ({ C }) {
   const [on, setOn] = useState(false);
   return (
-    <AtomRow name="Toggle">
-      <StateCell label="off"><C.Toggle value={on} onValueChange={setOn} /></StateCell>
-      <StateCell label="on"><C.Toggle value={true} onValueChange={noop} /></StateCell>
-      <StateCell label="disabled off"><C.Toggle value={false} onValueChange={noop} disabled /></StateCell>
-      <StateCell label="disabled on"><C.Toggle value={true} onValueChange={noop} disabled /></StateCell>
-    </AtomRow>
+    <ShowcaseRow name="Toggle" C={C}>
+      <StateCell label="interactive" C={C}><C.Toggle value={on} onValueChange={setOn} /></StateCell>
+      <StateCell label="on" C={C}><C.Toggle value={true} onValueChange={noop} /></StateCell>
+      <StateCell label="disabled off" C={C}><C.Toggle value={false} onValueChange={noop} disabled /></StateCell>
+      <StateCell label="disabled on" C={C}><C.Toggle value={true} onValueChange={noop} disabled /></StateCell>
+    </ShowcaseRow>
   );
 }
 
@@ -76,13 +34,13 @@ function CheckboxRow ({ C }) {
     });
   }, []);
   return (
-    <AtomRow name="Checkbox">
-      <StateCell label="interactive"><C.Checkbox checked={checked} onChange={toggle} label="Option" /></StateCell>
-      <StateCell label="checked"><C.Checkbox checked={true} onChange={noop} /></StateCell>
-      <StateCell label="unchecked"><C.Checkbox checked={false} onChange={noop} /></StateCell>
-      <StateCell label="mixed"><C.Checkbox checked="mixed" onChange={noop} /></StateCell>
-      <StateCell label="disabled"><C.Checkbox checked={true} onChange={noop} disabled /></StateCell>
-    </AtomRow>
+    <ShowcaseRow name="Checkbox" C={C}>
+      <StateCell label="interactive" C={C}><C.Checkbox checked={checked} onChange={toggle} label="Option" /></StateCell>
+      <StateCell label="checked" C={C}><C.Checkbox checked={true} onChange={noop} /></StateCell>
+      <StateCell label="unchecked" C={C}><C.Checkbox checked={false} onChange={noop} /></StateCell>
+      <StateCell label="mixed" C={C}><C.Checkbox checked="mixed" onChange={noop} /></StateCell>
+      <StateCell label="disabled" C={C}><C.Checkbox checked={true} onChange={noop} disabled /></StateCell>
+    </ShowcaseRow>
   );
 }
 
@@ -95,12 +53,12 @@ function RadioButtonRow ({ C }) {
     });
   }, []);
   return (
-    <AtomRow name="RadioButton">
-      <StateCell label="interactive"><C.RadioButton checked={checked} onChange={toggle} label="Option" /></StateCell>
-      <StateCell label="selected"><C.RadioButton checked={true} onChange={noop} /></StateCell>
-      <StateCell label="unselected"><C.RadioButton checked={false} onChange={noop} /></StateCell>
-      <StateCell label="disabled"><C.RadioButton checked={true} onChange={noop} disabled /></StateCell>
-    </AtomRow>
+    <ShowcaseRow name="RadioButton" C={C}>
+      <StateCell label="interactive" C={C}><C.RadioButton checked={checked} onChange={toggle} label="Option" /></StateCell>
+      <StateCell label="selected" C={C}><C.RadioButton checked={true} onChange={noop} /></StateCell>
+      <StateCell label="unselected" C={C}><C.RadioButton checked={false} onChange={noop} /></StateCell>
+      <StateCell label="disabled" C={C}><C.RadioButton checked={true} onChange={noop} disabled /></StateCell>
+    </ShowcaseRow>
   );
 }
 
@@ -108,17 +66,17 @@ function RadioButtonRow ({ C }) {
 function SliderRow ({ C }) {
   const [val, setVal] = useState(50);
   return (
-    <AtomRow name="Slider">
-      <StateCell label="interactive">
+    <ShowcaseRow name="Slider" C={C}>
+      <StateCell label="interactive" C={C}>
         <View style={{ width: 200 }}><C.Slider value={val} onChange={setVal} /></View>
       </StateCell>
-      <StateCell label="with input">
+      <StateCell label="with input" C={C}>
         <View style={{ width: 260 }}><C.Slider value={75} onChange={noop} hideTextInput={false} /></View>
       </StateCell>
-      <StateCell label="disabled">
+      <StateCell label="disabled" C={C}>
         <View style={{ width: 160 }}><C.Slider value={30} onChange={noop} disabled /></View>
       </StateCell>
-    </AtomRow>
+    </ShowcaseRow>
   );
 }
 
@@ -126,17 +84,20 @@ function SliderRow ({ C }) {
 function TextInputRow ({ C }) {
   const [val, setVal] = useState('');
   return (
-    <AtomRow name="TextInput">
-      <StateCell label="default">
+    <ShowcaseRow name="TextInput" C={C}>
+      <StateCell label="default" C={C}>
         <C.TextInput value={val} onChangeText={setVal} placeholder="Type here..." style={{ width: 180 }} />
       </StateCell>
-      <StateCell label="invalid">
+      <StateCell label="with text" C={C}>
+        <C.TextInput value="Hello world" onChangeText={noop} style={{ width: 150 }} />
+      </StateCell>
+      <StateCell label="invalid" C={C}>
         <C.TextInput value="Bad value" onChangeText={noop} isInvalid style={{ width: 150 }} />
       </StateCell>
-      <StateCell label="disabled">
+      <StateCell label="disabled" C={C}>
         <C.TextInput value="Read only" onChangeText={noop} isDisabled style={{ width: 150 }} />
       </StateCell>
-    </AtomRow>
+    </ShowcaseRow>
   );
 }
 
@@ -144,17 +105,20 @@ function TextInputRow ({ C }) {
 function TextAreaRow ({ C }) {
   const [val, setVal] = useState('');
   return (
-    <AtomRow name="TextArea">
-      <StateCell label="default">
+    <ShowcaseRow name="TextArea" C={C}>
+      <StateCell label="default" C={C}>
         <C.TextArea value={val} onChange={setVal} placeholder="Enter text..." rows={2} style={{ width: 200 }} />
       </StateCell>
-      <StateCell label="invalid">
+      <StateCell label="with text" C={C}>
+        <C.TextArea value="Some content here" onChange={noop} rows={2} style={{ width: 180 }} />
+      </StateCell>
+      <StateCell label="invalid" C={C}>
         <C.TextArea value="Bad content" onChange={noop} invalid rows={2} style={{ width: 180 }} />
       </StateCell>
-      <StateCell label="disabled">
+      <StateCell label="disabled" C={C}>
         <C.TextArea value="Disabled" onChange={noop} disabled rows={2} style={{ width: 180 }} />
       </StateCell>
-    </AtomRow>
+    </ShowcaseRow>
   );
 }
 
@@ -177,53 +141,53 @@ export default function AtomGallery () {
       <C.Text color="text_secondary">Each atom with its visual states.</C.Text>
 
       {/* Button */}
-      <AtomRow name="Button">
-        <StateCell label="primary"><C.Button kind="primary" onPress={noop}>Primary</C.Button></StateCell>
-        <StateCell label="secondary"><C.Button kind="secondary" onPress={noop}>Secondary</C.Button></StateCell>
-        <StateCell label="danger"><C.Button kind="danger" onPress={noop}>Danger</C.Button></StateCell>
-        <StateCell label="ghost"><C.Button kind="ghost" onPress={noop}>Ghost</C.Button></StateCell>
-        <StateCell label="disabled"><C.Button kind="primary" onPress={noop} disabled>Disabled</C.Button></StateCell>
-      </AtomRow>
+      <ShowcaseRow name="Button" C={C}>
+        <StateCell label="primary" C={C}><C.Button kind="primary" onPress={noop}>Primary</C.Button></StateCell>
+        <StateCell label="secondary" C={C}><C.Button kind="secondary" onPress={noop}>Secondary</C.Button></StateCell>
+        <StateCell label="danger" C={C}><C.Button kind="danger" onPress={noop}>Danger</C.Button></StateCell>
+        <StateCell label="ghost" C={C}><C.Button kind="ghost" onPress={noop}>Ghost</C.Button></StateCell>
+        <StateCell label="disabled" C={C}><C.Button kind="primary" onPress={noop} disabled>Disabled</C.Button></StateCell>
+      </ShowcaseRow>
 
       {/* Text */}
-      <AtomRow name="Text">
-        <StateCell label="xs"><C.Text size="xs">Extra small</C.Text></StateCell>
-        <StateCell label="sm"><C.Text size="sm">Small</C.Text></StateCell>
-        <StateCell label="md"><C.Text size="md">Medium</C.Text></StateCell>
-        <StateCell label="lg"><C.Text size="lg">Large</C.Text></StateCell>
-        <StateCell label="bold"><C.Text weight="bold">Bold</C.Text></StateCell>
-        <StateCell label="muted"><C.Text color="text_muted">Muted</C.Text></StateCell>
-        <StateCell label="primary color"><C.Text color="app_primary">Primary</C.Text></StateCell>
-      </AtomRow>
+      <ShowcaseRow name="Text" C={C}>
+        <StateCell label="xs" C={C}><C.Text size="xs">Extra small</C.Text></StateCell>
+        <StateCell label="sm" C={C}><C.Text size="sm">Small</C.Text></StateCell>
+        <StateCell label="md" C={C}><C.Text size="md">Medium</C.Text></StateCell>
+        <StateCell label="lg" C={C}><C.Text size="lg">Large</C.Text></StateCell>
+        <StateCell label="bold" C={C}><C.Text weight="bold">Bold</C.Text></StateCell>
+        <StateCell label="muted" C={C}><C.Text color="text_muted">Muted</C.Text></StateCell>
+        <StateCell label="primary color" C={C}><C.Text color="app_primary">Primary</C.Text></StateCell>
+      </ShowcaseRow>
 
       {/* Heading */}
-      <AtomRow name="Heading">
-        <StateCell label="h1"><C.Heading level={1}>Heading 1</C.Heading></StateCell>
-        <StateCell label="h2"><C.Heading level={2}>Heading 2</C.Heading></StateCell>
-        <StateCell label="h3"><C.Heading level={3}>Heading 3</C.Heading></StateCell>
-        <StateCell label="h4"><C.Heading level={4}>Heading 4</C.Heading></StateCell>
-      </AtomRow>
+      <ShowcaseRow name="Heading" C={C}>
+        <StateCell label="h1" C={C}><C.Heading level={1}>Heading 1</C.Heading></StateCell>
+        <StateCell label="h2" C={C}><C.Heading level={2}>Heading 2</C.Heading></StateCell>
+        <StateCell label="h3" C={C}><C.Heading level={3}>Heading 3</C.Heading></StateCell>
+        <StateCell label="h4" C={C}><C.Heading level={4}>Heading 4</C.Heading></StateCell>
+      </ShowcaseRow>
 
       {/* Icon */}
-      <AtomRow name="Icon">
-        <StateCell label="default"><C.Icon name="add" size="md" /></StateCell>
-        <StateCell label="small"><C.Icon name="chevron-forward" size="sm" /></StateCell>
-        <StateCell label="large"><C.Icon name="close" size="lg" /></StateCell>
-        <StateCell label="primary"><C.Icon name="heart" size="md" color="APP_PRIMARY" /></StateCell>
-        <StateCell label="danger"><C.Icon name="alert-circle" size="md" color="STATUS_DANGER" /></StateCell>
-      </AtomRow>
+      <ShowcaseRow name="Icon" C={C}>
+        <StateCell label="default" C={C}><C.Icon name="add" size="md" /></StateCell>
+        <StateCell label="small" C={C}><C.Icon name="chevron-forward" size="sm" /></StateCell>
+        <StateCell label="large" C={C}><C.Icon name="close" size="lg" /></StateCell>
+        <StateCell label="primary" C={C}><C.Icon name="heart" size="md" color="APP_PRIMARY" /></StateCell>
+        <StateCell label="danger" C={C}><C.Icon name="alert-circle" size="md" color="STATUS_DANGER" /></StateCell>
+      </ShowcaseRow>
 
       {/* Link */}
-      <AtomRow name="Link">
-        <StateCell label="default"><C.Link onPress={noop}>Click me</C.Link></StateCell>
-        <StateCell label="disabled"><C.Link onPress={noop} disabled>Disabled</C.Link></StateCell>
-      </AtomRow>
+      <ShowcaseRow name="Link" C={C}>
+        <StateCell label="default" C={C}><C.Link onPress={noop}>Click me</C.Link></StateCell>
+        <StateCell label="disabled" C={C}><C.Link onPress={noop} disabled>Disabled</C.Link></StateCell>
+      </ShowcaseRow>
 
       {/* InlineLink */}
-      <AtomRow name="InlineLink">
-        <StateCell label="default"><C.InlineLink onPress={noop} title="Learn more" /></StateCell>
-        <StateCell label="disabled"><C.InlineLink onPress={noop} title="Disabled" disabled /></StateCell>
-      </AtomRow>
+      <ShowcaseRow name="InlineLink" C={C}>
+        <StateCell label="default" C={C}><C.InlineLink onPress={noop} title="Learn more" /></StateCell>
+        <StateCell label="disabled" C={C}><C.InlineLink onPress={noop} title="Disabled" disabled /></StateCell>
+      </ShowcaseRow>
 
       {/* Toggle */}
       <ToggleRow C={C} />
@@ -244,103 +208,103 @@ export default function AtomGallery () {
       <TextAreaRow C={C} />
 
       {/* ProgressBar */}
-      <AtomRow name="ProgressBar">
-        <StateCell label="60%">
-          <View style={{ width: 200 }}><C.ProgressBar value={0.6} /></View>
-        </StateCell>
-        <StateCell label="25%">
+      <ShowcaseRow name="ProgressBar" C={C}>
+        <StateCell label="25%" C={C}>
           <View style={{ width: 200 }}><C.ProgressBar value={0.25} /></View>
         </StateCell>
-        <StateCell label="100%">
+        <StateCell label="60%" C={C}>
+          <View style={{ width: 200 }}><C.ProgressBar value={0.6} /></View>
+        </StateCell>
+        <StateCell label="100%" C={C}>
           <View style={{ width: 200 }}><C.ProgressBar value={1} /></View>
         </StateCell>
-      </AtomRow>
+      </ShowcaseRow>
 
       {/* Tag */}
-      <AtomRow name="Tag">
-        <StateCell label="default"><C.Tag label="Default" /></StateCell>
-        <StateCell label="operational"><C.Tag label="Operational" variant="operational" /></StateCell>
-        <StateCell label="dismissible"><C.Tag label="Dismiss" onDismiss={noop} /></StateCell>
-        <StateCell label="disabled"><C.Tag label="Disabled" disabled /></StateCell>
-      </AtomRow>
+      <ShowcaseRow name="Tag" C={C}>
+        <StateCell label="default" C={C}><C.Tag label="Default" /></StateCell>
+        <StateCell label="operational" C={C}><C.Tag label="Operational" variant="operational" /></StateCell>
+        <StateCell label="dismissible" C={C}><C.Tag label="Dismiss" onDismiss={noop} /></StateCell>
+        <StateCell label="disabled" C={C}><C.Tag label="Disabled" disabled /></StateCell>
+      </ShowcaseRow>
 
       {/* Skeleton */}
-      <AtomRow name="Skeleton">
-        <StateCell label="text">
+      <ShowcaseRow name="Skeleton" C={C}>
+        <StateCell label="text" C={C}>
           <C.Skeleton variant="text" width={120} />
         </StateCell>
-        <StateCell label="text 3 lines">
+        <StateCell label="text 3 lines" C={C}>
           <C.Skeleton variant="text" width={160} lines={3} />
         </StateCell>
-        <StateCell label="placeholder">
+        <StateCell label="placeholder" C={C}>
           <C.Skeleton variant="placeholder" width={80} height={40} />
         </StateCell>
-        <StateCell label="icon">
+        <StateCell label="icon" C={C}>
           <C.Skeleton variant="icon" />
         </StateCell>
-      </AtomRow>
+      </ShowcaseRow>
 
       {/* Loading */}
-      <AtomRow name="Loading">
-        <StateCell label="small"><C.Loading size="sm" label="Loading" /></StateCell>
-        <StateCell label="large"><C.Loading size="lg" label="Loading" /></StateCell>
-      </AtomRow>
+      <ShowcaseRow name="Loading" C={C}>
+        <StateCell label="small" C={C}><C.Loading size="sm" label="Loading" /></StateCell>
+        <StateCell label="large" C={C}><C.Loading size="lg" label="Loading" /></StateCell>
+      </ShowcaseRow>
 
       {/* Image */}
-      <AtomRow name="Image">
-        <StateCell label="with placeholder">
+      <ShowcaseRow name="Image" C={C}>
+        <StateCell label="with placeholder" C={C}>
           <C.Image source={{ uri: 'https://picsum.photos/80/80' }} style={{ width: 80, height: 80 }} radius="md" />
         </StateCell>
-        <StateCell label="rounded">
+        <StateCell label="rounded" C={C}>
           <C.Image source={{ uri: 'https://picsum.photos/60/60' }} style={{ width: 60, height: 60 }} radius="pill" />
         </StateCell>
-      </AtomRow>
+      </ShowcaseRow>
 
       {/* View */}
-      <AtomRow name="View">
-        <StateCell label="with border">
+      <ShowcaseRow name="View" C={C}>
+        <StateCell label="with border" C={C}>
           <C.View border style={{ width: 80, height: 40 }} />
         </StateCell>
-        <StateCell label="with background">
+        <StateCell label="with background" C={C}>
           <C.View background="app_primary" radius="md" style={{ width: 80, height: 40 }} />
         </StateCell>
-      </AtomRow>
+      </ShowcaseRow>
 
       {/* AspectRatio */}
-      <AtomRow name="AspectRatio">
-        <StateCell label="1:1">
+      <ShowcaseRow name="AspectRatio" C={C}>
+        <StateCell label="1:1" C={C}>
           <C.AspectRatio ratio={1} style={{ width: 60 }}>
             <C.View background="app_primary" style={{ flex: 1 }} radius="sm" />
           </C.AspectRatio>
         </StateCell>
-        <StateCell label="16:9">
+        <StateCell label="16:9" C={C}>
           <C.AspectRatio ratio={16 / 9} style={{ width: 96 }}>
             <C.View background="app_primary" style={{ flex: 1 }} radius="sm" />
           </C.AspectRatio>
         </StateCell>
-      </AtomRow>
+      </ShowcaseRow>
 
       {/* BadgeIndicator */}
-      <AtomRow name="BadgeIndicator">
-        <StateCell label="count 5"><C.BadgeIndicator count={5} /></StateCell>
-        <StateCell label="count 99+"><C.BadgeIndicator count={150} /></StateCell>
-        <StateCell label="count 0"><C.BadgeIndicator count={0} /></StateCell>
-      </AtomRow>
+      <ShowcaseRow name="BadgeIndicator" C={C}>
+        <StateCell label="count 5" C={C}><C.BadgeIndicator count={5} /></StateCell>
+        <StateCell label="count 99+" C={C}><C.BadgeIndicator count={150} /></StateCell>
+        <StateCell label="count 0" C={C}><C.BadgeIndicator count={0} /></StateCell>
+      </ShowcaseRow>
 
       {/* ShapeIndicator */}
-      <AtomRow name="ShapeIndicator">
-        <StateCell label="circle"><C.ShapeIndicator shape="circle" size={16} /></StateCell>
-        <StateCell label="square"><C.ShapeIndicator shape="square" size={16} /></StateCell>
-        <StateCell label="triangle"><C.ShapeIndicator shape="triangle" size={16} /></StateCell>
-        <StateCell label="large"><C.ShapeIndicator shape="circle" size={24} color="STATUS_DANGER" /></StateCell>
-      </AtomRow>
+      <ShowcaseRow name="ShapeIndicator" C={C}>
+        <StateCell label="circle" C={C}><C.ShapeIndicator shape="circle" size={16} /></StateCell>
+        <StateCell label="square" C={C}><C.ShapeIndicator shape="square" size={16} /></StateCell>
+        <StateCell label="triangle" C={C}><C.ShapeIndicator shape="triangle" size={16} /></StateCell>
+        <StateCell label="large" C={C}><C.ShapeIndicator shape="circle" size={24} color="STATUS_DANGER" /></StateCell>
+      </ShowcaseRow>
 
       {/* IconIndicator */}
-      <AtomRow name="IconIndicator">
-        <StateCell label="info"><C.IconIndicator iconName="information-circle" /></StateCell>
-        <StateCell label="alert"><C.IconIndicator iconName="alert-circle" color="STATUS_DANGER" /></StateCell>
-        <StateCell label="large"><C.IconIndicator iconName="checkmark-circle" size={32} /></StateCell>
-      </AtomRow>
+      <ShowcaseRow name="IconIndicator" C={C}>
+        <StateCell label="info" C={C}><C.IconIndicator iconName="information-circle" /></StateCell>
+        <StateCell label="alert" C={C}><C.IconIndicator iconName="alert-circle" color="STATUS_DANGER" /></StateCell>
+        <StateCell label="large" C={C}><C.IconIndicator iconName="checkmark-circle" size={32} /></StateCell>
+      </ShowcaseRow>
 
       <Link href="/showcase" asChild>
         <Pressable style={styles.back}>
