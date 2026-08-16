@@ -3,7 +3,7 @@
 // (toggles, inputs, selections) respond to user input. The roster is registry-
 // driven - every molecule in the package appears here.
 import React, { useState, useCallback } from 'react';
-import { ScrollView, View, Pressable, StyleSheet } from 'react-native';
+import { ScrollView, Pressable, StyleSheet } from 'react-native';
 
 const { useLib } = require('../../app-core/contexts/lib-context');
 import useShowcaseRegistry from './useShowcaseRegistry';
@@ -79,7 +79,11 @@ function NumberInputRow ({ C }) {
 
 function SwitchRow ({ C }) {
   const [on, setOn] = useState(true);
-  const toggle = useCallback(function () { setOn(function (v) { return !v; }); }, []);
+  const toggle = useCallback(function () {
+    setOn(function (v) {
+      return !v;
+    });
+  }, []);
   return (
     <ShowcaseRow name="Switch" C={C}>
       <StateCell label="interactive" C={C}><C.Switch label="Switch" selected={on} onPress={toggle} /></StateCell>
@@ -102,7 +106,11 @@ function MenuItemRow ({ C }) {
 
 function IconSwitchRow ({ C }) {
   const [on, setOn] = useState(true);
-  const toggle = useCallback(function () { setOn(function (v) { return !v; }); }, []);
+  const toggle = useCallback(function () {
+    setOn(function (v) {
+      return !v;
+    });
+  }, []);
   return (
     <ShowcaseRow name="IconSwitch" C={C}>
       <StateCell label="interactive" C={C}><C.IconSwitch icon="add" checked={on} onToggle={toggle} /></StateCell>

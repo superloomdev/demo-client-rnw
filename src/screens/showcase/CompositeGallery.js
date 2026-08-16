@@ -4,7 +4,7 @@
 // error-isolated cell; composites that need specific child shapes degrade
 // to a neutral fallback.
 import React, { useState, useCallback } from 'react';
-import { ScrollView, View, Pressable, StyleSheet } from 'react-native';
+import { ScrollView, Pressable, StyleSheet } from 'react-native';
 
 const { useLib } = require('../../app-core/contexts/lib-context');
 import useShowcaseRegistry from './useShowcaseRegistry';
@@ -24,7 +24,9 @@ function CheckboxGroupRow ({ C }) {
   const toggle = useCallback(function (val) {
     setSelected(function (prev) {
       if (prev.indexOf(val) >= 0) {
-        return prev.filter(function (v) { return v !== val; });
+        return prev.filter(function (v) {
+          return v !== val;
+        });
       }
       return prev.concat([val]);
     });
