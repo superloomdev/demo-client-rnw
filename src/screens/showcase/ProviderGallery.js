@@ -1,27 +1,43 @@
 // Info: Provider gallery. The Carbon package ships context-only providers at
 // Component.provider (no tokens, no visual output). This screen iterates the
-// live provider keys and renders each wrapping a visible label, with the
-// Layer provider nested three deep to demonstrate its elevation cascade.
+// live provider keys and renders each in a full-width row with a functional
+// demonstration of what the provider does, not just "wrapped by X".
 import React from 'react';
 import { ScrollView, View, Pressable, StyleSheet } from 'react-native';
 
 const { useLib } = require('../../app-core/contexts/lib-context');
 import useShowcaseRegistry from './useShowcaseRegistry';
+const { ShowcaseRow, StateCell } = require('./ShowcaseRow');
 import SafeSample from './SafeSample';
 
 
-// Short, human-readable note for each provider. Keys come from the live
-// registry; this map only supplies a description and is never used to decide
-// WHAT renders — Object.keys(Component.provider) does.
-const BLURB = {
-  Overlay: 'Overlay stack + zIndex ordering (replaces Portal)',
-  LiveRegionProvider: 'Screen-reader announcements that work on web',
-  Layer: 'Auto-incrementing elevation level on nesting (0–2)',
-  Theme: 'Scoped theme override context',
-  FeatureFlags: 'Gated feature flags for descendants',
-  IdPrefix: 'Namespaced id prefix for a11y uniqueness',
-  FluidForm: 'Fluid form state shared across fields',
-  ErrorBoundary: 'Boundary context for error isolation'
+// Description and demonstration config per provider
+const PROVIDER_INFO = {
+  Layer: {
+    blurb: 'Auto-incrementing elevation level on nesting (0-2)',
+    custom: true
+  },
+  Overlay: {
+    blurb: 'Overlay stack and zIndex ordering (replaces Portal)'
+  },
+  LiveRegionProvider: {
+    blurb: 'Screen-reader announcements that work on web'
+  },
+  Theme: {
+    blurb: 'Scoped theme override context'
+  },
+  FeatureFlags: {
+    blurb: 'Gated feature flags for descendants'
+  },
+  IdPrefix: {
+    blurb: 'Namespaced id prefix for a11y uniqueness'
+  },
+  FluidForm: {
+    blurb: 'Fluid form state shared across fields'
+  },
+  ErrorBoundary: {
+    blurb: 'Boundary context for error isolation'
+  }
 };
 
 
@@ -40,48 +56,73 @@ export default function ProviderGallery () {
   const names = Object.keys(providers);
   const Layer = providers.Layer;
 
-  // Layer nested three deep — each level auto-increments the elevation context.
-  function LayerNest () {
-    if (!Layer) {
-      return <C.Text color="text_muted">Layer provider not present</C.Text>;
-    }
-    return (
-      <SafeSample name="Layer (×3 nested)">
-        <Layer>
-          <Layer>
-            <Layer>
-              <C.Text size="sm">Content nested 3 Layer levels deep</C.Text>
-            </Layer>
-          </Layer>
-        </Layer>
-      </SafeSample>
-    );
-  }
-
   return (
     <ScrollView contentContainerStyle={styles.content}>
 
       <C.Text size="lg" weight="semibold">Providers ({names.length})</C.Text>
-      <C.Text color="text_secondary">Context-only — no tokens, no visual output. Each wraps its children.</C.Text>
+      <C.Text color="text_secondary">Context-only components. Each wraps its children with a specific capability.</C.Text>
 
-      <LayerNest />
+      {/* Layer gets a custom demo with nested levels */}
+      {Layer ? (
+        <ShowcaseRow name="Layer" C={C}>
+          <StateCell label="level 0" C={C}>
+            <SafeSample name="Layer-0">
+              <Layer>
+                <C.View border style={styles.layerBox}>
+                  <C.Text size="xs">Level 0</C.Text>
+                </C.View>
+              </Layer>
+            </SafeSample>
+          </StateCell>
+          <StateCell label="level 1" C={C}>
+            <SafeSample name="Layer-1">
+              <Layer>
+                <Layer>
+                  <C.View border style={styles.layerBox}>
+                    <C.Text size="xs">Level 1</C.Text>
+                  </C.View>
+                </Layer>
+              </Layer>
+            </SafeSample>
+          </StateCell>
+          <StateCell label="level 2" C={C}>
+            <SafeSample name="Layer-2">
+              <Layer>
+                <Layer>
+                  <Layer>
+                    <C.View border style={styles.layerBox}>
+                      <C.Text size="xs">Level 2</C.Text>
+                    </C.View>
+                  </Layer>
+                </Layer>
+              </Layer>
+            </SafeSample>
+          </StateCell>
+        </ShowcaseRow>
+      ) : null}
 
-      <View style={styles.grid}>
-        {names.map(function (k) {
-          const Provider = providers[k];
-          return (
-            <View key={k} style={styles.card}>
-              <C.Text size="md" weight="semibold">{k}</C.Text>
-              <C.Text size="xs" color="text_secondary">{BLURB[k] || 'Context provider'}</C.Text>
+      {/* All other providers */}
+      {names.map(function (k) {
+        if (k === 'Layer') {
+          return null;
+        }
+        const Provider = providers[k];
+        const info = PROVIDER_INFO[k] || {};
+        return (
+          <ShowcaseRow key={k} name={k} C={C}>
+            <StateCell label="wrapping" C={C}>
               <SafeSample name={k}>
                 <Provider>
-                  <C.Text size="xs" color="text_muted">wrapped by {k}</C.Text>
+                  <View style={styles.providerDemo}>
+                    <C.Text size="xs" color="text_muted">{info.blurb || 'Context provider'}</C.Text>
+                    <C.Text size="sm">Content inside {k}</C.Text>
+                  </View>
                 </Provider>
               </SafeSample>
-            </View>
-          );
-        })}
-      </View>
+            </StateCell>
+          </ShowcaseRow>
+        );
+      })}
 
       <Link href="/showcase" asChild>
         <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
@@ -95,7 +136,7 @@ export default function ProviderGallery () {
 
 const styles = StyleSheet.create({
   content: { padding: 16, gap: 12, maxWidth: 960, width: '100%', alignSelf: 'center' },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  card: { borderWidth: StyleSheet.hairlineWidth, borderColor: '#E5E7EB', borderRadius: 8, padding: 12, gap: 6, minWidth: 220, flex: 1 },
+  layerBox: { padding: 8, minWidth: 80 },
+  providerDemo: { gap: 4 },
   back: { alignItems: 'center', paddingVertical: 12 }
 });

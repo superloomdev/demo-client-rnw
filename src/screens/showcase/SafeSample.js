@@ -43,8 +43,13 @@ export default class SafeSample extends React.Component {
 }
 
 
+// Hardcoded colors are intentional: the error boundary is the fallback when
+// the component library or theme context itself throws, so it cannot depend
+// on C.Text or theme tokens.
+const ERROR_COLOR = '#DA1E28';
+
 const styles = StyleSheet.create({
   fallback: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  errorIcon: { fontSize: 11, fontWeight: '700', color: '#da1e28', width: 14, textAlign: 'center' },
-  errorMessage: { fontSize: 11, color: '#da1e28', flex: 1 }
+  errorIcon: { fontSize: 11, fontWeight: '700', color: ERROR_COLOR, width: 14, textAlign: 'center' },
+  errorMessage: { fontSize: 11, color: ERROR_COLOR, flex: 1 }
 });

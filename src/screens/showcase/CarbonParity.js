@@ -24,12 +24,13 @@ function currentPlatformKey () {
 // One platform badge. Tone reflects support level + whether it is current.
 function PlatformBadge ({ C, label, level, current }) {
 
-  const bg = level === 'full' ? '#E8F5E9' : (level === 'partial' ? '#FCF4D6' : '#FFF1F1');
-  const fg = level === 'full' ? '#198038' : (level === 'partial' ? '#B45309' : '#DA1E28');
+  const colorKey = level === 'full' ? 'status_success' : (level === 'partial' ? 'status_warning' : 'status_danger');
 
   return (
-    <View style={[styles.badge, { backgroundColor: bg, borderColor: current ? '#4F46E5' : 'transparent' }]}>
-      <C.Text size="xs" style={{ color: fg }}>{label}{current ? ' · you' : ''}</C.Text>
+    <View style={[styles.badge, current ? styles.badgeCurrent : null]}>
+      <C.View background={colorKey + '_subtle'} radius="sm" style={styles.badgeInner}>
+        <C.Text size="xs" color={colorKey}>{label}{current ? ' · you' : ''}</C.Text>
+      </C.View>
     </View>
   );
 
@@ -115,6 +116,8 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12, paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#E5E7EB' },
   rowName: { flexShrink: 1 },
   badges: { flexDirection: 'row', gap: 6 },
-  badge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, borderWidth: 2 },
+  badge: {},
+  badgeCurrent: { borderWidth: 2, borderColor: '#4F46E5', borderRadius: 8 },
+  badgeInner: { paddingHorizontal: 8, paddingVertical: 3 },
   back: { alignItems: 'center', paddingVertical: 12 }
 });
