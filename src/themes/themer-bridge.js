@@ -175,8 +175,18 @@ function bridgeTheme (flat) {
         if (!Dimension[scaleName]) {
           Dimension[scaleName] = {};
         }
-        // Round font sizes to integers for clean native rendering
-        Dimension[scaleName][parts[2]] = (scaleName === 'fontSize') ? Math.round(value) : value;
+        // Round font sizes to integers for clean native rendering.
+        // The themer emits rem strings (e.g. "0.69rem"); parse to pixels
+        // (16px base) before rounding so the value is a usable number.
+        if (scaleName === 'fontSize') {
+          let px = value;
+          if (typeof value === 'string' && value.indexOf('rem') !== -1) {
+            px = parseFloat(value) * 16;
+          }
+          Dimension[scaleName][parts[2]] = Math.round(px);
+        } else {
+          Dimension[scaleName][parts[2]] = value;
+        }
       } else {
         // dimension.line_height_ratio -> Dimension.lineHeightRatio
         const camelKey = parts[1].replace(/_([a-z])/g, function (_, c) {

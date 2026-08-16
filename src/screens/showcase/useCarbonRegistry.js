@@ -73,6 +73,7 @@ function createDeviceAdapter () {
 }
 
 
+
 // Hook: build (and memoize) the themed Carbon registry from the live theme.
 // Returns { Component, Style } or null while the theme is unavailable.
 export default function useCarbonRegistry () {
@@ -88,7 +89,10 @@ export default function useCarbonRegistry () {
       return null;
     }
 
-    // Layer the Breakpoint group onto the assembled theme contract
+    // The demo's theme from useTheme() is bridged into
+    // { Color, Dimension: { fontSize, space, radius }, Font: { family, weight } }
+    // by themer-bridge.js. The Carbon package expects the same structure plus
+    // a Breakpoint group. Layer it on.
     const contract = Object.assign({}, theme, { Breakpoint: BREAKPOINTS });
 
     // Build the Carbon factory with the shared Lib injections + a Device adapter
