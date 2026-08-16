@@ -62,10 +62,12 @@ module.exports = function generateCommonStyles (theme) {
   });
 
   // ~~~~~~~~~~ Font colors (curated token subset) ~~~~~~~~~~
-  ['TEXT_PRIMARY', 'TEXT_SECONDARY', 'TEXT_MUTED', 'TEXT_ON_PRIMARY',
+  ['TEXT_PRIMARY', 'TEXT_SECONDARY', 'TEXT_MUTED', 'TEXT_DISABLED', 'TEXT_ON_PRIMARY',
     'APP_PRIMARY', 'STATUS_SUCCESS', 'STATUS_DANGER', 'STATUS_WARNING', 'STATUS_INFO']
     .forEach(function (token) {
-      styles['font_' + token.toLowerCase()] = { color: Color[token] };
+      if (Color[token] !== undefined) {
+        styles['font_' + token.toLowerCase()] = { color: Color[token] };
+      }
     });
 
   // ~~~~~~~~~~ Font weights (bound to the primary family) ~~~~~~~~~~

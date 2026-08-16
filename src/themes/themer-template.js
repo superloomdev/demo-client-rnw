@@ -45,10 +45,10 @@ module.exports = {
     'color.APP_PRIMARY': '#4F46E5',
     'color.TEXT_PRIMARY': '#111827',
     'color.BACKGROUND_PRIMARY': '#FFFFFF',
-    'color.STATUS_SUCCESS': '#16A34A',
-    'color.STATUS_DANGER': '#DC2626',
-    'color.STATUS_WARNING': '#D97706',
-    'color.STATUS_INFO': '#2563EB',
+    'color.STATUS_SUCCESS': '#0e6027',
+    'color.STATUS_DANGER': '#da1e28',
+    'color.STATUS_WARNING': '#8e6a00',
+    'color.STATUS_INFO': '#0043ce',
     'color.TEXT_ON_PRIMARY': '#FFFFFF',
 
     // ---- Color: derived tokens ----
@@ -59,11 +59,14 @@ module.exports = {
     'color.APP_PRIMARY_SUBTLE': { op: 'mix', args: ['color.APP_PRIMARY', 'color.BACKGROUND_PRIMARY', 12] },
 
     'color.TEXT_SECONDARY': { op: 'mix', args: ['color.TEXT_PRIMARY', 'color.BACKGROUND_PRIMARY', 62] },
-    'color.TEXT_MUTED': { op: 'mix', args: ['color.TEXT_PRIMARY', 'color.BACKGROUND_PRIMARY', 40] },
+    'color.TEXT_MUTED': { op: 'mix', args: ['color.TEXT_PRIMARY', 'color.BACKGROUND_PRIMARY', 55] },
+    'color.TEXT_DISABLED': { op: 'mix', args: ['color.TEXT_PRIMARY', 'color.BACKGROUND_PRIMARY', 34] },
 
     'color.BACKGROUND_SECONDARY': { op: 'mix', args: ['color.TEXT_PRIMARY', 'color.BACKGROUND_PRIMARY', 4] },
     'color.SURFACE': '{color.BACKGROUND_PRIMARY}',
     'color.BORDER': { op: 'mix', args: ['color.TEXT_PRIMARY', 'color.BACKGROUND_PRIMARY', 14] },
+    'color.BORDER_STRONG': { op: 'mix', args: ['color.TEXT_PRIMARY', 'color.BACKGROUND_PRIMARY', 44] },
+    'color.BORDER_SUBTLE': { op: 'mix', args: ['color.TEXT_PRIMARY', 'color.BACKGROUND_PRIMARY', 14] },
 
     'color.STATUS_SUCCESS_SUBTLE': { op: 'mix', args: ['color.STATUS_SUCCESS', 'color.BACKGROUND_PRIMARY', 12] },
     'color.STATUS_DANGER_SUBTLE': { op: 'mix', args: ['color.STATUS_DANGER', 'color.BACKGROUND_PRIMARY', 12] },
@@ -103,7 +106,7 @@ module.exports = {
 
     // ---- Font: weights ----
     'font.weight.regular': '400',
-    'font.weight.medium': '400',
+    'font.weight.medium': '500',
     'font.weight.semibold': '600',
     'font.weight.bold': '700'
 
@@ -128,9 +131,12 @@ module.exports = {
     'color.APP_PRIMARY_SUBTLE': { group: 'colour' },
     'color.TEXT_SECONDARY': { group: 'colour' },
     'color.TEXT_MUTED': { group: 'colour' },
+    'color.TEXT_DISABLED': { group: 'colour' },
     'color.BACKGROUND_SECONDARY': { group: 'colour' },
     'color.SURFACE': { group: 'colour' },
     'color.BORDER': { group: 'colour' },
+    'color.BORDER_STRONG': { group: 'colour' },
+    'color.BORDER_SUBTLE': { group: 'colour' },
     'color.STATUS_SUCCESS_SUBTLE': { group: 'colour' },
     'color.STATUS_DANGER_SUBTLE': { group: 'colour' },
     'color.STATUS_WARNING_SUBTLE': { group: 'colour' },
@@ -166,7 +172,17 @@ module.exports = {
 
   contrast_rules: [
     ['color.TEXT_PRIMARY', 'color.BACKGROUND_PRIMARY', 4.5],
-    ['color.TEXT_ON_PRIMARY', 'color.APP_PRIMARY', 4.5]
+    ['color.TEXT_PRIMARY', 'color.BACKGROUND_SECONDARY', 4.5],
+    ['color.TEXT_PRIMARY', 'color.SURFACE', 4.5],
+    ['color.TEXT_SECONDARY', 'color.BACKGROUND_PRIMARY', 4.5],
+    ['color.TEXT_SECONDARY', 'color.BACKGROUND_SECONDARY', 4.5],
+    ['color.TEXT_MUTED', 'color.BACKGROUND_PRIMARY', 4.5],
+    ['color.TEXT_MUTED', 'color.BACKGROUND_SECONDARY', 4.5],
+    ['color.TEXT_ON_PRIMARY', 'color.APP_PRIMARY', 4.5],
+    ['color.STATUS_SUCCESS', 'color.BACKGROUND_PRIMARY', 4.5],
+    ['color.STATUS_DANGER', 'color.BACKGROUND_PRIMARY', 4.5],
+    ['color.STATUS_WARNING', 'color.BACKGROUND_PRIMARY', 4.5],
+    ['color.STATUS_INFO', 'color.BACKGROUND_PRIMARY', 4.5]
   ]
 
 };
