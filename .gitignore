@@ -8,3 +8,5 @@ hosts/expo/ios/
 hosts/expo/android/
 hosts/expo/dist/
 hosts/web/dist/
+test-results/
+playwright-report/
