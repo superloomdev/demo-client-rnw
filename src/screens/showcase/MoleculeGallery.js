@@ -340,6 +340,495 @@ const MULTI_STATE = {
   // Popover
   Popover: [
     { label: 'default', props: { children: 'Content' } }
+  ],
+
+  // ---- Batch 1: AI Skeleton family ----
+  AISkeletonIcon: [
+    { label: 'default', props: {} }
+  ],
+  AISkeletonPlaceholder: [
+    { label: 'default', props: { width: 120, height: 40 } },
+    { label: 'large', props: { width: 200, height: 80 } }
+  ],
+  AISkeletonText: [
+    { label: 'single', props: { width: 160 } },
+    { label: 'paragraph', props: { width: 240, lines: 3 } }
+  ],
+
+  // ---- Batch 2: AILabel parts ----
+  AILabelActions: [
+    { label: 'default', props: { children: 'Actions' } }
+  ],
+  AILabelContent: [
+    { label: 'default', props: { children: 'Content' } }
+  ],
+
+  // ---- Batch 3: Bottom navigation / toolbar ----
+  BottomNavigationBar: [
+    { label: 'default', props: { items: [
+      { icon: 'home-outline', text: 'Home', onPress: noop },
+      { icon: 'search-outline', text: 'Search', onPress: noop, active: true },
+      { icon: 'person-outline', text: 'Profile', onPress: noop }
+    ] } }
+  ],
+  BottomSafeAreaColorOverride: [
+    { label: 'default', props: { color: 'app_primary', children: 'Content above safe area' } }
+  ],
+  BottomToolbar: [
+    { label: 'default', props: { items: [
+      { text: 'New', icon: 'add', onPress: noop },
+      { text: 'Edit', icon: 'create-outline', onPress: noop }
+    ] } }
+  ],
+  BottomToolbarPrimaryAction: [
+    { label: 'default', props: { primaryAction: { text: 'Save', onPress: noop }, items: [
+      { text: 'Share', icon: 'share-outline', onPress: noop }
+    ] } }
+  ],
+
+  // ---- Batch 4: ButtonSet ----
+  ButtonSet: [
+    { label: 'horizontal', props: { children: 'Buttons' } },
+    { label: 'stacked', props: { children: 'Buttons', stacked: true } }
+  ],
+
+  // ---- Batch 5: Layout (Column, Row, Grid, FlexGrid, etc.) ----
+  Column: [
+    { label: 'default', props: { children: 'Column content' } },
+    { label: 'span 2', props: { children: 'Span 2', span: 2 } }
+  ],
+  ColumnHang: [
+    { label: 'default', props: { children: 'Hang content' } }
+  ],
+  Content: [
+    { label: 'default', props: { children: 'Main content area' } }
+  ],
+  FlexGrid: [
+    { label: 'default', props: { children: 'Grid items' } }
+  ],
+  Grid: [
+    { label: '2 columns', props: { children: 'Grid content', columns: 2 } },
+    { label: '3 columns', props: { children: 'Grid content', columns: 3 } }
+  ],
+  GridSettings: [
+    { label: 'default', props: { columns: 3, gap: 'md' } }
+  ],
+  Row: [
+    { label: 'default', props: { children: 'Row content' } }
+  ],
+  Section: [
+    { label: 'default', props: { children: 'Section content' } }
+  ],
+  LandingView: [
+    { label: 'default', props: { children: 'Landing page content' } }
+  ],
+  SafeAreaWrapper: [
+    { label: 'default', props: { children: 'Safe area content' } }
+  ],
+  ViewWrapper: [
+    { label: 'default', props: { children: 'Wrapped content' } }
+  ],
+  SkipToContent: [
+    { label: 'default', props: { targetId: 'main-content' } }
+  ],
+
+  // ---- Batch 6: ContainedList and List families ----
+  ContainedList: [
+    { label: 'default', props: { label: 'My list', children: 'List items' } }
+  ],
+  List: [
+    { label: 'unordered', props: { children: 'List items' } },
+    { label: 'ordered', props: { children: 'List items', ordered: true } }
+  ],
+  OrderedList: [
+    { label: 'default', props: { children: 'Ordered items' } }
+  ],
+  UnorderedList: [
+    { label: 'default', props: { children: 'Unordered items' } }
+  ],
+  NavigationList: [
+    { label: 'default', props: { title: 'Navigation', children: 'Nav items' } }
+  ],
+
+  // ---- Batch 7: ControlledPasswordInput and Copy ----
+  ControlledPasswordInput: [
+    { label: 'default', props: { value: '', onChange: noop, placeholder: 'Password' } },
+    { label: 'with text', props: { value: 'secret', onChange: noop } },
+    { label: 'disabled', props: { value: 'disabled', onChange: noop, disabled: true } }
+  ],
+  Copy: [
+    { label: 'default', props: { text: 'Copy this text', onSuccess: noop } }
+  ],
+
+  // ---- Batch 8: DocumentViewer ----
+  DocumentViewer: [
+    { label: 'default', props: { source: '<p>Document content</p>' } }
+  ],
+
+  // ---- Batch 9: ErrorBoundaryContext, FormContext, GlobalTheme, PrefixContext, ThemeContext ----
+  ErrorBoundaryContext: [
+    { label: 'default', props: { children: 'Protected content' } }
+  ],
+  FormContext: [
+    { label: 'default', props: { children: 'Form content' } }
+  ],
+  GlobalTheme: [
+    { label: 'default', props: { children: 'Themed content' } }
+  ],
+  PrefixContext: [
+    { label: 'default', props: { children: 'Prefixed content' } }
+  ],
+  ThemeContext: [
+    { label: 'default', props: { children: 'Themed content' } }
+  ],
+  GrantPermission: [
+    { label: 'default', props: { title: 'Allow Notifications', subtitle: 'Get updates on new messages', onGrant: noop } }
+  ],
+
+  // ---- Batch 10: ExpandableTile and Tile parts ----
+  ExpandableTile: [
+    { label: 'collapsed', props: { title: 'Expandable tile', children: 'Hidden content' } },
+    { label: 'expanded', props: { title: 'Expandable tile', children: 'Visible content', expanded: true } }
+  ],
+  TileAboveTheFoldContent: [
+    { label: 'default', props: { children: 'Above the fold' } }
+  ],
+  TileBelowTheFoldContent: [
+    { label: 'default', props: { children: 'Below the fold' } }
+  ],
+  TileGroup: [
+    { label: 'default', props: { children: 'Tiles' } }
+  ],
+  RadioTile: [
+    { label: 'default', props: { name: 'group', value: 'opt1', checked: false, onSelect: noop } },
+    { label: 'selected', props: { name: 'group', value: 'opt1', checked: true, onSelect: noop } }
+  ],
+
+  // ---- Batch 11: FileUploader parts ----
+  FileUploaderButton: [
+    { label: 'default', props: { label: 'Upload file', onPress: noop } },
+    { label: 'disabled', props: { label: 'Upload file', onPress: noop, disabled: true } }
+  ],
+  FileUploaderDropContainer: [
+    { label: 'default', props: { label: 'Drop files here', onDrop: noop } }
+  ],
+  FileUploaderItem: [
+    { label: 'uploading', props: { filename: 'photo.jpg', status: 'uploading', onRemove: noop } },
+    { label: 'complete', props: { filename: 'doc.pdf', status: 'complete', onRemove: noop } }
+  ],
+
+  // ---- Batch 12: Form ----
+  Form: [
+    { label: 'default', props: { children: 'Form fields', onSubmit: noop } }
+  ],
+
+  // ---- Batch 13: Header parts ----
+  HeaderContainer: [
+    { label: 'default', props: { children: 'Header' } }
+  ],
+  HeaderGlobalBar: [
+    { label: 'default', props: { children: 'Actions' } }
+  ],
+  HeaderMenu: [
+    { label: 'default', props: { label: 'Menu', children: 'Menu items' } }
+  ],
+  HeaderMenuButton: [
+    { label: 'default', props: { label: 'Menu', onPress: noop } },
+    { label: 'active', props: { label: 'Menu', onPress: noop, isActive: true } }
+  ],
+  HeaderNavigation: [
+    { label: 'default', props: { children: 'Nav links' } }
+  ],
+  HeaderPanel: [
+    { label: 'collapsed', props: { children: 'Panel content' } },
+    { label: 'expanded', props: { children: 'Panel content', expanded: true } }
+  ],
+  HeaderSideNavItems: [
+    { label: 'default', props: { children: 'Side nav items' } }
+  ],
+
+  // ---- Batch 14: IconButton and IconTab ----
+  IconButton: [
+    { label: 'default', props: { name: 'add', onPress: noop, label: 'Add' } },
+    { label: 'disabled', props: { name: 'add', onPress: noop, label: 'Add', disabled: true } }
+  ],
+  IconTab: [
+    { label: 'default', props: { icon: 'home-outline', onPress: noop } },
+    { label: 'active', props: { icon: 'home-outline', onPress: noop, active: true } }
+  ],
+
+  // ---- Batch 15: Menu parts ----
+  MenuItemDivider: [
+    { label: 'default', props: {} }
+  ],
+  MenuItemGroup: [
+    { label: 'default', props: { label: 'Group', children: 'Menu items' } }
+  ],
+  MenuItemSelectable: [
+    { label: 'unchecked', props: { label: 'Option', checked: false, onChange: noop } },
+    { label: 'checked', props: { label: 'Option', checked: true, onChange: noop } },
+    { label: 'disabled', props: { label: 'Option', checked: false, onChange: noop, disabled: true } }
+  ],
+
+  // ---- Batch 16: Modal ----
+  Modal: [
+    { label: 'closed', props: { isOpen: false, onClose: noop, children: 'Modal content' } }
+  ],
+
+  // ---- Batch 17: Notification parts ----
+  NotificationActionButton: [
+    { label: 'default', props: { text: 'Action', onPress: noop } }
+  ],
+  NotificationButton: [
+    { label: 'default', props: { onPress: noop } }
+  ],
+
+  // ---- Batch 18: PopoverContent ----
+  PopoverContent: [
+    { label: 'default', props: { children: 'Popover content' } }
+  ],
+
+  // ---- Batch 19: Select parts ----
+  SelectItem: [
+    { label: 'default', props: { value: 'opt1', text: 'Option 1', onSelect: noop } },
+    { label: 'disabled', props: { value: 'opt2', text: 'Option 2', onSelect: noop, disabled: true } }
+  ],
+  SelectItemGroup: [
+    { label: 'default', props: { label: 'Group', children: 'Select items' } }
+  ],
+
+  // ---- Batch 20: SideNav family ----
+  SideNav: [
+    { label: 'expanded', props: { children: 'Side nav content', expanded: true } },
+    { label: 'collapsed', props: { children: 'Side nav content', expanded: false } }
+  ],
+  SideNavDetails: [
+    { label: 'default', props: { title: 'Details', children: 'Detail content' } }
+  ],
+  SideNavDivider: [
+    { label: 'default', props: {} }
+  ],
+  SideNavFooter: [
+    { label: 'default', props: { children: 'Footer content' } }
+  ],
+  SideNavHeader: [
+    { label: 'default', props: { title: 'Section', children: 'Header content' } }
+  ],
+  SideNavIcon: [
+    { label: 'default', props: { name: 'home-outline' } }
+  ],
+  SideNavItem: [
+    { label: 'default', props: { text: 'Item', onPress: noop } },
+    { label: 'active', props: { text: 'Active', onPress: noop, active: true } }
+  ],
+  SideNavItems: [
+    { label: 'default', props: { children: 'Side nav items' } }
+  ],
+  SideNavLinkText: [
+    { label: 'default', props: { children: 'Link text' } }
+  ],
+  SideNavMenu: [
+    { label: 'collapsed', props: { label: 'Menu', onToggle: noop, children: 'Menu items' } },
+    { label: 'expanded', props: { label: 'Menu', onToggle: noop, children: 'Menu items', expanded: true } }
+  ],
+  SideNavMenuItem: [
+    { label: 'default', props: { text: 'Sub item', onPress: noop } }
+  ],
+  SideNavSwitcher: [
+    { label: 'default', props: { label: 'Switch', options: [
+      { value: 'a', label: 'Option A' },
+      { value: 'b', label: 'Option B' }
+    ], onChange: noop } }
+  ],
+
+  // ---- Batch 21: StructuredList family ----
+  StructuredListWrapper: [
+    { label: 'default', props: { children: 'Structured list' } }
+  ],
+  StructuredListHead: [
+    { label: 'default', props: { children: 'Header row' } }
+  ],
+  StructuredListBody: [
+    { label: 'default', props: { children: 'Body rows' } }
+  ],
+  StructuredListRow: [
+    { label: 'default', props: { children: 'Cells' } }
+  ],
+  StructuredListCell: [
+    { label: 'default', props: { children: 'Cell content' } }
+  ],
+  StructuredListInput: [
+    { label: 'unchecked', props: { name: 'group', value: 'opt1', checked: false, onChange: noop } },
+    { label: 'checked', props: { name: 'group', value: 'opt1', checked: true, onChange: noop } }
+  ],
+
+  // ---- Batch 22: Switcher family ----
+  Switcher: [
+    { label: 'default', props: { children: 'Switcher items' } }
+  ],
+  SwitcherDivider: [
+    { label: 'default', props: {} }
+  ],
+  SwitcherItem: [
+    { label: 'default', props: { text: 'Item', onPress: noop } }
+  ],
+
+  // ---- Batch 23: Tab parts ----
+  TabContent: [
+    { label: 'default', props: { children: 'Tab content' } }
+  ],
+  TabList: [
+    { label: 'default', props: { children: 'Tabs' } }
+  ],
+  TabListVertical: [
+    { label: 'default', props: { children: 'Vertical tabs' } }
+  ],
+  TabPanel: [
+    { label: 'default', props: { children: 'Panel content' } },
+    { label: 'selected', props: { children: 'Active panel', selected: true } }
+  ],
+  TabPanels: [
+    { label: 'default', props: { children: 'Panels' } }
+  ],
+
+  // ---- Batch 24: Table family ----
+  TableContainer: [
+    { label: 'default', props: { children: 'Table' } }
+  ],
+  TableHead: [
+    { label: 'default', props: { children: 'Header row' } }
+  ],
+  TableBody: [
+    { label: 'default', props: { children: 'Body rows' } }
+  ],
+  TableRow: [
+    { label: 'default', props: { children: 'Cells' } }
+  ],
+  TableHeader: [
+    { label: 'default', props: { children: 'Header' } }
+  ],
+  TableCell: [
+    { label: 'default', props: { children: 'Cell' } }
+  ],
+  TableActionList: [
+    { label: 'default', props: { children: 'Actions' } }
+  ],
+  TableBatchAction: [
+    { label: 'default', props: { label: 'Delete', onPress: noop } },
+    { label: 'disabled', props: { label: 'Delete', onPress: noop, disabled: true } }
+  ],
+  TableBatchActions: [
+    { label: 'default', props: { children: 'Batch actions' } }
+  ],
+  TableDecoratorRow: [
+    { label: 'default', props: {} }
+  ],
+  TableExpandHeader: [
+    { label: 'collapsed', props: { isExpanded: false, onToggle: noop } },
+    { label: 'expanded', props: { isExpanded: true, onToggle: noop } }
+  ],
+  TableExpandRow: [
+    { label: 'collapsed', props: { isExpanded: false, onToggle: noop, children: 'Row cells' } },
+    { label: 'expanded', props: { isExpanded: true, onToggle: noop, children: 'Row cells' } }
+  ],
+  TableExpandedRow: [
+    { label: 'default', props: { children: 'Expanded content' } }
+  ],
+  TableSelectAll: [
+    { label: 'unchecked', props: { checked: false, onSelectAll: noop, ariaLabel: 'Select all' } },
+    { label: 'checked', props: { checked: true, onSelectAll: noop, ariaLabel: 'Select all' } }
+  ],
+  TableSelectRow: [
+    { label: 'unchecked', props: { checked: false, onSelect: noop, ariaLabel: 'Select row' } },
+    { label: 'checked', props: { checked: true, onSelect: noop, ariaLabel: 'Select row' } }
+  ],
+  TableSlugRow: [
+    { label: 'default', props: { slug: 'Info', children: 'Row cells' } }
+  ],
+  TableToolbar: [
+    { label: 'default', props: { children: 'Toolbar' } }
+  ],
+  TableToolbarAction: [
+    { label: 'default', props: { icon: 'download-outline', onPress: noop, label: 'Download' } }
+  ],
+  TableToolbarContent: [
+    { label: 'default', props: { children: 'Toolbar content' } }
+  ],
+  TableToolbarMenu: [
+    { label: 'default', props: { label: 'Options', children: [] } }
+  ],
+  TableToolbarSearch: [
+    { label: 'default', props: { value: '', onChange: noop, placeholder: 'Search' } }
+  ],
+
+  // ---- Batch 25: DataTable parts ----
+  DataTableCell: [
+    { label: 'default', props: { content: 'Cell value' } },
+    { label: 'header', props: { content: 'Column', type: 'header' } }
+  ],
+  DataTableHeader: [
+    { label: 'default', props: { primaryAction: { label: 'Add', onPress: noop, kind: 'primary' } } }
+  ],
+  DataTableHeaderSelected: [
+    { label: 'default', props: { selectedCount: 3, batchActions: [
+      { label: 'Delete', onPress: noop, kind: 'danger' }
+    ], onCancel: noop } }
+  ],
+
+  // ---- Batch 26: TimePickerSelect ----
+  TimePickerSelect: [
+    { label: 'default', props: { value: '12:00', onChange: noop, options: [
+      { value: '12:00', label: '12:00 PM' },
+      { value: '13:00', label: '1:00 PM' }
+    ] } }
+  ],
+
+  // ---- Batch 27: Toggletip family ----
+  Toggletip: [
+    { label: 'default', props: { content: 'Helpful info', children: 'Trigger' } }
+  ],
+  ToggletipActions: [
+    { label: 'default', props: { children: 'Actions' } }
+  ],
+  ToggletipButton: [
+    { label: 'default', props: { text: 'Learn more', onPress: noop } }
+  ],
+  ToggletipContent: [
+    { label: 'default', props: { children: 'Toggletip content' } }
+  ],
+
+  // ---- Batch 28: TopNavigationBar ----
+  TopNavigationBar: [
+    { label: 'default', props: { title: 'My App', leftItems: [
+      { icon: 'menu-outline', text: 'Menu', onPress: noop }
+    ], rightItems: [
+      { icon: 'search-outline', text: 'Search', onPress: noop }
+    ] } }
+  ],
+  TopNavigationBarLogin: [
+    { label: 'default', props: { title: 'Welcome', loginAction: { text: 'Sign in', onPress: noop } } }
+  ],
+
+  // ---- Batch 29: TreeNode ----
+  TreeNode: [
+    { label: 'collapsed', props: { label: 'Parent node', level: 1, onToggle: noop } },
+    { label: 'expanded', props: { label: 'Parent node', level: 1, expanded: true, onToggle: noop, children: 'Child nodes' } },
+    { label: 'selected', props: { label: 'Selected node', level: 1, selected: true, onToggle: noop } }
+  ],
+
+  // ---- Batch 30: UiPanel ----
+  UiPanel: [
+    { label: 'expanded', props: { title: 'Settings', collapsed: false, onToggle: noop, children: 'Panel content' } },
+    { label: 'collapsed', props: { title: 'Settings', collapsed: true, onToggle: noop, children: 'Panel content' } }
+  ],
+  UiPanelItem: [
+    { label: 'default', props: { text: 'Item', onPress: noop } },
+    { label: 'with icon', props: { text: 'Item', icon: 'settings-outline', onPress: noop } }
+  ],
+
+  // ---- Batch 31: WebHeader ----
+  WebHeader: [
+    { label: 'default', props: { children: 'Header content' } }
   ]
 };
 
