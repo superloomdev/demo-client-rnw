@@ -162,7 +162,9 @@ module.exports = function loader (adapters) {
   // The published Carbon component library (factory). Screens build the themed
   // registry from this via the showcase carbon-registry hook, so the showcase
   // always iterates the live package roster instead of a hardcoded list.
-  Lib.CarbonComponents = require('@superloomdev/rnw-components-carbon');
+  // The package is ESM; Node require() wraps it as { default: fn }, Metro does not.
+  const _carbon = require('@superloomdev/rnw-components-carbon');
+  Lib.CarbonComponents = _carbon.default || _carbon;
 
 
   // First boot log
