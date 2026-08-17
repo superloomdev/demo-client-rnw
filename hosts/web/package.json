@@ -20,6 +20,7 @@
     "@superloomdev/js-helper-debug": "^1.0.0",
     "@superloomdev/js-helper-utils": "^1.0.0",
     "@superloomdev/rnw-components-carbon": "^1.0.0",
+    "ionicons": "^8.1.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.9",
