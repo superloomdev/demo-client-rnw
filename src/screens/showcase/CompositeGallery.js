@@ -11,8 +11,6 @@ import useShowcaseRegistry from './useShowcaseRegistry';
 const { ShowcaseRow, StateCell } = require('./ShowcaseRow');
 import SafeSample from './SafeSample';
 
-const HINT_PROPS = require('../../data/carbon-hint-props');
-
 
 const noop = function () {};
 
@@ -165,20 +163,6 @@ const CUSTOM_ROWS = {
 };
 
 
-// Default single-state row
-function DefaultCompositeRow ({ name, Comp, hint, C }) {
-  return (
-    <ShowcaseRow name={name} C={C}>
-      <StateCell label="default" C={C}>
-        <SafeSample name={name}>
-          <Comp {...hint} />
-        </SafeSample>
-      </StateCell>
-    </ShowcaseRow>
-  );
-}
-
-
 // Multi-state row
 function MultiStateCompositeRow ({ name, Comp, states, C }) {
   return (
@@ -236,8 +220,7 @@ export default function CompositeGallery () {
         if (states) {
           return <MultiStateCompositeRow key={k} name={k} Comp={Comp} states={states} C={C} />;
         }
-        const hint = HINT_PROPS[k] || {};
-        return <DefaultCompositeRow key={k} name={k} Comp={Comp} hint={hint} C={C} />;
+        return null;
       })}
 
       <Link href="/showcase" asChild>
