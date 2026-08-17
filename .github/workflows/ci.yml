@@ -118,6 +118,41 @@ jobs:
           path: hosts/web/dist
           retention-days: 7
 
+  # Playwright E2E: builds the web host and runs browser tests against all
+  # app shapes (launcher, tasks, notes, showcase galleries).
+  e2e:
+    needs: [test, lint]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Install and build web host
+        working-directory: hosts/web
+        run: |
+          npm ci
+          npx vite build
+      - name: Install root deps and run E2E
+        run: |
+          npm ci
+          npx playwright test
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-results
+          path: test-results/
+          retention-days: 7
+
   # Expo Android: prebuild generates native project, Gradle compiles debug APK
   expo-android:
     needs: [test, lint]
