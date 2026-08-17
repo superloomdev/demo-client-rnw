@@ -1,9 +1,13 @@
+// Info: L1 - Theme system tests. Verifies theme data modules are frozen,
+// schemeToLayer converts scheme shapes to themer layers correctly,
+// bridgeTheme reshapes flat token maps to nested structures, and the
+// full build pipeline produces expected token values with layer merging.
 'use strict';
 
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 
-const { Lib } = require('./loader');
+const { Lib } = require('./loader')();
 const themerBridge = require('../themes/themer-bridge');
 const themerTemplate = require('../themes/themer-template');
 const baseTheme = require('../themes/base-theme');

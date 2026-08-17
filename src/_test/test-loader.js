@@ -1,9 +1,14 @@
+// Info: L1 - Loader contract tests. Verifies the test-tier loader produces
+// a Lib container with the expected shape (Utils, Debug, Client, Themer,
+// ThemerReact, Font, Fonts, Themes, Icons, Navigation, ThemeContext), a
+// complete theme with Color/Dimension/Font, and a Component registry with
+// the app's atom and molecule set.
 'use strict';
 
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 
-const { Lib, theme, Component, CommonStyle } = require('./loader');
+const { Lib, theme, Component, CommonStyle } = require('./loader')();
 
 // Lib container structure
 test('Lib has Utils, Debug, Client, React, Themer, ThemerReact, Font, Fonts, Themes, ThemeContext', function () {
