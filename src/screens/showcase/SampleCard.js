@@ -10,9 +10,8 @@ import { View, Text, StyleSheet } from 'react-native';
 
 import SafeSample from './SafeSample';
 
-// Render-hint props sourced from the package. One source, two consumers
-// (tests and showcase). See _test/harness/props.js in the components package.
-const HINT_PROPS = require('@superloomdev/rnw-components-carbon/data/hint-props');
+// Render-hint props owned by the demo client (no longer shipped by the package).
+const HINT_PROPS = require('../../data/carbon-hint-props');
 
 
 // Components whose value prop is boolean, toggled via onValueChange

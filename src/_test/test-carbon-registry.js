@@ -4,7 +4,9 @@
 // undefined-component bugs without manual render testing.
 //
 // The test tier is a host: it builds the registry through the real loader,
-// then exercises every registered component in isolation.
+// then exercises every registered component in isolation. Hint-props are
+// owned locally (src/data/carbon-hint-props.js), not imported from the
+// carbon package.
 'use strict';
 
 const { test } = require('node:test');
@@ -12,7 +14,7 @@ const assert = require('node:assert/strict');
 
 const loader = require('./loader');
 const { CarbonComponent, React, TestRenderer } = loader();
-const HINT_PROPS = require('@superloomdev/rnw-components-carbon/data/hint-props');
+const HINT_PROPS = require('../data/carbon-hint-props');
 
 
 // Stub document for react-native-web TextInput and Overlay
