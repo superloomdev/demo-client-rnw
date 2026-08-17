@@ -1,13 +1,25 @@
 // Info: Test-tier stub adapter for the Icons slot.
-// Provides a minimal glyph component that renders text placeholders.
+// Provides a minimal Glyph component that renders text placeholders
+// (e.g. '[add]') instead of real vector icons. Matches the contract
+// the app-core loader expects: { Glyph }.
 'use strict';
 
 const React = require('react');
 
 
+/********************************************************************
+Icons adapter factory. Returns an Icons contract with a stub Glyph
+component that renders a bracketed name as a span element.
+
+@param {Object} Lib    - Lib container (unused in stub)
+@param {Object} config - Config (unused in stub)
+
+@return {Object} - { Glyph }
+*********************************************************************/
 module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
 
   return {
+    // Stub Glyph: renders [name] as text for assertions
     Glyph: function (props) {
       return React.createElement(
         'span',

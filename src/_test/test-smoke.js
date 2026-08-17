@@ -1,3 +1,6 @@
+// Info: L0 - Environment smoke tests. Verifies the test-tier module aliases
+// resolve correctly: react-native maps to react-native-web, expo is absent.
+// These must pass before any component tests are meaningful.
 'use strict';
 
 const { test } = require('node:test');
