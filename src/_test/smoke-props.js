@@ -1,10 +1,13 @@
-// Info: Render-hint props for Carbon components. Used by the showcase
-// galleries (CompositeGallery, MoleculeGallery) and the test harness
-// render matrix (test-carbon-registry.js). Each entry provides the minimal
-// prop set that lets a component render a non-empty output without throwing.
+// Info: Test-tier minimum render props for Carbon components. Used by
+// test-carbon-registry.js to smoke-render every component in the built
+// Carbon registry without crashing. Each entry provides the minimal prop
+// set that lets a component render a non-empty output.
+//
+// This is a test-tier fixture, NOT a showcase fixture. The showcase
+// galleries author their own renders from the carbon package docs. This
+// file exists only so the test tier can mount every component.
 //
 // Callbacks are no-ops; the harness does not assert behavior, only render.
-// This file is owned by the demo client, not the carbon package.
 'use strict';
 
 const noop = function () {};

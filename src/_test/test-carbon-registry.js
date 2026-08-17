@@ -1,11 +1,11 @@
 // Info: L1 - Carbon Registry smoke tests. Iterates every component in the
-// built Carbon registry, renders each with hint-props (where available) or
+// built Carbon registry, renders each with smoke-props (where available) or
 // empty props, and asserts no crash. This catches the entire class of
 // undefined-component bugs without manual render testing.
 //
 // The test tier is a host: it builds the registry through the real loader,
-// then exercises every registered component in isolation. Hint-props are
-// owned locally (src/data/carbon-hint-props.js), not imported from the
+// then exercises every registered component in isolation. Smoke-props are
+// owned locally (src/_test/smoke-props.js), not imported from the
 // carbon package.
 'use strict';
 
@@ -14,7 +14,7 @@ const assert = require('node:assert/strict');
 
 const loader = require('./loader');
 const { CarbonComponent, React, TestRenderer } = loader();
-const HINT_PROPS = require('../data/carbon-hint-props');
+const SMOKE_PROPS = require('./smoke-props');
 
 
 // Stub document for react-native-web TextInput and Overlay
@@ -53,7 +53,7 @@ for (let i = 0; i < names.length; i++) {
   if (OVERLAY_COMPONENTS.indexOf(name) !== -1) {
     // Overlay components: render with children, accept null tree (closed state)
     test('Carbon: ' + name + ' renders without crash', function () {
-      const props = HINT_PROPS[name] || {};
+      const props = SMOKE_PROPS[name] || {};
       const child = React.createElement('span', null, 'test');
       const merged = Object.assign({}, props, { children: child });
       const el = TestRenderer.create(React.createElement(Comp, merged));
@@ -61,9 +61,9 @@ for (let i = 0; i < names.length; i++) {
       el.unmount();
     });
   } else {
-    // Standard components: render with hint-props, assert non-null tree
+    // Standard components: render with smoke-props, assert non-null tree
     test('Carbon: ' + name + ' renders without crash', function () {
-      const props = HINT_PROPS[name] || {};
+      const props = SMOKE_PROPS[name] || {};
       const el = TestRenderer.create(React.createElement(Comp, props));
       const json = el.toJSON();
       assert.ok(json !== null && json !== undefined, name + ' produced null/undefined tree');
@@ -82,7 +82,7 @@ if (CarbonComponent.variant) {
     const Comp = CarbonComponent.variant[name];
 
     test('Carbon variant: ' + name + ' renders without crash', function () {
-      const props = HINT_PROPS[name] || {};
+      const props = SMOKE_PROPS[name] || {};
       const el = TestRenderer.create(React.createElement(Comp, props));
       const json = el.toJSON();
       assert.ok(json !== null && json !== undefined, 'variant.' + name + ' produced null/undefined tree');
@@ -101,7 +101,7 @@ if (CarbonComponent.freeform) {
     const Comp = CarbonComponent.freeform[name];
 
     test('Carbon freeform: ' + name + ' renders without crash', function () {
-      const props = HINT_PROPS[name] || {};
+      const props = SMOKE_PROPS[name] || {};
       const el = TestRenderer.create(React.createElement(Comp, props));
       const json = el.toJSON();
       assert.ok(json !== null && json !== undefined, 'freeform.' + name + ' produced null/undefined tree');
