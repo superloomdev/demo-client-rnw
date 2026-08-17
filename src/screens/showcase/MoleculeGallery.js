@@ -18,66 +18,66 @@ const noop = function () {};
 
 // ---- Interactive molecule rows ----
 
-function PasswordInputRow ({ C }) {
+function PasswordInputRow ({ C, R }) {
   const [val, setVal] = useState('');
   return (
     <ShowcaseRow name="PasswordInput" C={C}>
       <StateCell label="default" C={C}>
-        <C.PasswordInput value={val} onChange={setVal} placeholder="Password" style={{ width: 200 }} />
+        <R.PasswordInput value={val} onChange={setVal} placeholder="Password" style={{ width: 200 }} />
       </StateCell>
       <StateCell label="with text" C={C}>
-        <C.PasswordInput value="secret123" onChange={noop} style={{ width: 200 }} />
+        <R.PasswordInput value="secret123" onChange={noop} style={{ width: 200 }} />
       </StateCell>
       <StateCell label="disabled" C={C}>
-        <C.PasswordInput value="disabled" onChange={noop} disabled style={{ width: 180 }} />
+        <R.PasswordInput value="disabled" onChange={noop} disabled style={{ width: 180 }} />
       </StateCell>
     </ShowcaseRow>
   );
 }
 
-function SearchRow ({ C }) {
+function SearchRow ({ C, R }) {
   const [val, setVal] = useState('');
   return (
     <ShowcaseRow name="Search" C={C}>
       <StateCell label="default" C={C}>
-        <C.Search value={val} onChange={setVal} placeholder="Search..." style={{ width: 220 }} />
+        <R.Search value={val} onChange={setVal} placeholder="Search..." style={{ width: 220 }} />
       </StateCell>
       <StateCell label="with text" C={C}>
-        <C.Search value="React Native" onChange={noop} style={{ width: 220 }} />
+        <R.Search value="React Native" onChange={noop} style={{ width: 220 }} />
       </StateCell>
       <StateCell label="disabled" C={C}>
-        <C.Search value="" onChange={noop} placeholder="Disabled" disabled style={{ width: 180 }} />
+        <R.Search value="" onChange={noop} placeholder="Disabled" disabled style={{ width: 180 }} />
       </StateCell>
     </ShowcaseRow>
   );
 }
 
-function ExpandableSearchRow ({ C }) {
+function ExpandableSearchRow ({ C, R }) {
   const [val, setVal] = useState('');
   return (
     <ShowcaseRow name="ExpandableSearch" C={C}>
       <StateCell label="default" C={C}>
-        <C.ExpandableSearch value={val} onChange={setVal} placeholder="Search..." style={{ width: 220 }} />
+        <R.ExpandableSearch value={val} onChange={setVal} placeholder="Search..." style={{ width: 220 }} />
       </StateCell>
     </ShowcaseRow>
   );
 }
 
-function NumberInputRow ({ C }) {
+function NumberInputRow ({ C, R }) {
   const [val, setVal] = useState(5);
   return (
     <ShowcaseRow name="NumberInput" C={C}>
       <StateCell label="default" C={C}>
-        <C.NumberInput value={val} onChange={setVal} style={{ width: 180 }} />
+        <R.NumberInput value={val} onChange={setVal} style={{ width: 180 }} />
       </StateCell>
       <StateCell label="disabled" C={C}>
-        <C.NumberInput value={10} onChange={noop} disabled style={{ width: 180 }} />
+        <R.NumberInput value={10} onChange={noop} disabled style={{ width: 180 }} />
       </StateCell>
     </ShowcaseRow>
   );
 }
 
-function SwitchRow ({ C }) {
+function SwitchRow ({ C, R }) {
   const [on, setOn] = useState(true);
   const toggle = useCallback(function () {
     setOn(function (v) {
@@ -86,25 +86,25 @@ function SwitchRow ({ C }) {
   }, []);
   return (
     <ShowcaseRow name="Switch" C={C}>
-      <StateCell label="interactive" C={C}><C.Switch label="Switch" selected={on} onPress={toggle} /></StateCell>
-      <StateCell label="on" C={C}><C.Switch label="On" selected={true} onPress={noop} /></StateCell>
-      <StateCell label="off" C={C}><C.Switch label="Off" selected={false} onPress={noop} /></StateCell>
-      <StateCell label="disabled" C={C}><C.Switch label="Disabled" selected={true} onPress={noop} disabled /></StateCell>
+      <StateCell label="interactive" C={C}><R.Switch label="Switch" selected={on} onPress={toggle} /></StateCell>
+      <StateCell label="on" C={C}><R.Switch label="On" selected={true} onPress={noop} /></StateCell>
+      <StateCell label="off" C={C}><R.Switch label="Off" selected={false} onPress={noop} /></StateCell>
+      <StateCell label="disabled" C={C}><R.Switch label="Disabled" selected={true} onPress={noop} disabled /></StateCell>
     </ShowcaseRow>
   );
 }
 
-function MenuItemRow ({ C }) {
+function MenuItemRow ({ C, R }) {
   return (
     <ShowcaseRow name="MenuItem" C={C}>
-      <StateCell label="default" C={C}><C.MenuItem label="Menu item" onPress={noop} /></StateCell>
-      <StateCell label="with icon" C={C}><C.MenuItem label="With icon" icon="add" onPress={noop} /></StateCell>
-      <StateCell label="disabled" C={C}><C.MenuItem label="Disabled" onPress={noop} disabled /></StateCell>
+      <StateCell label="default" C={C}><R.MenuItem label="Menu item" onPress={noop} /></StateCell>
+      <StateCell label="with icon" C={C}><R.MenuItem label="With icon" icon="add" onPress={noop} /></StateCell>
+      <StateCell label="disabled" C={C}><R.MenuItem label="Disabled" onPress={noop} disabled /></StateCell>
     </ShowcaseRow>
   );
 }
 
-function IconSwitchRow ({ C }) {
+function IconSwitchRow ({ C, R }) {
   const [on, setOn] = useState(true);
   const toggle = useCallback(function () {
     setOn(function (v) {
@@ -113,9 +113,9 @@ function IconSwitchRow ({ C }) {
   }, []);
   return (
     <ShowcaseRow name="IconSwitch" C={C}>
-      <StateCell label="interactive" C={C}><C.IconSwitch icon="add" checked={on} onToggle={toggle} /></StateCell>
-      <StateCell label="on" C={C}><C.IconSwitch icon="add" checked={true} onToggle={noop} /></StateCell>
-      <StateCell label="off" C={C}><C.IconSwitch icon="add" checked={false} onToggle={noop} /></StateCell>
+      <StateCell label="interactive" C={C}><R.IconSwitch icon="add" checked={on} onToggle={toggle} /></StateCell>
+      <StateCell label="on" C={C}><R.IconSwitch icon="add" checked={true} onToggle={noop} /></StateCell>
+      <StateCell label="off" C={C}><R.IconSwitch icon="add" checked={false} onToggle={noop} /></StateCell>
     </ShowcaseRow>
   );
 }
@@ -399,7 +399,9 @@ export default function MoleculeGallery () {
     return null;
   }
 
-  const Component = reg.Component;
+  // R = full Carbon registry components (for showcased items)
+  // C = demo ThemeContext components (for layout text only: C.Text, C.View)
+  const R = reg.Component;
   const keys = reg.buckets.molecule;
 
   return (
@@ -409,20 +411,20 @@ export default function MoleculeGallery () {
       <C.Text color="text_secondary">Each molecule with its visual states. Interactive components respond to input.</C.Text>
 
       {/* Custom interactive rows first */}
-      {Component.PasswordInput ? <PasswordInputRow C={C} /> : null}
-      {Component.Search ? <SearchRow C={C} /> : null}
-      {Component.ExpandableSearch ? <ExpandableSearchRow C={C} /> : null}
-      {Component.NumberInput ? <NumberInputRow C={C} /> : null}
-      {Component.Switch ? <SwitchRow C={C} /> : null}
-      {Component.MenuItem ? <MenuItemRow C={C} /> : null}
-      {Component.IconSwitch ? <IconSwitchRow C={C} /> : null}
+      {R.PasswordInput ? <PasswordInputRow C={C} R={R} /> : null}
+      {R.Search ? <SearchRow C={C} R={R} /> : null}
+      {R.ExpandableSearch ? <ExpandableSearchRow C={C} R={R} /> : null}
+      {R.NumberInput ? <NumberInputRow C={C} R={R} /> : null}
+      {R.Switch ? <SwitchRow C={C} R={R} /> : null}
+      {R.MenuItem ? <MenuItemRow C={C} R={R} /> : null}
+      {R.IconSwitch ? <IconSwitchRow C={C} R={R} /> : null}
 
       {/* All other molecules in alphabetical order */}
       {keys.map(function (k) {
         if (CUSTOM_ROWS[k]) {
           return null;
         }
-        const Comp = Component[k];
+        const Comp = R[k];
         if (!Comp) {
           return null;
         }

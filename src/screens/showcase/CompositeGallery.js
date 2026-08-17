@@ -19,7 +19,7 @@ const noop = function () {};
 
 // ---- Custom interactive composite rows ----
 
-function CheckboxGroupRow ({ C }) {
+function CheckboxGroupRow ({ C, R }) {
   const [selected, setSelected] = useState(['a']);
   const toggle = useCallback(function (val) {
     setSelected(function (prev) {
@@ -35,28 +35,28 @@ function CheckboxGroupRow ({ C }) {
     <ShowcaseRow name="CheckboxGroup" C={C}>
       <StateCell label="interactive" C={C}>
         <SafeSample name="CheckboxGroup">
-          <C.CheckboxGroup selected={selected} onChange={toggle}>
-            <C.Checkbox value="a" label="Option A" />
-            <C.Checkbox value="b" label="Option B" />
-            <C.Checkbox value="c" label="Option C" />
-          </C.CheckboxGroup>
+          <R.CheckboxGroup selected={selected} onChange={toggle}>
+            <R.Checkbox value="a" label="Option A" />
+            <R.Checkbox value="b" label="Option B" />
+            <R.Checkbox value="c" label="Option C" />
+          </R.CheckboxGroup>
         </SafeSample>
       </StateCell>
     </ShowcaseRow>
   );
 }
 
-function RadioButtonGroupRow ({ C }) {
+function RadioButtonGroupRow ({ C, R }) {
   const [val, setVal] = useState('a');
   return (
     <ShowcaseRow name="RadioButtonGroup" C={C}>
       <StateCell label="interactive" C={C}>
         <SafeSample name="RadioButtonGroup">
-          <C.RadioButtonGroup value={val} onChange={setVal}>
-            <C.RadioButton value="a" label="Option A" />
-            <C.RadioButton value="b" label="Option B" />
-            <C.RadioButton value="c" label="Option C" />
-          </C.RadioButtonGroup>
+          <R.RadioButtonGroup value={val} onChange={setVal}>
+            <R.RadioButton value="a" label="Option A" />
+            <R.RadioButton value="b" label="Option B" />
+            <R.RadioButton value="c" label="Option C" />
+          </R.RadioButtonGroup>
         </SafeSample>
       </StateCell>
     </ShowcaseRow>
@@ -208,7 +208,9 @@ export default function CompositeGallery () {
     return null;
   }
 
-  const Component = reg.Component;
+  // R = full Carbon registry components (for showcased items)
+  // C = demo ThemeContext components (for layout text only: C.Text, C.View)
+  const R = reg.Component;
   const keys = reg.buckets.composite;
 
   return (
@@ -218,15 +220,15 @@ export default function CompositeGallery () {
       <C.Text color="text_secondary">Multi-part components with parent-child coordination.</C.Text>
 
       {/* Custom interactive rows */}
-      {Component.CheckboxGroup ? <CheckboxGroupRow C={C} /> : null}
-      {Component.RadioButtonGroup ? <RadioButtonGroupRow C={C} /> : null}
+      {R.CheckboxGroup ? <CheckboxGroupRow C={C} R={R} /> : null}
+      {R.RadioButtonGroup ? <RadioButtonGroupRow C={C} R={R} /> : null}
 
       {/* All other composites in alphabetical order */}
       {keys.map(function (k) {
         if (CUSTOM_ROWS[k]) {
           return null;
         }
-        const Comp = Component[k];
+        const Comp = R[k];
         if (!Comp) {
           return null;
         }
