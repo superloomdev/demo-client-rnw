@@ -7,10 +7,9 @@
 // data URI from the ionicons package, decodes it, and renders an inline SVG
 // element with the requested size and color. A small alias table maps names
 // that do not have a direct Ionicons equivalent.
-'use strict';
 
-const React = require('react');
-const ionicons = require('ionicons/icons');
+import React from 'react';
+import * as ionicons from 'ionicons/icons';
 
 
 // Names used in the codebase that need aliasing to Ionicons keys
@@ -62,7 +61,8 @@ function decodeSvg (dataUri) {
 }
 
 
-// Render an Ionicons SVG as an inline React element with size and color
+// Render an Ionicons SVG as an inline React element with size and color.
+// pointerEvents: none lets clicks pass through to the parent Pressable.
 function IonIcon (props) {
 
   const { name, size, color, style, ...rest } = props;
@@ -87,6 +87,7 @@ function IonIcon (props) {
         color: color || '#000',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
+        pointerEvents: 'none',
         ...style
       },
       ...rest
@@ -105,6 +106,7 @@ function IonIcon (props) {
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
+      pointerEvents: 'none',
       ...style
     },
     ...rest
@@ -113,21 +115,22 @@ function IonIcon (props) {
       width: px,
       height: px,
       display: 'inline-block',
-      lineHeight: 0
+      lineHeight: 0,
+      pointerEvents: 'none'
     },
     dangerouslySetInnerHTML: {
-      __html: svgMarkup.replace('<svg ', '<svg width="' + px + '" height="' + px + '" style="fill: ' + (color || 'currentColor') + '; stroke: ' + (color || 'currentColor') + ';" ')
+      __html: svgMarkup.replace('<svg ', '<svg width="' + px + '" height="' + px + '" style="fill: ' + (color || 'currentColor') + '; stroke: ' + (color || 'currentColor') + '; pointer-events: none;" ')
     }
   }));
 
 }
 
 
-module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
+export default function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // Capability-named member; the vendor name stops at this file
   return {
     Glyph: IonIcon
   };
 
-};
+}
