@@ -11,7 +11,7 @@ import useShowcaseRegistry from './useShowcaseRegistry';
 const { ShowcaseRow, StateCell } = require('./ShowcaseRow');
 import SafeSample from './SafeSample';
 
-const HINT_PROPS = require('@superloomdev/rnw-components-carbon/data/hint-props');
+const HINT_PROPS = require('../../data/carbon-hint-props');
 
 
 const noop = function () {};
