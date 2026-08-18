@@ -17,6 +17,7 @@ module.exports = function loader (Lib) {
   // hoc(InnerComponent) -> Wrapped component with isRtlActive injected
   return function hoc (InnerComponent) {
     return function Wrapped (props) {
+      // Render the inner component with the pre-resolved RTL flag merged into props
       return React.createElement(
         InnerComponent,
         Object.assign({ isRtlActive: isRtlActive }, props)

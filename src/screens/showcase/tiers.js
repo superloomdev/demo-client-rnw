@@ -258,12 +258,15 @@ const COMPOSITES = [
 // Pre-index the tier arrays for O(1) lookup.
 const TIER_INDEX = {};
 ATOMS.forEach(function (k) {
+  // Assign the atom tier to each component name
   TIER_INDEX[k] = 'atom';
 });
 MOLECULES.forEach(function (k) {
+  // Assign the molecule tier to each component name
   TIER_INDEX[k] = 'molecule';
 });
 COMPOSITES.forEach(function (k) {
+  // Assign the composite tier to each component name
   TIER_INDEX[k] = 'composite';
 });
 
@@ -273,17 +276,22 @@ COMPOSITES.forEach(function (k) {
 // in the index lands in 'uncategorized' and is still returned - never dropped.
 function classify (Component) {
 
+  // Flatten the registry, excluding meta keys that are not components
   const flat = Object.keys(Component).filter(function (k) {
+    // Exclude variant, freeform, and provider meta keys
     return ['variant', 'freeform', 'provider'].indexOf(k) === -1;
   });
 
+  // Initialize empty buckets for each tier plus uncategorized
   const buckets = { atom: [], molecule: [], composite: [], uncategorized: [] };
 
+  // Assign each live key to its tier bucket, defaulting to uncategorized
   flat.forEach(function (k) {
     const tier = TIER_INDEX[k] || 'uncategorized';
     buckets[tier].push(k);
   });
 
+  // Return the bucketed classification of the live registry
   return buckets;
 }
 

@@ -48,11 +48,13 @@ layer with dotted token names and scale overrides.
 *********************************************************************/
 function schemeToLayer (scheme, name) {
 
+  // Normalize the scheme into its sub-objects so downstream lookups are safe
   scheme = scheme || {};
   const color = scheme.color || {};
   const dimension = scheme.dimension || {};
   const font = scheme.font || {};
 
+  // Prepare the token accumulator that will collect all dotted token names
   const tokens = {};
 
   // Color seeds
@@ -125,6 +127,7 @@ function schemeToLayer (scheme, name) {
     scales.miniUnit = { base: dimension.spaceUnit };
   }
 
+  // Return the assembled themer layer for the engine to merge
   return {
     name: name || 'theme',
     polarity: 'light',
@@ -149,10 +152,12 @@ Tokens named font.family.primary -> Font.family.primary
 *********************************************************************/
 function bridgeTheme (flat) {
 
+  // Prepare the nested output structures that components consume
   const Color = {};
   const Dimension = {};
   const Font = { family: {}, weight: {} };
 
+  // Walk every emitted token and route it into the correct nested container
   for (const [key, value] of Object.entries(flat)) {
 
     // Skip helper tokens
@@ -160,8 +165,10 @@ function bridgeTheme (flat) {
       continue;
     }
 
+    // Split the dotted key into its namespace segments for routing
     const parts = key.split('.');
 
+    // Route each token to its namespace bucket in the output structure
     if (parts[0] === 'color') {
       Color[parts[1]] = value;
 
@@ -200,6 +207,7 @@ function bridgeTheme (flat) {
 
   }
 
+  // Return the nested theme structure for the component library
   return { Color: Color, Dimension: Dimension, Font: Font };
 
 }

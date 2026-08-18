@@ -15,8 +15,10 @@ const Style = StyleSheet.create({
 
 module.exports = function (Component, CommonStyle, theme, Lib) {
 
+  // Return the Text component factory
   return function Text (props) {
 
+    // Extract typography props and strip RTL flag from the rest
     const {
       size, color, weight, align, style, children, isRtlActive, ...rest
     } = props;
@@ -38,6 +40,7 @@ module.exports = function (Component, CommonStyle, theme, Lib) {
       cls.push(Style.rtlIOS);
     }
 
+    // Render the native Text with resolved utility classes
     return React.createElement(
       RNText,
       Object.assign({ style: [...cls, style] }, rest),

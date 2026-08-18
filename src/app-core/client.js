@@ -23,24 +23,29 @@ module.exports = function loader (shared_libs, config) { // eslint-disable-line 
 
     // True on the web target (RNW in the browser, and inside Electron's Chromium)
     isBrowser: function () {
+      // Return whether this is the web target
       return Platform.OS === 'web';
     },
 
     // True on a real native runtime (device or simulator)
     isNative: function () {
+      // Return whether this is a native runtime
       return Platform.OS === 'ios' || Platform.OS === 'android';
     },
 
     isIOS: function () {
+      // Return whether this is iOS
       return Platform.OS === 'ios';
     },
 
     isAndroid: function () {
+      // Return whether this is Android
       return Platform.OS === 'android';
     },
 
     // Raw platform string: 'web' | 'ios' | 'android'
     os: function () {
+      // Return the raw platform string
       return Platform.OS;
     }
 

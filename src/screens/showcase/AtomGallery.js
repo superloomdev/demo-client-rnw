@@ -14,7 +14,9 @@ const noop = function () {};
 
 // Stateful toggle row (R = Carbon registry components)
 function ToggleRow ({ C, R }) {
+  // Track the interactive toggle's on/off state
   const [on, setOn] = useState(false);
+  // Render the toggle row with interactive, static, and disabled states
   return (
     <ShowcaseRow name="Toggle" C={C}>
       <StateCell label="interactive" C={C}><R.Toggle value={on} onValueChange={setOn} /></StateCell>
@@ -27,12 +29,16 @@ function ToggleRow ({ C, R }) {
 
 // Stateful checkbox row
 function CheckboxRow ({ C, R }) {
+  // Track the interactive checkbox's checked state
   const [checked, setChecked] = useState(false);
+  // Toggle the checked state when the interactive checkbox is pressed
   const toggle = useCallback(function () {
     setChecked(function (c) {
+      // Flip the previous checked value
       return !c;
     });
   }, []);
+  // Render the checkbox row with interactive, static, and disabled states
   return (
     <ShowcaseRow name="Checkbox" C={C}>
       <StateCell label="interactive" C={C}><R.Checkbox checked={checked} onChange={toggle} label="Option" /></StateCell>
@@ -46,12 +52,16 @@ function CheckboxRow ({ C, R }) {
 
 // Stateful radio button row
 function RadioButtonRow ({ C, R }) {
+  // Track the interactive radio button's checked state
   const [checked, setChecked] = useState(false);
+  // Toggle the checked state when the interactive radio button is pressed
   const toggle = useCallback(function () {
     setChecked(function (c) {
+      // Flip the previous checked value
       return !c;
     });
   }, []);
+  // Render the radio button row with interactive, static, and disabled states
   return (
     <ShowcaseRow name="RadioButton" C={C}>
       <StateCell label="interactive" C={C}><R.RadioButton checked={checked} onChange={toggle} label="Option" /></StateCell>
@@ -64,7 +74,9 @@ function RadioButtonRow ({ C, R }) {
 
 // Stateful slider row
 function SliderRow ({ C, R }) {
+  // Track the interactive slider's value
   const [val, setVal] = useState(50);
+  // Render the slider row with interactive, input, and disabled states
   return (
     <ShowcaseRow name="Slider" C={C}>
       <StateCell label="interactive" C={C}>
@@ -82,7 +94,9 @@ function SliderRow ({ C, R }) {
 
 // Stateful text input row
 function TextInputRow ({ C, R }) {
+  // Track the interactive text input's value
   const [val, setVal] = useState('');
+  // Render the text input row with default, filled, invalid, and disabled states
   return (
     <ShowcaseRow name="TextInput" C={C}>
       <StateCell label="default" C={C}>
@@ -103,7 +117,9 @@ function TextInputRow ({ C, R }) {
 
 // Stateful text area row
 function TextAreaRow ({ C, R }) {
+  // Track the interactive text area's value
   const [val, setVal] = useState('');
+  // Render the text area row with default, filled, invalid, and disabled states
   return (
     <ShowcaseRow name="TextArea" C={C}>
       <StateCell label="default" C={C}>
@@ -125,12 +141,15 @@ function TextAreaRow ({ C, R }) {
 
 export default function AtomGallery () {
 
+  // Resolve the live lib, navigation helpers, themed components, and showcase registry
   const Lib = useLib();
   const { Link } = Lib.Navigation;
   const C = Lib.ThemeContext.useComponents();
   const reg = useShowcaseRegistry();
 
+  // Wait for the registry before rendering anything
   if (!reg) {
+    // Render nothing while the registry is loading
     return null;
   }
 
@@ -138,6 +157,7 @@ export default function AtomGallery () {
   // C = demo ThemeContext components (for layout text only: C.Text, C.View)
   const R = reg.Component;
 
+  // Render the atom gallery with one row per atom showing multiple states
   return (
     <ScrollView contentContainerStyle={styles.content}>
 

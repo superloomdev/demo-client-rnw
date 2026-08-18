@@ -32,12 +32,15 @@ module.exports = function loader (Lib, Config) {
     }
   };
 
+  // Build the public SuperApp interface from the shape registry
   const SuperApp = {
 
     // Every shape this build is allowed to host (driven by Config)
     listShapes: function () {
+      // Return the shapes enabled by config, mapped from the registry
       return Config.super_app.AVAILABLE_SHAPES
         .map(function (k) {
+          // Return the shape metadata for this key
           return SHAPES[k];
         })
         .filter(Boolean);
@@ -45,20 +48,25 @@ module.exports = function loader (Lib, Config) {
 
     // Look up one shape's metadata
     getShape: function (key) {
+      // Return the shape metadata or null when the key is unknown
       return SHAPES[key] || null;
     },
 
     // The entry switch: lean boots straight into a shape; super shows the launcher
     determineApp: function () {
+      // Branch on the configured mode to decide what to mount
       if (Config.super_app.MODE === 'lean') {
         const shape = SHAPES[Config.super_app.APP_SHAPE] || SHAPES[Config.super_app.AVAILABLE_SHAPES[0]];
+        // Return the lean mode with the resolved shape
         return { mode: 'lean', shape: shape };
       }
+      // Return super mode so the entry shows the launcher
       return { mode: 'super' };
     }
 
   };
 
+  // Return the public SuperApp interface
   return SuperApp;
 
 };

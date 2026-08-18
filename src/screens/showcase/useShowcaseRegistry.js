@@ -11,17 +11,23 @@ const tiers = require('./tiers');
 
 export default function useShowcaseRegistry () {
 
+  // Build the themed Carbon registry from the live theme
   const built = useCarbonRegistry();
 
+  // Return the memoized showcase registry so it recomputes only when built changes
   return useMemo(function () {
 
+    // Return null while the Carbon registry is still being built
     if (!built) {
+      // Return null so callers know the showcase registry is not ready
       return null;
     }
 
+    // Extract the Component registry and bucket the live keys into tiers
     const Component = built.Component;
     const buckets = tiers.classify(Component);
 
+    // Compute per-tier counts from the bucketed roster for the index and galleries
     const counts = {
       atoms: buckets.atom.length,
       molecules: buckets.molecule.length,
@@ -33,6 +39,7 @@ export default function useShowcaseRegistry () {
       total: buckets.atom.length + buckets.molecule.length + buckets.composite.length + buckets.uncategorized.length
     };
 
+    // Return the assembled showcase registry with components, buckets, and counts
     return { Component: Component, Style: built.Style, buckets: buckets, counts: counts };
 
   }, [built]);

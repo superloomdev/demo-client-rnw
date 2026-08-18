@@ -30,6 +30,7 @@ module.exports = function combineComponent (Lib, theme) {
 
   // Helper: instantiate a factory and wrap it with the HOC
   const make = function (factory) {
+    // Wrap the instantiated component with the RTL-injecting HOC
     return hoc(factory(Component, CommonStyle, theme, Lib));
   };
 

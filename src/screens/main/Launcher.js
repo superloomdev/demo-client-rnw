@@ -10,18 +10,24 @@ const { useLib } = require('../../app-core/contexts/lib-context');
 
 export default function Launcher () {
 
+  // Resolve the live lib, navigation helpers, and themed components for rendering
   const Lib = useLib();
   const { Link, Redirect } = Lib.Navigation;
   const C = Lib.ThemeContext.useComponents();
 
+  // Determine which app shape to show based on the super-app decision
   const decision = Lib.SuperApp.determineApp();
 
+  // In lean mode there is only one shape, so redirect immediately
   if (decision.mode === 'lean') {
+    // Redirect to the single shape's route
     return <Redirect href={decision.shape.route} />;
   }
 
+  // List all available shapes for the super-mode launcher grid
   const shapes = Lib.SuperApp.listShapes();
 
+  // Render the launcher grid with one card per shape
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -32,6 +38,7 @@ export default function Launcher () {
         </C.Text>
 
         {shapes.map(function (shape) {
+          // Render one navigable card per shape
           return (
             <Link key={shape.key} href={shape.route} asChild>
               <Pressable style={styles.cardWrap}>

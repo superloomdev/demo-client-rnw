@@ -43,19 +43,24 @@ const PROVIDER_INFO = {
 
 export default function ProviderGallery () {
 
+  // Resolve the live lib, navigation helpers, themed components, and showcase registry
   const Lib = useLib();
   const { Link } = Lib.Navigation;
   const C = Lib.ThemeContext.useComponents();
   const reg = useShowcaseRegistry();
 
+  // Wait for the registry before rendering anything
   if (!reg) {
+    // Render nothing while the registry is loading
     return null;
   }
 
+  // Extract the provider map, its keys, and the Layer provider for a custom demo
   const providers = reg.Component.provider || {};
   const names = Object.keys(providers);
   const Layer = providers.Layer;
 
+  // Render the provider gallery with a custom Layer demo and generic provider rows
   return (
     <ScrollView contentContainerStyle={styles.content}>
 
@@ -103,11 +108,14 @@ export default function ProviderGallery () {
 
       {/* All other providers */}
       {names.map(function (k) {
+        // Skip Layer since it has a custom demo above
         if (k === 'Layer') {
+          // Skip the Layer provider in the generic loop
           return null;
         }
         const Provider = providers[k];
         const info = PROVIDER_INFO[k] || {};
+        // Render one showcase row per provider with a wrapping demo
         return (
           <ShowcaseRow key={k} name={k} C={C}>
             <StateCell label="wrapping" C={C}>

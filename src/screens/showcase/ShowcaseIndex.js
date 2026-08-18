@@ -13,8 +13,10 @@ import useShowcaseRegistry from './useShowcaseRegistry';
 // One link card in the index. label + live count + route.
 function IndexCard ({ C, label, count, blurb, href, icon }) {
 
+  // Resolve the navigation Link component for routing
   const { Link } = useLib().Navigation;
 
+  // Render one navigable card with icon, label, count, and blurb
   return (
     <Link href={href} asChild>
       <Pressable style={styles.cardWrap}>
@@ -37,17 +39,22 @@ function IndexCard ({ C, label, count, blurb, href, icon }) {
 
 export default function ShowcaseIndex () {
 
+  // Resolve the live lib, navigation helpers, themed components, and showcase registry
   const Lib = useLib();
   const { Link } = Lib.Navigation;
   const C = Lib.ThemeContext.useComponents();
   const reg = useShowcaseRegistry();
 
+  // Wait for the registry before rendering anything
   if (!reg) {
+    // Render nothing while the registry is loading
     return null;
   }
 
+  // Pull live component counts from the built registry
   const counts = reg.counts;
 
+  // Render the showcase index with summary card and one link card per gallery
   return (
     <ScrollView contentContainerStyle={styles.content}>
 

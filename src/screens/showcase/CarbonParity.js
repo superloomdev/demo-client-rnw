@@ -13,8 +13,11 @@ const platforms = require('./platforms');
 
 // Map Platform.OS ("web" | "ios" | "android") to the badge key used by SUPPORT.
 function currentPlatformKey () {
+  // Read the host platform OS to determine the badge key
   const os = Platform.OS;
+  // Map "web" explicitly since the badge key differs from native OS strings
   if (os === 'web') {
+    // Return the web badge key
     return 'web';
   }
   return os; // "ios" | "android"
@@ -24,8 +27,10 @@ function currentPlatformKey () {
 // One platform badge. Tone reflects support level + whether it is current.
 function PlatformBadge ({ C, label, level, current }) {
 
+  // Resolve the badge color based on the support level
   const colorKey = level === 'full' ? 'status_success' : (level === 'partial' ? 'status_warning' : 'status_danger');
 
+  // Render the platform badge with tone reflecting support level and current platform
   return (
     <View style={[styles.badge, current ? styles.badgeCurrent : null]}>
       <C.View background={colorKey + '_subtle'} radius="sm" style={styles.badgeInner}>
@@ -39,35 +44,45 @@ function PlatformBadge ({ C, label, level, current }) {
 
 export default function CarbonParity () {
 
+  // Resolve the live lib, navigation helpers, themed components, and showcase registry
   const Lib = useLib();
   const { Link } = Lib.Navigation;
   const C = Lib.ThemeContext.useComponents();
   const reg = useShowcaseRegistry();
 
+  // Determine which platform badge to highlight as current
   const current = currentPlatformKey();
 
   // Build the parity rows from the live registry, sorted alphabetically.
   const rows = useMemo(function () {
 
+    // Return an empty list while the registry is still loading
     if (!reg) {
       return [];
     }
 
+    // Flatten the registry, excluding meta keys that are not components
     const flat = Object.keys(reg.Component).filter(function (k) {
+      // Exclude variant, freeform, and provider meta keys
       return ['variant', 'freeform', 'provider'].indexOf(k) === -1;
     });
 
+    // Build sorted parity rows with per-component capability and support info
     return flat.sort().map(function (k) {
       const cap = platforms.capability(k);
+      // Return one row object per component with name, capability, and support
       return { name: k, capability: cap, support: platforms.SUPPORT[cap] || platforms.SUPPORT.both };
     });
 
   }, [reg]);
 
+  // Wait for the registry before rendering anything
   if (!reg) {
+    // Render nothing while the registry is loading
     return null;
   }
 
+  // Render the parity screen with legend and per-component platform badges
   return (
     <ScrollView contentContainerStyle={styles.content}>
 
@@ -85,6 +100,7 @@ export default function CarbonParity () {
 
       <View style={styles.table}>
         {rows.map(function (row) {
+          // Render one parity row per component with platform support badges
           return (
             <View key={row.name} style={styles.row}>
               <C.Text size="sm" weight="medium" style={styles.rowName}>{row.name}</C.Text>

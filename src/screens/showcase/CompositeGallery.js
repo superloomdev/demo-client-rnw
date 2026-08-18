@@ -18,17 +18,23 @@ const noop = function () {};
 // ---- Custom interactive composite rows ----
 
 function CheckboxGroupRow ({ C, R }) {
+  // Track which checkboxes are currently selected
   const [selected, setSelected] = useState(['a']);
+  // Toggle a value in the selected array when a checkbox is pressed
   const toggle = useCallback(function (val) {
     setSelected(function (prev) {
       if (prev.indexOf(val) >= 0) {
+        // Remove the value if already selected
         return prev.filter(function (v) {
+          // Keep only values that differ from the toggled one
           return v !== val;
         });
       }
+      // Add the value if not yet selected
       return prev.concat([val]);
     });
   }, []);
+  // Render the CheckboxGroup row with an interactive multi-select demo
   return (
     <ShowcaseRow name="CheckboxGroup" C={C}>
       <StateCell label="interactive" C={C}>
@@ -45,7 +51,9 @@ function CheckboxGroupRow ({ C, R }) {
 }
 
 function RadioButtonGroupRow ({ C, R }) {
+  // Track which radio button is currently selected
   const [val, setVal] = useState('a');
+  // Render the RadioButtonGroup row with an interactive single-select demo
   return (
     <ShowcaseRow name="RadioButtonGroup" C={C}>
       <StateCell label="interactive" C={C}>
@@ -165,9 +173,11 @@ const CUSTOM_ROWS = {
 
 // Multi-state row
 function MultiStateCompositeRow ({ name, Comp, states, C }) {
+  // Render one showcase row with a state cell per defined state
   return (
     <ShowcaseRow name={name} C={C}>
       {states.map(function (state) {
+        // Render one error-isolated state cell per configured state
         return (
           <StateCell key={state.label} label={state.label} C={C}>
             <SafeSample name={name + ' ' + state.label}>
@@ -183,12 +193,15 @@ function MultiStateCompositeRow ({ name, Comp, states, C }) {
 
 export default function CompositeGallery () {
 
+  // Resolve the live lib, navigation helpers, themed components, and showcase registry
   const Lib = useLib();
   const { Link } = Lib.Navigation;
   const C = Lib.ThemeContext.useComponents();
   const reg = useShowcaseRegistry();
 
+  // Wait for the registry before rendering anything
   if (!reg) {
+    // Render nothing while the registry is loading
     return null;
   }
 
@@ -197,6 +210,7 @@ export default function CompositeGallery () {
   const R = reg.Component;
   const keys = reg.buckets.composite;
 
+  // Render the composite gallery with custom interactive rows and multi-state rows
   return (
     <ScrollView contentContainerStyle={styles.content}>
 
@@ -209,17 +223,23 @@ export default function CompositeGallery () {
 
       {/* All other composites in alphabetical order */}
       {keys.map(function (k) {
+        // Skip components that have custom interactive rows above
         if (CUSTOM_ROWS[k]) {
+          // Skip custom-row components in the generic loop
           return null;
         }
         const Comp = R[k];
+        // Skip if the component is not available in the registry
         if (!Comp) {
+          // Skip missing components gracefully
           return null;
         }
         const states = MULTI_STATE[k];
         if (states) {
+          // Render a multi-state row for components with defined states
           return <MultiStateCompositeRow key={k} name={k} Comp={Comp} states={states} C={C} />;
         }
+        // Skip components without any defined states
         return null;
       })}
 

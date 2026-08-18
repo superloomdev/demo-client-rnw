@@ -11,12 +11,16 @@ const { Pressable } = require('react-native');
 
 module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disable-line no-unused-vars
 
+  // Return the ButtonPrimaryTypeA component factory
   return function ButtonPrimaryTypeA (props) {
 
+    // Extract button props and strip RTL flag from the rest
     const { title, icon, onPress, disabled, fullWidth, isRtlActive, ...rest } = props; // eslint-disable-line no-unused-vars
 
+    // Track hover state for web interactions
     const [hovered, setHovered] = React.useState(false);
 
+    // Assemble the outlined container style from tokens
     const containerBase = [
       CommonStyle['br_md'],
       CommonStyle['p_h_lg'],
@@ -26,12 +30,15 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
       fullWidth ? { alignSelf: 'stretch' } : null
     ];
 
+    // Resolve background: subtle tint on interaction, transparent otherwise
     const bg = function (pressed) {
+      // Subtle tint when pressed or hovered, otherwise transparent surface
       return (pressed || hovered)
         ? CommonStyle['background_app_primary_subtle']
         : CommonStyle['background_surface'];
     };
 
+    // Render the Pressable with outlined styling and icon/label children
     return React.createElement(
       Pressable,
       Object.assign({
@@ -40,12 +47,15 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
         accessibilityRole: 'button',
         accessibilityLabel: title,
         onHoverIn: function () {
+          // Mark as hovered on mouse enter
           setHovered(true);
         },
         onHoverOut: function () {
+          // Clear hover on mouse leave
           setHovered(false);
         },
         style: function (state) {
+          // Combine container base with state-dependent background
           return [...containerBase, bg(state.pressed)];
         }
       }, rest),
