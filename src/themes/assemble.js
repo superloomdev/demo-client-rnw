@@ -22,6 +22,7 @@ Then Emit.
 *********************************************************************/
 function platform () {
 
+  // Return the native projection so the component library emits unit-free numbers
   return 'native';
 
 }
@@ -91,6 +92,7 @@ function assemble (Lib, built, currentLayers, updateLayersRef) {
   const combineComponent = require('../components');
   const components = combineComponent(Lib, theme);
 
+  // Return the assembled theme, component library, and shared styles
   return {
     theme: theme,
     Component: components.Component,

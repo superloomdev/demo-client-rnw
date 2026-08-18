@@ -30,37 +30,47 @@ const BREAKPOINTS = Object.freeze({
 // library expects: getPlatform, getViewport, onViewportChange. Backed by the
 // react-native Platform + Dimensions modules so it works on web, iOS, and
 // Android without an extra dependency.
-function createDeviceAdapter () {
+function createDeviceAdapter (Lib) {
 
+  // Track active viewport listeners so they can be cleaned up on unsubscribe
   const listeners = [];
 
+  // Return the Device adapter object matching the js-rnw-helper-device contract
   return {
 
     getPlatform: function () {
+      // Return the current platform identifier in the Device adapter contract shape
       return { success: true, platform: Platform.OS, error: null };
     },
 
     getViewport: function () {
+      // Query the current window dimensions from the native platform
       const win = Dimensions.get('window');
+      // Return the viewport payload in the Device adapter contract shape
       return { success: true, width: win.width, height: win.height, error: null };
     },
 
     onViewportChange: function (callback) {
+      // Register the callback so we can remove it later on unsubscribe
       listeners.push(callback);
 
+      // Subscribe to native dimension changes and forward them to the callback
       const sub = Dimensions.addEventListener('change', function (dims) {
+        // Extract the window dimensions from the change event payload
         const win = dims.window || dims;
         callback({ width: win.width, height: win.height });
       });
 
+      // Return an unsubscribe handle so callers can release the listener
       return {
         success: true,
         unsubscribe: function () {
+          // Remove the callback from the tracked listener list if still present
           const idx = listeners.indexOf(callback);
           if (idx !== -1) {
             listeners.splice(idx, 1);
           }
-          if (sub && typeof sub.remove === 'function') {
+          if (sub && Lib.Utils.isFunction(sub.remove)) {
             sub.remove();
           }
         },
@@ -78,14 +88,17 @@ function createDeviceAdapter () {
 // Returns { Component, Style } or null while the theme is unavailable.
 export default function useCarbonRegistry () {
 
+  // Obtain the shared Lib bundle and the live theme from the theme context
   const Lib = useLib();
   const { useTheme } = Lib.ThemeContext;
   const theme = useTheme();
 
+  // Return the memoized Carbon registry so it rebuilds only when inputs change
   return useMemo(function () {
 
     // Theme is null outside a provider - nothing to build yet
     if (!theme) {
+      // Return null so callers know the registry is not ready
       return null;
     }
 
@@ -100,11 +113,12 @@ export default function useCarbonRegistry () {
       Utils: Lib.Utils,
       Debug: Lib.Debug,
       React: Lib.React,
-      Device: createDeviceAdapter(),
+      Device: createDeviceAdapter(Lib),
       Icons: Lib.Icons,
       Font: Lib.Font
     }, {});
 
+    // Return the built Carbon component registry for the showcase galleries
     return Components.build(contract, 'base');
 
   }, [Lib, theme]);

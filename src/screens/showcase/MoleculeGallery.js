@@ -17,7 +17,9 @@ const noop = function () {};
 // ---- Interactive molecule rows ----
 
 function PasswordInputRow ({ C, R }) {
+  // Track the interactive password input's value
   const [val, setVal] = useState('');
+  // Render the password input row with default, filled, and disabled states
   return (
     <ShowcaseRow name="PasswordInput" C={C}>
       <StateCell label="default" C={C}>
@@ -34,7 +36,9 @@ function PasswordInputRow ({ C, R }) {
 }
 
 function SearchRow ({ C, R }) {
+  // Track the interactive search input's value
   const [val, setVal] = useState('');
+  // Render the search row with default, filled, and disabled states
   return (
     <ShowcaseRow name="Search" C={C}>
       <StateCell label="default" C={C}>
@@ -51,7 +55,9 @@ function SearchRow ({ C, R }) {
 }
 
 function ExpandableSearchRow ({ C, R }) {
+  // Track the interactive expandable search input's value
   const [val, setVal] = useState('');
+  // Render the expandable search row with a default interactive state
   return (
     <ShowcaseRow name="ExpandableSearch" C={C}>
       <StateCell label="default" C={C}>
@@ -62,7 +68,9 @@ function ExpandableSearchRow ({ C, R }) {
 }
 
 function NumberInputRow ({ C, R }) {
+  // Track the interactive number input's value
   const [val, setVal] = useState(5);
+  // Render the number input row with default and disabled states
   return (
     <ShowcaseRow name="NumberInput" C={C}>
       <StateCell label="default" C={C}>
@@ -76,12 +84,16 @@ function NumberInputRow ({ C, R }) {
 }
 
 function SwitchRow ({ C, R }) {
+  // Track the interactive switch's on/off state
   const [on, setOn] = useState(true);
+  // Toggle the switch state when the interactive switch is pressed
   const toggle = useCallback(function () {
     setOn(function (v) {
+      // Flip the previous on/off value
       return !v;
     });
   }, []);
+  // Render the switch row with interactive, on, off, and disabled states
   return (
     <ShowcaseRow name="Switch" C={C}>
       <StateCell label="interactive" C={C}><R.Switch label="Switch" selected={on} onPress={toggle} /></StateCell>
@@ -93,6 +105,7 @@ function SwitchRow ({ C, R }) {
 }
 
 function MenuItemRow ({ C, R }) {
+  // Render the menu item row with default, icon, and disabled states
   return (
     <ShowcaseRow name="MenuItem" C={C}>
       <StateCell label="default" C={C}><R.MenuItem label="Menu item" onPress={noop} /></StateCell>
@@ -103,12 +116,16 @@ function MenuItemRow ({ C, R }) {
 }
 
 function IconSwitchRow ({ C, R }) {
+  // Track the interactive icon switch's checked state
   const [on, setOn] = useState(true);
+  // Toggle the checked state when the interactive icon switch is pressed
   const toggle = useCallback(function () {
     setOn(function (v) {
+      // Flip the previous checked value
       return !v;
     });
   }, []);
+  // Render the icon switch row with interactive, on, and off states
   return (
     <ShowcaseRow name="IconSwitch" C={C}>
       <StateCell label="interactive" C={C}><R.IconSwitch icon="add" checked={on} onToggle={toggle} /></StateCell>
@@ -845,9 +862,11 @@ const CUSTOM_ROWS = {
 
 // Multi-state row from the MULTI_STATE configuration
 function MultiStateMoleculeRow ({ name, Comp, states, C }) {
+  // Render one showcase row with a state cell per defined state
   return (
     <ShowcaseRow name={name} C={C}>
       {states.map(function (state) {
+        // Render one error-isolated state cell per configured state
         return (
           <StateCell key={state.label} label={state.label} C={C}>
             <SafeSample name={name + ' ' + state.label}>
@@ -863,12 +882,15 @@ function MultiStateMoleculeRow ({ name, Comp, states, C }) {
 
 export default function MoleculeGallery () {
 
+  // Resolve the live lib, navigation helpers, themed components, and showcase registry
   const Lib = useLib();
   const { Link } = Lib.Navigation;
   const C = Lib.ThemeContext.useComponents();
   const reg = useShowcaseRegistry();
 
+  // Wait for the registry before rendering anything
   if (!reg) {
+    // Render nothing while the registry is loading
     return null;
   }
 
@@ -877,6 +899,7 @@ export default function MoleculeGallery () {
   const R = reg.Component;
   const keys = reg.buckets.molecule;
 
+  // Render the molecule gallery with custom interactive rows and multi-state rows
   return (
     <ScrollView contentContainerStyle={styles.content}>
 
@@ -894,17 +917,23 @@ export default function MoleculeGallery () {
 
       {/* All other molecules in alphabetical order */}
       {keys.map(function (k) {
+        // Skip components that have custom interactive rows above
         if (CUSTOM_ROWS[k]) {
+          // Skip custom-row components in the generic loop
           return null;
         }
         const Comp = R[k];
+        // Skip if the component is not available in the registry
         if (!Comp) {
+          // Skip missing components gracefully
           return null;
         }
         const states = MULTI_STATE[k];
         if (states) {
+          // Render a multi-state row for components with defined states
           return <MultiStateMoleculeRow key={k} name={k} Comp={Comp} states={states} C={C} />;
         }
+        // Skip components without any defined states
         return null;
       })}
 

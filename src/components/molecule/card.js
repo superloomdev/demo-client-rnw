@@ -17,10 +17,13 @@ const SHADOW = Platform.select({
 
 module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disable-line no-unused-vars
 
+  // Return the Card component factory
   return function Card (props) {
 
+    // Extract style, children, and remaining props
     const { style, children, ...rest } = props;
 
+    // Render a themed surface with padding and platform-specific shadow
     return React.createElement(
       Component.View,
       Object.assign({

@@ -21,17 +21,22 @@ const SELECTABLE = ['Checkbox', 'Tabs', 'Slider', 'RadioButton', 'Toggle', 'Link
 // Build the element to mount for a given component name from the live registry.
 function buildElement (name, Component) {
 
+  // Alias the component registry for shorter case branches
   const C = Component;
 
+  // Build the element to mount based on the component name
   switch (name) {
 
   case 'Checkbox':
+    // Render a checked checkbox for a11y inspection
     return <C.Checkbox checked onChange={function () {}} label="Inspect me" />;
 
   case 'Slider':
+    // Render a slider at 50% for a11y inspection
     return <C.Slider value={0.5} onValueChange={function () {}} label="Volume" />;
 
   case 'Tabs':
+    // Render a two-tab container for a11y inspection
     return (
       <C.Tabs selectedIndex={0} onChange={function () {}}>
         <C.Tab>One</C.Tab>
@@ -40,21 +45,27 @@ function buildElement (name, Component) {
     );
 
   case 'RadioButton':
+    // Render a checked radio button for a11y inspection
     return <C.RadioButton checked onChange={function () {}} label="Pick me" />;
 
   case 'Toggle':
+    // Render an on toggle for a11y inspection
     return <C.Toggle value onValueChange={function () {}} label="Toggle" />;
 
   case 'Link':
+    // Render a link for a11y inspection
     return <C.Link onPress={function () {}}>Inspect link</C.Link>;
 
   case 'ListItem':
+    // Render a list item for a11y inspection
     return <C.ListItem title="Inspect item" onPress={function () {}} />;
 
   case 'Button':
+    // Render a button for a11y inspection
     return <C.Button title="Inspect" onPress={function () {}} />;
 
   default:
+    // Return null for unmapped component names
     return null;
 
   }
@@ -66,17 +77,23 @@ function buildElement (name, Component) {
 // component emits. Returns a deduped map of prop name -> example value.
 function collectA11y (root) {
 
+  // Accumulate accessibility props found during tree traversal
   const found = {};
 
+  // Recursively visit each node, collecting a11y props from props and children
   const visit = function (node) {
 
+    // Skip null or undefined nodes to avoid crashes
     if (!node) {
+      // Bail out of the recursion for empty nodes
       return;
     }
 
+    // Extract the node's props and their keys for scanning
     const props = node.props || {};
     const keys = Object.keys(props);
 
+    // Scan every prop key for aria-* or accessibility-* prefixes
     for (let i = 0; i < keys.length; i++) {
       const k = keys[i];
       if (k.indexOf('aria') === 0 || k.indexOf('accessibility') === 0) {
@@ -84,6 +101,7 @@ function collectA11y (root) {
       }
     }
 
+    // Recurse into child nodes to collect nested a11y props
     const children = node.children || [];
     for (let j = 0; j < children.length; j++) {
       visit(children[j]);
@@ -91,7 +109,9 @@ function collectA11y (root) {
 
   };
 
+  // Walk the tree and return the collected a11y props
   visit(root);
+  // Return the deduped map of accessibility prop name to example value
   return found;
 
 }
@@ -99,19 +119,24 @@ function collectA11y (root) {
 
 export default function A11yInspector () {
 
+  // Resolve the live lib, navigation helpers, themed components, and showcase registry
   const Lib = useLib();
   const { Link } = Lib.Navigation;
   const C = Lib.ThemeContext.useComponents();
   const reg = useShowcaseRegistry();
 
+  // Track which component the user has selected for inspection
   const [selected, setSelected] = useState('Checkbox');
 
   // Only offer components that actually exist in the live registry
   const options = useMemo(function () {
+    // Return an empty list while the registry is still loading
     if (!reg) {
       return [];
     }
+    // Filter the curated set down to components present in the live registry
     return SELECTABLE.filter(function (k) {
+      // Keep only names that exist as actual components
       return Boolean(reg.Component[k]);
     });
   }, [reg]);
@@ -119,36 +144,47 @@ export default function A11yInspector () {
   // Inspect the selected component's emitted a11y props via react-test-renderer
   const a11y = useMemo(function () {
 
+    // Return empty if the registry or selected component is unavailable
     if (!reg || !reg.Component[selected]) {
       return {};
     }
 
+    // Build the element to inspect; return empty if the name is unmapped
     const el = buildElement(selected, reg.Component);
     if (!el) {
       return {};
     }
 
+    // Mount the element with test-renderer, capturing any render error
     let tree;
     try {
       tree = TestRenderer.create(el);
     } catch (err) {
+      // Return the error message so the UI can display it
       return { error: String(err && err.message ? err.message : err) };
     }
 
+    // Collect a11y props from the mounted tree, then clean up
     const found = collectA11y(tree.root);
     TestRenderer.unmount(tree);
+    // Return the collected accessibility props map
     return found;
 
   }, [reg, selected]);
 
+  // Wait for the registry before rendering anything
   if (!reg) {
+    // Render nothing while the registry is loading
     return null;
   }
 
+  // Extract a11y prop keys, excluding the error key if present
   const a11yKeys = Object.keys(a11y).filter(function (k) {
+    // Keep only non-error keys for the props list
     return k !== 'error';
   });
 
+  // Render the inspector UI with chips, live render, and props list
   return (
     <ScrollView contentContainerStyle={styles.content}>
 
@@ -157,11 +193,14 @@ export default function A11yInspector () {
 
       <View style={styles.chips}>
         {options.map(function (k) {
+          // Determine if this chip is the currently selected component
           const active = k === selected;
+          // Render one selectable chip per available component
           return (
             <Pressable
               key={k}
               onPress={function () {
+                // Select this component for inspection
                 setSelected(k);
               }}
               style={[styles.chip, active ? styles.chipActive : null]}
@@ -186,8 +225,10 @@ export default function A11yInspector () {
           <C.Text size="xs" color="text_muted">No aria-* or accessibility* props emitted.</C.Text>
         ) : null}
         {a11yKeys.map(function (k) {
+          // Resolve the prop value and format it for display
           const val = a11y[k];
           const display = val === true ? 'true' : (val === false ? 'false' : String(val));
+          // Render one row per accessibility prop with its name and value
           return (
             <View key={k} style={styles.propRow}>
               <C.Text size="xs" weight="semibold" style={styles.propKey}>{k}</C.Text>

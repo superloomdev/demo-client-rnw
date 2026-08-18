@@ -11,11 +11,13 @@ import { View, Text, StyleSheet } from 'react-native';
 export default class SafeSample extends React.Component {
 
   constructor (props) {
+    // Initialize the base class and start with no captured error
     super(props);
     this.state = { error: null };
   }
 
   static getDerivedStateFromError (error) {
+    // Capture the error so render() can show the fallback UI
     return { error: error };
   }
 
@@ -26,7 +28,9 @@ export default class SafeSample extends React.Component {
 
   render () {
 
+    // Show the fallback UI when a render error was captured
     if (this.state.error) {
+      // Render the error fallback with icon and message
       return (
         <View style={styles.fallback}>
           <Text style={styles.errorIcon}>x</Text>
@@ -37,6 +41,7 @@ export default class SafeSample extends React.Component {
       );
     }
 
+    // Render the wrapped children when no error occurred
     return this.props.children;
   }
 

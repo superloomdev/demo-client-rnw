@@ -54,6 +54,7 @@ const SUPPORT = {
 
 // Resolve the capability key for a component name (defaults to "both").
 function capability (name) {
+  // Return the mapped capability or the universal default
   return NON_BOTH[name] || 'both';
 }
 

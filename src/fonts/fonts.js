@@ -81,6 +81,7 @@ module.exports = function loader (shared_libs) {
     Fonts.families = ['System'].concat(Object.keys(manifestResult.manifest));
   }
 
+  // Return the public font interface to the host
   return Fonts;
 
 };/////////////////////////// Module-Loader END ////////////////////////////////
@@ -133,6 +134,7 @@ const Fonts = { // Public font-manifest interface accessible by the host
   *********************************************************************/
   isReady: function () {
 
+    // Query the adapter and report whether all registered fonts are loaded
     const result = FontAdapter.isReady();
     return result.success && result.ready;
 

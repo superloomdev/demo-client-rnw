@@ -12,7 +12,9 @@ const { View } = require('react-native');
 
 module.exports = function () {
 
+  // Return the RawBox escape-hatch component (no tokens, no theme)
   return function RawBox (props) {
+    // Render a raw view with caller-supplied style, bypassing the design system
     return React.createElement(View, { style: props.style }, props.children);
   };
 

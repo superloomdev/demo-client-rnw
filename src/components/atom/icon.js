@@ -9,13 +9,15 @@ const React = require('react');
 
 module.exports = function (Component, CommonStyle, theme, Lib) {
 
+  // Return the Icon component factory for the host adapter to mount
   return function Icon (props) {
 
+    // Destructure props to separate glyph styling from pass-through attributes
     const { name, size, color, style, isRtlActive, ...rest } = props; // eslint-disable-line no-unused-vars
 
     // Resolve size: token -> px, number -> px, default md
     let px = theme.Dimension.fontSize.md;
-    if (typeof size === 'number') {
+    if (Lib.Utils.isNumber(size)) {
       px = size;
     } else if (size && theme.Dimension.fontSize[size]) {
       px = theme.Dimension.fontSize[size];
@@ -29,6 +31,7 @@ module.exports = function (Component, CommonStyle, theme, Lib) {
       hex = theme.Color[color.toUpperCase()];
     }
 
+    // Render the glyph through the injected Icons component with resolved props
     return React.createElement(
       Lib.Icons.Glyph,
       Object.assign({ name: name, size: px, color: hex, style: style }, rest)

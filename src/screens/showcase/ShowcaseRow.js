@@ -15,6 +15,7 @@ import SafeSample from './SafeSample';
 
 // One labelled state cell within a showcase row
 function StateCell ({ label, children, C }) {
+  // Render the label above an error-isolated stage for the child content
   return (
     <View style={cellStyles.cell}>
       <C.Text size="xs" color="text_muted" style={cellStyles.labelStyle}>{label}</C.Text>
@@ -34,6 +35,7 @@ const cellStyles = StyleSheet.create({
 
 // Full-width row for one component with multiple state cells
 function ShowcaseRow ({ name, children, C }) {
+  // Render the component name label above a flex-wrap container of state cells
   return (
     <View style={rowStyles.row}>
       <C.Text size="sm" weight="semibold">{name}</C.Text>

@@ -73,6 +73,7 @@ module.exports = function loader (shared_libs) {
   // Expose the extension's context for advanced consumers
   Extension.ThemeContext = Ext.ThemeContext;
 
+  // Return the public theming interface for consumers
   return Extension;
 
 };/////////////////////////// Module-Loader END ////////////////////////////////
@@ -125,14 +126,17 @@ const Extension = { // Public theming interface accessible by the host
     // the shared assemble function so the bridging, font validation, and
     // component building logic lives in one place.
     const transform = React.useCallback(function (built, currentLayers) {
+      // Return the assembled theme via the shared transform seam
       return assemble(Lib, built, currentLayers, updateLayersRef);
     }, []);
 
     // Hidden child that captures the extension's update_layers into the ref.
     // Renders inside the extension's ThemeProvider so it can read the context.
     function RefCapture () {
+      // Read the extension controller so we can capture its update setter
       const ctx = Ext.useThemeController();
       updateLayersRef.current = ctx ? ctx.update_layers : null;
+      // Return nothing so this hidden child renders no output
       return null;
     }
 
@@ -161,17 +165,21 @@ const Extension = { // Public theming interface accessible by the host
   @return {Object|null} - context value, or null when outside a provider
   *********************************************************************/
   useThemeController: function () {
+    // Read the extension controller from context
     const ctx = Ext.useThemeController();
     if (!ctx) {
+      // Return null when used outside a provider
       return null;
     }
 
+    // Return the app-shaped controller wrapping the extension context
     return {
       Lib: Lib,
       theme: ctx.theme,
       Component: ctx.Component,
       CommonStyle: ctx.CommonStyle,
       updateTheme: function (nextVariant) {
+        // Convert the variant to layers and trigger a live re-derive
         const baseLayer = themerBridge.schemeToLayer(baseScheme, 'base');
         const variantLayer = themerBridge.schemeToLayer(nextVariant, 'variant');
         ctx.update_layers([baseLayer, variantLayer]);
@@ -186,7 +194,9 @@ const Extension = { // Public theming interface accessible by the host
   @return {Object|null} - the theme, or null when outside a provider
   *********************************************************************/
   useTheme: function () {
+    // Read the extension controller from context
     const ctx = Ext.useThemeController();
+    // Return the assembled theme or null when outside a provider
     return ctx ? ctx.theme : null;
   },
 
@@ -197,7 +207,9 @@ const Extension = { // Public theming interface accessible by the host
   @return {Object|null} - the styles, or null when outside a provider
   *********************************************************************/
   useStyles: function () {
+    // Read the extension controller from context
     const ctx = Ext.useThemeController();
+    // Return the utility stylesheet or null when outside a provider
     return ctx ? ctx.CommonStyle : null;
   },
 
@@ -208,7 +220,9 @@ const Extension = { // Public theming interface accessible by the host
   @return {Object|null} - the Component registry, or null when outside a provider
   *********************************************************************/
   useComponents: function () {
+    // Read the extension controller from context
     const ctx = Ext.useThemeController();
+    // Return the themed component registry or null when outside a provider
     return ctx ? ctx.Component : null;
   }
 
