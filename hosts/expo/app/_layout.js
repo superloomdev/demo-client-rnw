@@ -1,4 +1,4 @@
-// Info: Root layout — the app boot. Builds the Lib container (LibProvider), the
+// Info: Root layout - the app boot. Builds the Lib container (LibProvider), the
 // safe-area context, gates render on font loading (Lib.Fonts), and wraps the app
 // in a BASE ThemeProvider (used by the launcher). Each app shape under
 // app/[shape]/ nests its own ThemeProvider, so this base theme only styles the
@@ -26,7 +26,7 @@ function Boot () {
 
   React.useEffect(function () {
 
-    // Already ready (system-only build) — skip the async load
+    // Already ready (system-only build) - skip the async load
     if (Lib.Fonts.isReady()) {
       return;
     }

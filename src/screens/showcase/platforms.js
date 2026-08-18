@@ -2,7 +2,7 @@
 // is read live from Object.keys(Component) by the parity screen; this map only
 // carries the per-component platform capability for components that are NOT
 // universal ("both"). Any live key not listed here is treated as "both" (the
-// package default for an RNW library), so the roster can never drift — only
+// package default for an RNW library), so the roster can never drift - only
 // the capability label degrades to the default.
 //
 // Source-derived: extracted from the package's own component-roster fixture

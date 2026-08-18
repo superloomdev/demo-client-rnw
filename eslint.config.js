@@ -4,7 +4,7 @@
 //
 // No per-module rule overrides are permitted - if a file cannot pass the
 // shared config, the finding goes to the retrospective, not to a local
-// override. See docs/languages/js/code-formatting.md for the rule catalog.
+// override.
 //
 // Additional ignores beyond the shared config: build output directories
 // (dist/, .expo/, android/, ios/) contain generated/minified code that must

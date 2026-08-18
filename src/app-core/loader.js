@@ -1,7 +1,7 @@
 // Info: Client-app bootstrap and dependency injection root.
 // Loads all dependencies, merges config, builds Lib and Config.
 // Pattern: load foundation helpers first, then platform utils, then app modules.
-// Returns { Lib, Config } — same contract as the server loader.
+// Returns { Lib, Config } - same contract as the server loader.
 // Memoization is owned by the React context provider (lib-context.js), not here.
 'use strict';
 
@@ -71,7 +71,7 @@ module.exports = function loader (adapters) {
 
 
   // ==================== HELPER MODULES ============================= //
-  // Zero-dependency core helpers — same packages the server uses, run unchanged in RNW/Metro.
+  // Zero-dependency core helpers - same packages the server uses, run unchanged in RNW/Metro.
   // Each receives Lib + ONLY its relevant sub-config.
 
   Lib.Utils = require('@superloomdev/js-helper-utils')(Lib, {});

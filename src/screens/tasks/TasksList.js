@@ -86,7 +86,7 @@ export default function TasksList () {
               </C.View>
             );
           })}
-          {tasks.length === 0 ? <C.Text color="text_secondary">No tasks yet — add one above.</C.Text> : null}
+          {tasks.length === 0 ? <C.Text color="text_secondary">No tasks yet - add one above.</C.Text> : null}
         </C.Card>
       )}
 

@@ -28,7 +28,7 @@ const iconsAdapter = iconsAdapterMod.default;
 
 
 // Route table: pathname -> screen component
-// A11yInspector is excluded — it requires react-test-renderer (test-only dep)
+// A11yInspector is excluded - it requires react-test-renderer (test-only dep)
 const ROUTES = {
   '/': Launcher,
   '/tasks': TasksList,

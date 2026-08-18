@@ -57,7 +57,7 @@ for (let i = 0; i < names.length; i++) {
       const child = React.createElement('span', null, 'test');
       const merged = Object.assign({}, props, { children: child });
       const el = TestRenderer.create(React.createElement(Comp, merged));
-      // Overlays may return null when closed — that is valid, not a crash
+      // Overlays may return null when closed - that is valid, not a crash
       el.unmount();
     });
   } else {
@@ -122,7 +122,7 @@ if (CarbonComponent.provider) {
     test('Carbon provider: ' + name + ' renders children', function () {
       const child = React.createElement('span', null, 'child');
       const el = TestRenderer.create(React.createElement(Comp, { children: child }));
-      // Providers render their children — tree should not be null
+      // Providers render their children - tree should not be null
       const json = el.toJSON();
       assert.ok(json !== null && json !== undefined, 'provider.' + name + ' produced null tree');
       el.unmount();

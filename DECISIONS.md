@@ -1,6 +1,6 @@
 # Architecture Decisions
 
-Design decisions that shape this repository. Each entry is terse — expand into
+Design decisions that shape this repository. Each entry is terse - expand into
 full docs when the pattern needs to be communicated beyond the team.
 
 ---
@@ -17,26 +17,26 @@ The super-app shape is injected at runtime via `Lib.SuperApp.determineApp()`.
 
 Two top-level folders have distinct, non-overlapping responsibilities:
 
-- **`hosts/expo/app/`** — Expo Router's routing layer. Every file maps to a
+- **`hosts/expo/app/`** - Expo Router's routing layer. Every file maps to a
   URL/screen. Expo Router owns this folder. Contains layouts and screen aliases
   only. No logic, no UI.
-- **`packages/screens/`** — Actual screen UI and business logic. No routing.
+- **`src/screens/`** - Actual screen UI and business logic. No routing.
   Reusable JS that any host can consume.
 
-**Rule:** `app/` files are zero-logic wrappers — one line re-exporting a screen
-from `packages/screens/`. All params, hooks, and logic go inside the screen
+**Rule:** `app/` files are zero-logic wrappers - one line re-exporting a screen
+from `src/screens/`. All params, hooks, and logic go inside the screen
 component. `packages/` never imports from `app/`.
 
 This gives two things simultaneously:
-1. File-based routing — Expo Router static analysis, deep links, typed routes.
-2. Reusable screens — actual UI lives in `packages/screens/`, shareable across
+1. File-based routing - Expo Router static analysis, deep links, typed routes.
+2. Reusable screens - actual UI lives in `src/screens/`, shareable across
    apps. A screen can be reused by pointing two wrappers at the same component.
 
 ---
 
 ## Per-app tree-shaking is a natural outcome
 
-Because `app/tasks/` only imports from `packages/screens/tasks/`, building tasks
+Because `app/tasks/` only imports from `src/screens/tasks/`, building tasks
 in lean mode produces a bundle with zero notes or main code. Clean dependency
 graph per app = free tree-shaking. No extra config needed.
 
@@ -51,15 +51,15 @@ The entry chain from `package.json` to first render:
     ↓ Expo Router scans app/ for routes
 hosts/expo/app/_layout.js                ← FIRST app code (root layout)
     ↓ mounts LibProvider
-hosts/expo/contexts/lib-context.js
-    ↓ calls loader() — memoized singleton
-hosts/expo/common/loader.js              ← builds Lib + Config
+src/app-core/contexts/lib-context.js
+    ↓ calls loader() - memoized singleton
+src/app-core/loader.js              ← builds Lib + Config
     ↓ then ThemeProvider
-hosts/expo/contexts/theme-context.js
+src/app-core/contexts/theme-context.js
     ↓ calls combineComponent()
-hosts/expo/components/index.js           ← builds themed component library
+src/components/index.js           ← builds themed component library
     ↓
-hosts/expo/app/index.js                  ← re-export → packages/screens/main/Launcher.js
+hosts/expo/app/index.js                  ← re-export → src/screens/main/Launcher.js
 ```
 
 **Rule:** `_layout.js` is the boot file. Loader is the DI root. Everything else
@@ -71,9 +71,9 @@ is wired through Lib.
 
 Mirrors the server-side helper module convention:
 
-- `packages/screens/package.json` — `react`, `react-native`, `expo-router` as
+- `src/screens/package.json` - `react`, `react-native`, `expo-router` as
   **peerDependencies**. The host owns and provides them.
-- `hosts/expo/package.json` — all of the above as real **dependencies**. It is
+- `hosts/expo/package.json` - all of the above as real **dependencies**. It is
   the host.
 
 **Rule:** Packages declare what they need. Hosts provide it.
@@ -82,13 +82,13 @@ Mirrors the server-side helper module convention:
 
 ## Theme vocabulary: Template / Theme (base + variant)
 
-- **Themer engine** — label-agnostic token resolution (Carbon vocabulary).
+- **Themer engine** - label-agnostic token resolution (Carbon vocabulary).
   Knows no `primary`, no `xs`. Zero deps. Published as
   `@superloomdev/js-client-helper-themer`.
-- **Template** — the opinionated structure built on the engine. Declares the
+- **Template** - the opinionated structure built on the engine. Declares the
   named tokens and their relationships: color tokens via mix/ref operations,
-  modular/linear scales, font roles. Lives at `hosts/expo/themes/themer-template.js`.
-- **Theme** — the *values* that fill a template. A theme is **base + variant**.
+  modular/linear scales, font roles. Lives at `src/themes/themer-template.js`.
+- **Theme** - the *values* that fill a template. A theme is **base + variant**.
   `base` is the complete fallback; a `variant` is a partial that mints a new
   theme. Pure data → portable, server-sendable. Lives at
   `hosts/expo/themes/{base,tasks,notes}-theme.js`.
@@ -113,13 +113,13 @@ unified through a single `expo-font` interface.
 | **Custom (bundled)** | `notes` | `Lora` | Raw `.ttf` in `fonts/assets/` → `expo-font` |
 
 **Architecture separation:**
-- **Theme data** (`themes/*.js`) — names the font FAMILY (e.g.,
+- **Theme data** (`themes/*.js`) - names the font FAMILY (e.g.,
   `primaryFamily: 'Poppins_400Regular'`)
-- **Font manifest** (`fonts/fonts.js`) — owns LOADING those families
+- **Font manifest** (`fonts/fonts.js`) - owns LOADING those families
 
 This separation is deliberate: `require('./font.ttf')` is bundler-bound
 (Metro/Webpack), and a server-sent theme JSON cannot carry binaries. The themer
-engine stays bundler-agnostic — it only names families. The host must register
+engine stays bundler-agnostic - it only names families. The host must register
 whatever families the theme names.
 
 **Loading flow:**
@@ -140,12 +140,12 @@ into `fonts/assets/` and uncomment one line.
 
 React context objects and hook definitions live in `hosts/expo/contexts/`.
 Both the Lib context (`lib-context.js`) and the theme context
-(`theme-context.js`) live here. Plural — matches React community convention and
+(`theme-context.js`) live here. Plural - matches React community convention and
 distinguishes from a generic `context/` that might hold non-React context code.
 
 ---
 
-## Always use `localhost:8081` — no CORS hacks
+## Always use `localhost:8081` - no CORS hacks
 
 Expo's CORS middleware blocks IDE browser preview proxies that use non-localhost
 hosts. Always open the app directly at `http://localhost:8081` in your system
@@ -157,7 +157,7 @@ browser. No `node_modules` patches needed.
 
 All Superloom helper modules are consumed from the GitHub Packages registry as
 normal npm dependencies. No Metro `watchFolders` or `extraNodeModules` aliases.
-This proves the app is a realistic consumer — it installs packages exactly as a
+This proves the app is a realistic consumer - it installs packages exactly as a
 third-party application would.
 
 ---
@@ -183,7 +183,7 @@ It is not a production web build.
 ## Host-specific implementations enter through three validated adapter slots
 
 Three capabilities cannot be shared across hosts: Navigation, Icons, and Fonts.
-Each enters `src/` through an adapter — a factory function with the signature
+Each enters `src/` through an adapter - a factory function with the signature
 `(Lib, config) => ready object`. The three slot names are `Navigation`,
 `Icons`, and `Fonts`. Adapters return a value; the loader assigns every `Lib`
 key, so no adapter can introduce a vendor-named slot. A missing or malformed

@@ -84,7 +84,7 @@ export default function useCarbonRegistry () {
 
   return useMemo(function () {
 
-    // Theme is null outside a provider — nothing to build yet
+    // Theme is null outside a provider - nothing to build yet
     if (!theme) {
       return null;
     }

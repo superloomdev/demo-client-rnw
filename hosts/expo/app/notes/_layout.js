@@ -1,5 +1,5 @@
 // Info: Notes shape layout. Same mechanism as the Tasks shape, but with the notes
-// (teal) VARIANT — including a larger type ratio — proving a shape can re-shape both
+// (teal) VARIANT - including a larger type ratio - proving a shape can re-shape both
 // color and the numeric scale from the same engine.
 import { Stack } from 'expo-router';
 

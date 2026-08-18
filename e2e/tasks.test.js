@@ -23,7 +23,7 @@ test.describe('Tasks E2E', function () {
     await expect(page.getByText('Try the theme showcase')).toBeVisible();
   });
 
-  test('add a task — appears in the list', async function ({ page }) {
+  test('add a task - appears in the list', async function ({ page }) {
     await page.goto('/tasks');
     // Wait for the list to stabilize before interacting
     await expect(page.getByText('Welcome to Nimbus')).toBeVisible({ timeout: 10000 });

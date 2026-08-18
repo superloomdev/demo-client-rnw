@@ -1,10 +1,10 @@
-// Info: Component library entry — the equivalent of the reference's
+// Info: Component library entry - the equivalent of the reference's
 // combineComponent() + updateComponentTheme(). Given the loader (Lib) and an
 // assembled theme, it:
 //   1. generates the atomic CommonStyle from the theme tokens
 //   2. wraps every atom/molecule/variant through the one HOC
 //   3. returns { Component, CommonStyle }
-// Calling this again with a NEW theme IS "updateComponentTheme" — the runtime
+// Calling this again with a NEW theme IS "updateComponentTheme" - the runtime
 // retheming seam (the ThemeProvider does exactly that on a theme switch).
 'use strict';
 

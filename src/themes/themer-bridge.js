@@ -79,7 +79,7 @@ function schemeToLayer (scheme, name) {
     }
   }
 
-  // Font families — prefer font.roles (per-theme), fall back to legacy keys
+  // Font families - prefer font.roles (per-theme), fall back to legacy keys
   if (font.roles && typeof font.roles === 'object') {
     for (const [roleName, familyName] of Object.entries(font.roles)) {
       if (familyName !== undefined) {

@@ -2,7 +2,7 @@
 // components require specific props or children to render (Tabs needs Tab
 // children, DataTable needs columns/rows, etc.), so rendering every registry
 // entry with minimal props will throw for some. This boundary isolates each
-// sample so one crashing component never takes down the whole gallery — it
+// sample so one crashing component never takes down the whole gallery - it
 // shows a neutral fallback instead.
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
@@ -20,7 +20,7 @@ export default class SafeSample extends React.Component {
   }
 
   componentDidCatch (error, info) { // eslint-disable-line no-unused-vars
-    // Swallowed on purpose — the fallback UI is the showcase signal that a
+    // Swallowed on purpose - the fallback UI is the showcase signal that a
     // component needs specific props to render.
   }
 

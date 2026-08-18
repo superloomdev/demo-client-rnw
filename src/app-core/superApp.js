@@ -1,5 +1,5 @@
 // Info: The super-app brain. Holds the registry of app shapes this one core can
-// take, and the determineApp() switch the entry uses to decide what to mount —
+// take, and the determineApp() switch the entry uses to decide what to mount -
 // the direct analogue of the reference root.js `determineApp`. Adding a new shape
 // = add an entry here + a matching app/<shape>/ route folder + its theme seeds.
 'use strict';

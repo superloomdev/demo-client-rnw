@@ -1,5 +1,5 @@
 // Info: Main app (launcher) layout. Wraps the super-app shell in a ThemeProvider
-// with no variant — the launcher uses the neutral host base theme. ThemeProvider
+// with no variant - the launcher uses the neutral host base theme. ThemeProvider
 // and the theming hooks come from the DI container (Lib.ThemeContext).
 import { Stack } from 'expo-router';
 

@@ -1,4 +1,4 @@
-// Info: Showcase index — the landing screen for the Carbon Components shape.
+// Info: Showcase index - the landing screen for the Carbon Components shape.
 // Lists one section per tier with a live count pulled from the built registry
 // (Object.keys(Component)), and a link into each gallery. Counts are never
 // hardcoded: they reflect the package as shipped, so a roster change in the
