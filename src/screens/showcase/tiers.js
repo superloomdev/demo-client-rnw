@@ -6,7 +6,7 @@
 // Source-derived, not hand-maintained: every name below was extracted from the
 // published package's components.js build statements (Component.X =
 // make(require('./component/<tier>/...'))). A component that ships in the
-// package but is not listed here is never hidden — classify() routes any
+// package but is not listed here is never hidden - classify() routes any
 // unmapped live key into an 'uncategorized' bucket so the roster cannot drift.
 'use strict';
 
@@ -270,7 +270,7 @@ COMPOSITES.forEach(function (k) {
 
 // Bucket the live registry keys into tiers. Iterates Object.keys(Component)
 // (the actual roster); the tier arrays only assign a bucket. Any live key not
-// in the index lands in 'uncategorized' and is still returned — never dropped.
+// in the index lands in 'uncategorized' and is still returned - never dropped.
 function classify (Component) {
 
   const flat = Object.keys(Component).filter(function (k) {

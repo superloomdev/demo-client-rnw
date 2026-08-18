@@ -1,4 +1,4 @@
-// Info: Host font manifest — owns LOADING the font families that themes NAME.
+// Info: Host font manifest - owns LOADING the font families that themes NAME.
 // Keeping loading here (not in the themer package) is deliberate: require('font.ttf')
 // is bundler-bound and a server-sent theme JSON cannot carry binaries, so the
 // engine stays bundler-agnostic. Contract: if a theme names family X, this file
@@ -48,7 +48,7 @@ module.exports = function loader (shared_libs) {
   Font = Lib.Font;
   FontAdapter = Lib.FontAdapter;
   if (!Font) {
-    throw new TypeError('fonts: Lib.Font is required (inject the js-client-helper-font instance).');
+    throw new TypeError('fonts: Lib.Font is required (inject the helper-font instance).');
   }
   if (!FontAdapter) {
     throw new TypeError('fonts: Lib.FontAdapter is required (inject a font loader adapter).');

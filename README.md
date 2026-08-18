@@ -1,8 +1,8 @@
-# Nimbus — RNW Super-App Demo (Client)
+# Nimbus - RNW Super-App Demo (Client)
 
 A runnable validation demo for the React Native Web super-app architecture: one pipeline for web, iOS, and Android, a Carbon-vocabulary token engine (Themer), and a super-app shape mechanism.
 
-**Nimbus** is a shared spaces network — one account and one pass for finding, booking, and using bookable spaces across independent venue operators. For the full product definition, see the server repo's `PROJECT.md`.
+**Nimbus** is a shared spaces network - one account and one pass for finding, booking, and using bookable spaces across independent venue operators. For the full product definition, see the server repo's `PROJECT.md`.
 
 The demo currently validates the architecture with two placeholder shapes (Tasks and Notes). The product definition defines five shapes: Member, Kiosk, Operations Board, Admin Console, and Launcher. Screen implementations are out of scope for the product-definition plan; this demo proves the shape mechanism and theming pipeline.
 
@@ -115,7 +115,7 @@ Three binding rules govern this repository:
 
 ## Notes / demo shortcuts
 
-- Fonts use three delivery mechanisms: System (base), Google/Poppins (tasks), Custom/Lora (notes — optional, ships empty).
+- Fonts use three delivery mechanisms: System (base), Google/Poppins (tasks), Custom/Lora (notes - optional, ships empty).
 - State is React context plus a stub SDK (no Redux, no backend) to keep the focus on the architecture.
 - The stub SDK provides in-memory CRUD for tasks and notes. The real SDK will be a published package from the server repo.
 - `DECISIONS.md` documents the architectural design decisions for this repo.

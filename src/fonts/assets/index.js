@@ -1,4 +1,4 @@
-// Info: Raw bundled-font registry — the CUSTOM font delivery mechanism (system 3
+// Info: Raw bundled-font registry - the CUSTOM font delivery mechanism (system 3
 // of 3). Each entry maps a family NAME to a require()'d .ttf asset. Metro resolves
 // these requires at build time, so this file only requires files that actually
 // exist: it ships EMPTY, and you enable Lora by (1) dropping the .ttf into this

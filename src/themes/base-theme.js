@@ -1,13 +1,13 @@
-// Info: Base theme — the COMPLETE fallback scheme. This is the neutral host
+// Info: Base theme - the COMPLETE fallback scheme. This is the neutral host
 // theme used by the launcher (main app). Every other theme is a partial VARIANT
 // layered over this base via Themer's native layer cascade, so this file must
 // declare a value for every token group the template needs (color, dimension,
 // font).
 //
 // DATA module (not a loader): pure, frozen, portable, and server-sendable. The
-// js-client-helper-themer package owns the engine + template; the app owns these
+// helper-themer package owns the engine + template; the app owns these
 // values. The font families named here MUST be registered by the host font
-// manifest (fonts/fonts.js). 'System' is always available — no loading needed.
+// manifest (fonts/fonts.js). 'System' is always available - no loading needed.
 'use strict';
 
 
@@ -36,7 +36,7 @@ module.exports = Object.freeze({
   },
 
   // ~~~~~~~~~~ Font ~~~~~~~~~~
-  // FONT SYSTEM 1 of 3 — SYSTEM font. No asset to load; instant on every platform.
+  // FONT SYSTEM 1 of 3 - SYSTEM font. No asset to load; instant on every platform.
   font: {
     roles: {
       primary: 'System',

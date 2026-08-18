@@ -19,19 +19,19 @@ test.describe('Navigation E2E', function () {
     expect(errors).toEqual([]);
   });
 
-  test('click Tasks shape — navigates to /tasks', async function ({ page }) {
+  test('click Tasks shape - navigates to /tasks', async function ({ page }) {
     await page.goto('/');
     await page.getByText('Tasks').click();
     await expect(page).toHaveURL('/tasks');
   });
 
-  test('click Notes shape — navigates to /notes', async function ({ page }) {
+  test('click Notes shape - navigates to /notes', async function ({ page }) {
     await page.goto('/');
     await page.getByText('Notes').click();
     await expect(page).toHaveURL('/notes');
   });
 
-  test('click Carbon Components shape — navigates to /showcase', async function ({ page }) {
+  test('click Carbon Components shape - navigates to /showcase', async function ({ page }) {
     await page.goto('/');
     await page.getByText('Carbon Components').click();
     await expect(page).toHaveURL('/showcase');

@@ -45,7 +45,7 @@ export default function NotesList () {
     <ScrollView contentContainerStyle={styles.content}>
 
       <C.freeform.RawBox style={styles.banner}>
-        <C.Text size="sm" weight="semibold" style={styles.bannerText}>freeform.RawBox — opts out of the design system on purpose</C.Text>
+        <C.Text size="sm" weight="semibold" style={styles.bannerText}>freeform.RawBox - opts out of the design system on purpose</C.Text>
       </C.freeform.RawBox>
 
       <C.Card style={styles.composer}>

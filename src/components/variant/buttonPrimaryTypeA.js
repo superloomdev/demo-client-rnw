@@ -2,7 +2,7 @@
 // canonical ButtonPrimary: transparent surface, primary border + primary label,
 // subtle primary tint on hover/press. It DEVIATES in composition but still consumes
 // the token system, so it stays in sync with theme changes. Registered in the
-// variant registry (Component.variant) — discoverable, not a loose one-off.
+// variant registry (Component.variant) - discoverable, not a loose one-off.
 'use strict';
 
 const React = require('react');

@@ -2,7 +2,7 @@
 // the accessibility props it emits to the host tree (aria-* and accessibility*
 // keys) using react-test-renderer. The selectable set is filtered against the
 // live registry, so a component that ships in the package but is not listed
-// below is simply not offered — the roster source is still Object.keys.
+// below is simply not offered - the roster source is still Object.keys.
 import React, { useMemo, useState } from 'react';
 import { ScrollView, View, Pressable, StyleSheet } from 'react-native';
 import TestRenderer from 'react-test-renderer';
@@ -153,7 +153,7 @@ export default function A11yInspector () {
     <ScrollView contentContainerStyle={styles.content}>
 
       <C.Text size="lg" weight="semibold">A11y Inspector</C.Text>
-      <C.Text color="text_secondary">Pick a component — its emitted aria-* / accessibility* props are listed below.</C.Text>
+      <C.Text color="text_secondary">Pick a component - its emitted aria-* / accessibility* props are listed below.</C.Text>
 
       <View style={styles.chips}>
         {options.map(function (k) {

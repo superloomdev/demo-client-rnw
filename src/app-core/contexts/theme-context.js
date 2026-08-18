@@ -1,4 +1,4 @@
-// Info: Theme context — the runtime-theming hub for the host app.
+// Info: Theme context - the runtime-theming hub for the host app.
 //
 // This file is reference code. It demonstrates the
 // module/app split: the extension module (helper-themer-ext-react) owns the
@@ -48,7 +48,7 @@ module.exports = function loader (shared_libs) {
   // Capture injected deps
   Lib = shared_libs || {};
 
-  // React is required — injected via Lib to keep the centralized-React pattern
+  // React is required - injected via Lib to keep the centralized-React pattern
   React = Lib.React;
   if (!React) {
     throw new TypeError('theme-context: Lib.React is required (inject React via the loader).');
@@ -93,7 +93,7 @@ const Extension = { // Public theming interface accessible by the host
   // ~~~~~~~~~~ Provider ~~~~~~~~~~
 
   /********************************************************************
-  ThemeProvider — wraps the extension's ThemeProvider with app-specific
+  ThemeProvider - wraps the extension's ThemeProvider with app-specific
   logic. Converts the shape variant to themer layers, passes them through
   the extension's transform seam (bridging, font validation, component
   building), and provides the result to the subtree.
@@ -153,7 +153,7 @@ const Extension = { // Public theming interface accessible by the host
   // ~~~~~~~~~~ Hooks ~~~~~~~~~~
 
   /********************************************************************
-  Hook: the full controller — { Lib, theme, Component, CommonStyle,
+  Hook: the full controller - { Lib, theme, Component, CommonStyle,
   updateTheme }. Wraps the extension's context with the app-shaped API.
   updateTheme(nextVariant) converts the variant to layers and calls the
   extension's update_layers for a live re-derive.
@@ -181,7 +181,7 @@ const Extension = { // Public theming interface accessible by the host
 
 
   /********************************************************************
-  Hook: the assembled theme — { Color, Dimension, Font }.
+  Hook: the assembled theme - { Color, Dimension, Font }.
 
   @return {Object|null} - the theme, or null when outside a provider
   *********************************************************************/

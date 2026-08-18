@@ -1,4 +1,4 @@
-// Info: Launcher screen — the super-app entry point.
+// Info: Launcher screen - the super-app entry point.
 // Displays shape cards in super mode, or redirects in lean mode.
 // Thin screen component: all routing logic stays in app/main/index.js wrapper.
 import React from 'react';
