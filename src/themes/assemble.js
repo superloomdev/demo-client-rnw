@@ -69,8 +69,8 @@ function assemble (Lib, built, currentLayers, updateLayersRef) {
           theme.Font.family[role] = 'System';
 
           // Trigger async loading of the family, then re-derive
-          if (Lib.Fonts && Lib.Fonts.ensureFamily) {
-            Lib.Fonts.ensureFamily(familyName).then(function (result) {
+          if (Lib.Fonts && Lib.Fonts.loadFamily) {
+            Lib.Fonts.loadFamily(familyName).then(function (result) {
               if (result.success) {
 
                 // Re-derive by calling update_layers with a fresh copy
