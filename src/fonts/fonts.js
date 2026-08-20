@@ -135,8 +135,7 @@ const Fonts = { // Public font-manifest interface accessible by the host
   isReady: function () {
 
     // Query the adapter and report whether all registered fonts are loaded
-    const result = FontAdapter.isReady();
-    return result.success && result.ready;
+    return FontAdapter.isReady();
 
   },
 
@@ -159,8 +158,7 @@ const Fonts = { // Public font-manifest interface accessible by the host
     }
 
     // Check if the family is already loaded by the adapter
-    const loadedResult = FontAdapter.isFamilyLoaded(familyName);
-    if (loadedResult.loaded) {
+    if (FontAdapter.isFamilyLoaded(familyName)) {
       return { success: true, error: null };
     }
 
@@ -179,8 +177,7 @@ const Fonts = { // Public font-manifest interface accessible by the host
     }
 
     // Register the family in the font core if not already registered
-    const regResult = Font.isRegistered(familyName);
-    if (regResult.success && !regResult.registered) {
+    if (!Font.isRegistered(familyName)) {
       const singleManifest = {};
       singleManifest[familyName] = FONT_MANIFEST[familyName];
       Font.registerFamilies(singleManifest);

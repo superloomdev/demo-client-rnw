@@ -58,8 +58,7 @@ function assemble (Lib, built, currentLayers, updateLayersRef) {
 
       // Check if the family is registered in the font core
       if (Lib.Font && Lib.Font.isRegistered) {
-        const regResult = Lib.Font.isRegistered(familyName);
-        if (regResult.success && !regResult.registered && familyName !== 'System') {
+        if (!Lib.Font.isRegistered(familyName) && familyName !== 'System') {
 
           // Log warning for the unregistered family
           if (Lib.Debug) {
