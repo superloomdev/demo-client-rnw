@@ -24,10 +24,10 @@ module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
       return Promise.resolve({ success: true, error: null });
     },
     isReady: function () {
-      return { success: true, ready: true };
+      return true;
     },
     isFamilyLoaded: function () {
-      return { loaded: true };
+      return true;
     }
   };
 
