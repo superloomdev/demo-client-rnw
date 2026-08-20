@@ -146,11 +146,11 @@ const Fonts = { // Public font-manifest interface accessible by the host
   loaded. Skips 'System' (always available) and families already
   loaded by the adapter.
 
-  @param {String} familyName - The family name to ensure
+  @param {String} familyName - The family name to load
 
   @return {Promise<Object>} - { success, error }
   *********************************************************************/
-  ensureFamily: async function (familyName) {
+  loadFamily: async function (familyName) {
 
     // System is always available, no loading needed
     if (familyName === 'System') {
