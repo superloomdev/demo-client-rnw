@@ -25,4 +25,9 @@ const CLIENT_MODULES = path.resolve(__dirname, 'node_modules');
 
 config.resolver.nodeModulesPaths = [CLIENT_MODULES];
 
+// Metro does not read package.json "exports" by default at this Expo/RN
+// version. Every Superloom module publishes an "exports" map and no "main",
+// so resolution fails without this. Enabled by default from Metro 0.82.
+config.resolver.unstable_enablePackageExports = true;
+
 module.exports = config;
