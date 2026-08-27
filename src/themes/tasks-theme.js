@@ -8,10 +8,9 @@
 // The family names below MUST match the keys the host font manifest registers
 // (fonts/fonts.js) through expo-font, which works on native and injects the
 // matching @font-face on web.
-'use strict';
 
 
-module.exports = Object.freeze({
+export default Object.freeze({
 
   // ~~~~~~~~~~ Color ~~~~~~~~~~
   // Indigo accent - everything else falls back to base.

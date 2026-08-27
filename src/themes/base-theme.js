@@ -8,10 +8,9 @@
 // helper-themer package owns the engine + template; the app owns these
 // values. The font families named here MUST be registered by the host font
 // manifest (fonts/fonts.js). 'System' is always available - no loading needed.
-'use strict';
 
 
-module.exports = Object.freeze({
+export default Object.freeze({
 
   // ~~~~~~~~~~ Color ~~~~~~~~~~
   // Seed colors; the template derives the full UPPER_SNAKE token map from these.

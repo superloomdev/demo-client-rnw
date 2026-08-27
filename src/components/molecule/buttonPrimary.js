@@ -3,13 +3,11 @@
 //   bg:  APP_PRIMARY -> _HOVERED (web) / _PRESSED / _DISABLED
 //   fg:  TEXT_ON_PRIMARY (auto-contrast against the primary)
 // Hover is web-only (Pressable onHoverIn/Out); press works on all platforms.
-'use strict';
-
-const React = require('react');
-const { Pressable } = require('react-native');
+import React from 'react';
+import { Pressable } from 'react-native';
 
 
-module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disable-line no-unused-vars
+export default function (Component, CommonStyle, theme, Lib) { // eslint-disable-line no-unused-vars
 
   // Return the ButtonPrimary component factory
   return function ButtonPrimary (props) {
@@ -94,4 +92,4 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
 
   };
 
-};
+}

@@ -5,8 +5,8 @@
 // reference a hardcoded roster.
 import { useMemo } from 'react';
 
-import useCarbonRegistry from './useCarbonRegistry';
-const tiers = require('./tiers');
+import useCarbonRegistry from './useCarbonRegistry.js';
+import tiers from './tiers.js';
 
 
 export default function useShowcaseRegistry () {

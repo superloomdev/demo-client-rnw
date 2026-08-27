@@ -3,12 +3,11 @@
 // ThemerReact, Font, Fonts, Themes, Icons, Navigation, ThemeContext), a
 // complete theme with Color/Dimension/Font, and a Component registry with
 // the app's atom and molecule set.
-'use strict';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import loader from './loader.js';
 
-const { test } = require('node:test');
-const assert = require('node:assert/strict');
-
-const { Lib, theme, Component, CommonStyle } = require('./loader')();
+const { Lib, theme, Component, CommonStyle } = loader();
 
 // Lib container structure
 test('Lib has Utils, Debug, Client, React, Themer, ThemerReact, Font, Fonts, Themes, ThemeContext', function () {

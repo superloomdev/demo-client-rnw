@@ -1,11 +1,9 @@
 // Info: Expo adapter for the Icons slot. Maps the icon contract onto
 // @expo/vector-icons. The glyph set is a vendor choice and lives only here.
-'use strict';
-
-const { Ionicons } = require('@expo/vector-icons');
+import { Ionicons } from '@expo/vector-icons';
 
 
-module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
+export default function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // Capability-named member; the vendor name stops at this file
   return {

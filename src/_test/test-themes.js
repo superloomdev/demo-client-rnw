@@ -2,17 +2,16 @@
 // schemeToLayer converts scheme shapes to themer layers correctly,
 // bridgeTheme reshapes flat token maps to nested structures, and the
 // full build pipeline produces expected token values with layer merging.
-'use strict';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import loader from './loader.js';
+import themerBridge from '../themes/themer-bridge.js';
+import themerTemplate from '../themes/themer-template.js';
+import baseTheme from '../themes/base-theme.js';
+import tasksTheme from '../themes/tasks-theme.js';
+import notesTheme from '../themes/notes-theme.js';
 
-const { test } = require('node:test');
-const assert = require('node:assert/strict');
-
-const { Lib } = require('./loader')();
-const themerBridge = require('../themes/themer-bridge');
-const themerTemplate = require('../themes/themer-template');
-const baseTheme = require('../themes/base-theme');
-const tasksTheme = require('../themes/tasks-theme');
-const notesTheme = require('../themes/notes-theme');
+const { Lib } = loader();
 
 // Theme data modules are frozen
 test('base-theme is frozen', function () {

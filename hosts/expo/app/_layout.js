@@ -8,11 +8,10 @@
 // Lib.Fonts), so this file holds no theming logic of its own.
 import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
-const { LibProvider, useLib } = require('../../../src/app-core/contexts/lib-context');
-const navigationAdapter = require('../adapters/navigation');
-const fontsAdapter = require('../adapters/fonts');
-const iconsAdapter = require('../adapters/icons');
+import { LibProvider, useLib } from '../../../src/app-core/contexts/lib-context.js';
+import navigationAdapter from '../adapters/navigation.js';
+import fontsAdapter from '../adapters/fonts.js';
+import iconsAdapter from '../adapters/icons.js';
 
 
 // Inner boot: hold render until host fonts are ready, then provide the base theme

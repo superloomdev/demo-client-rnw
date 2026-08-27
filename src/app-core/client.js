@@ -2,9 +2,7 @@
 // on". Every other module asks Lib.Client (isBrowser / isNative / os) instead of
 // importing react-native Platform directly, so platform branches stay centralized
 // and the rest of the codebase reads as platform-agnostic.
-'use strict';
-
-const { Platform } = require('react-native');
+import { Platform } from 'react-native';
 
 
 /********************************************************************
@@ -16,7 +14,7 @@ interface uniformity with every other Superloom module.
 
 @return {Object} - Public Client interface
 *********************************************************************/
-module.exports = function loader (shared_libs, config) { // eslint-disable-line no-unused-vars
+export default function loader (shared_libs, config) { // eslint-disable-line no-unused-vars
 
   // Public interface
   const Client = {
@@ -54,4 +52,4 @@ module.exports = function loader (shared_libs, config) { // eslint-disable-line 
   // Return the interface
   return Client;
 
-};
+}

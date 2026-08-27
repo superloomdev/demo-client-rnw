@@ -118,7 +118,7 @@ unified through a single `expo-font` interface.
 - **Font manifest** (`fonts/fonts.js`) - owns LOADING those families
 
 This separation is deliberate: `require('./font.ttf')` is bundler-bound
-(Metro/Webpack), and a server-sent theme JSON cannot carry binaries. The themer
+(Metro/Webpack asset loading, not CJS module loading), and a server-sent theme JSON cannot carry binaries. The themer
 engine stays bundler-agnostic - it only names families. The host must register
 whatever families the theme names.
 

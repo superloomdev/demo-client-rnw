@@ -8,7 +8,6 @@
 //
 // Pure functions, no side effects. The ThemeProvider calls these at assembly
 // time.
-'use strict';
 
 
 // Mapping from theme scheme keys to themer template token names
@@ -213,7 +212,7 @@ function bridgeTheme (flat) {
 }
 
 
-module.exports = {
+export default {
   schemeToLayer: schemeToLayer,
   bridgeTheme: bridgeTheme
 };

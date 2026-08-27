@@ -1,13 +1,11 @@
 // Info: The single Higher-Order Component every atom/molecule is wrapped with.
 // It injects `isRtlActive` so each component can make per-platform RTL decisions
 // without re-deriving direction. Mirrors the reference componentHoc.js.
-'use strict';
-
-const React = require('react');
-const { I18nManager } = require('react-native');
+import React from 'react';
+import { I18nManager } from 'react-native';
 
 
-module.exports = function loader (Lib) {
+export default function loader (Lib) {
 
   // Resolve direction once per build: web reads Config, native reads I18nManager
   const isRtlActive = Lib.Client.isBrowser()
@@ -25,4 +23,4 @@ module.exports = function loader (Lib) {
     };
   };
 
-};
+}

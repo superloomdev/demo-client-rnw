@@ -4,13 +4,11 @@
 // system entirely (chat bubbles, game HUDs, marketing heroes). It lives in the
 // fenced `freeform/` namespace so its use is a conscious, reviewable decision and
 // so a future lint rule can flag imports from here. It will NOT retheme at runtime.
-'use strict';
-
-const React = require('react');
-const { View } = require('react-native');
+import React from 'react';
+import { View } from 'react-native';
 
 
-module.exports = function () {
+export default function () {
 
   // Return the RawBox escape-hatch component (no tokens, no theme)
   return function RawBox (props) {
@@ -18,4 +16,4 @@ module.exports = function () {
     return React.createElement(View, { style: props.style }, props.children);
   };
 
-};
+}

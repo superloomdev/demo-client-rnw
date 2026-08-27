@@ -3,7 +3,16 @@
 // The test tier is a host - it uses the real loader, never rebuilds the container.
 //
 // Compatibility: Node.js 24+, react-test-renderer.
-'use strict';
+import appLoader from '../app-core/loader.js';
+import navigationAdapter from './adapters/navigation.js';
+import iconsAdapter from './adapters/icons.js';
+import fontsAdapter from './adapters/fonts.js';
+import deviceAdapter from './adapters/device.js';
+import themerTemplate from '../themes/themer-template.js';
+import themerBridge from '../themes/themer-bridge.js';
+import { assemble } from '../themes/assemble.js';
+import React from 'react';
+import TestRenderer from 'react-test-renderer';
 
 
 /********************************************************************
@@ -13,26 +22,18 @@ with stub adapters, then assembles the Carbon registry for testing.
 @return {Object} - { Lib, Config, theme, Component, CommonStyle,
                      CarbonComponent, CarbonStyle, React, TestRenderer }
 *********************************************************************/
-module.exports = function loader () {
+export default function loader () {
 
   // Stub adapters (the test tier is a host)
-  const navigationAdapter = require('./adapters/navigation');
-  const iconsAdapter = require('./adapters/icons');
-  const fontsAdapter = require('./adapters/fonts');
-  const deviceAdapter = require('./adapters/device');
 
   // Call the real loader - same as Expo and web hosts
-  const { Lib } = require('../app-core/loader')({
+  const { Lib } = appLoader({
     Navigation: navigationAdapter,
     Icons: iconsAdapter,
     Fonts: fontsAdapter
   });
 
   // Build the assembled theme from the base scheme via the themer
-  const themerTemplate = require('../themes/themer-template');
-  const themerBridge = require('../themes/themer-bridge');
-  const { assemble } = require('../themes/assemble');
-
   const baseLayer = themerBridge.schemeToLayer(Lib.Themes.base, 'base');
   const built = Lib.Themer.buildTheme(themerTemplate, [baseLayer], 'native');
   const assembled = assemble(Lib, built, [baseLayer], null);
@@ -68,8 +69,8 @@ module.exports = function loader () {
     CommonStyle: assembled.CommonStyle,
     CarbonComponent: carbonBuilt.Component,
     CarbonStyle: carbonBuilt.Style,
-    React: require('react'),
-    TestRenderer: require('react-test-renderer')
+    React: React,
+    TestRenderer: TestRenderer
   };
 
-};
+}

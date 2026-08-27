@@ -6,6 +6,9 @@
 // The src/ directory is watched because shared source (screens, components,
 // themes, fonts, app-core) lives outside the Expo project root.
 
+// CommonJS is required here: the Metro/Expo CLI loads this config through
+// require(), so this file cannot be an ES module.
+
 const { getDefaultConfig } = require('expo/metro-config');
 const path = require('path');
 

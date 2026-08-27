@@ -6,7 +6,16 @@
 //   3. returns { Component, CommonStyle }
 // Calling this again with a NEW theme IS "updateComponentTheme" - the runtime
 // retheming seam (the ThemeProvider does exactly that on a theme switch).
-'use strict';
+import commonStyles from './commonStyles.js';
+import componentHoc from './componentHoc.js';
+import atomView from './atom/view.js';
+import atomText from './atom/text.js';
+import atomIcon from './atom/icon.js';
+import atomTextInput from './atom/textInput.js';
+import moleculeCard from './molecule/card.js';
+import moleculeButtonPrimary from './molecule/buttonPrimary.js';
+import variantButtonPrimaryTypeA from './variant/buttonPrimaryTypeA.js';
+import freeformRawBox from './freeform/rawBox.js';
 
 
 /********************************************************************
@@ -17,13 +26,13 @@ Build the themed component library.
 
 @return {Object} - { Component, CommonStyle }
 *********************************************************************/
-module.exports = function combineComponent (Lib, theme) {
+export default function combineComponent (Lib, theme) {
 
   // Generate the atomic utility stylesheet from the theme
-  const CommonStyle = require('./commonStyles')(theme);
+  const CommonStyle = commonStyles(theme);
 
   // Build the RTL-injecting HOC once
-  const hoc = require('./componentHoc')(Lib);
+  const hoc = componentHoc(Lib);
 
   // The shared component registry (molecules close over this object)
   const Component = {};
@@ -35,26 +44,26 @@ module.exports = function combineComponent (Lib, theme) {
   };
 
   // ~~~~~~~~~~ Atoms ~~~~~~~~~~
-  Component.View = make(require('./atom/view'));
-  Component.Text = make(require('./atom/text'));
-  Component.Icon = make(require('./atom/icon'));
-  Component.TextInput = make(require('./atom/textInput'));
+  Component.View = make(atomView);
+  Component.Text = make(atomText);
+  Component.Icon = make(atomIcon);
+  Component.TextInput = make(atomTextInput);
 
   // ~~~~~~~~~~ Molecules (canonical) ~~~~~~~~~~
-  Component.Card = make(require('./molecule/card'));
-  Component.ButtonPrimary = make(require('./molecule/buttonPrimary'));
+  Component.Card = make(moleculeCard);
+  Component.ButtonPrimary = make(moleculeButtonPrimary);
 
   // ~~~~~~~~~~ Structured exceptions (variant registry) ~~~~~~~~~~
   Component.variant = {
-    ButtonPrimaryTypeA: make(require('./variant/buttonPrimaryTypeA'))
+    ButtonPrimaryTypeA: make(variantButtonPrimaryTypeA)
   };
 
   // ~~~~~~~~~~ Unstructured exceptions (freeform; NO tokens) ~~~~~~~~~~
   Component.freeform = {
-    RawBox: require('./freeform/rawBox')()
+    RawBox: freeformRawBox()
   };
 
   // Return the themed library + its generated styles
   return { Component: Component, CommonStyle: CommonStyle };
 
-};
+}

@@ -9,9 +9,9 @@
 // Additional ignores beyond the shared config: build output directories
 // (dist/, .expo/, android/, ios/) contain generated/minified code that must
 // never be linted.
-const { app } = require('@superloomdev/js-helper-eslint-config');
+import { app } from '@superloomdev/js-helper-eslint-config';
 
-module.exports = [
+export default [
   ...app,
 
   // Client-specific ignores. The shared config already ignores _test/,

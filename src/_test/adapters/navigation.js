@@ -1,9 +1,7 @@
 // Info: Test-tier stub adapter for the Navigation slot.
 // Provides minimal Link and Redirect functions for component tests.
 // Matches the contract the app-core loader expects: { Link, Redirect }.
-'use strict';
-
-const React = require('react');
+import React from 'react';
 
 
 /********************************************************************
@@ -15,7 +13,7 @@ Link (renders an anchor tag) and Redirect (renders null).
 
 @return {Object} - { Link, Redirect }
 *********************************************************************/
-module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
+export default function (Lib, config) { // eslint-disable-line no-unused-vars
 
   return {
     // Stub Link: renders an anchor element

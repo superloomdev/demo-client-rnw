@@ -8,10 +8,9 @@
 // .ttf in fonts/assets/ and registered by the host manifest (fonts/fonts.js).
 // If the .ttf has not been added yet the manifest skips it and this falls back
 // to 'System' (see fonts/assets/index.js).
-'use strict';
 
 
-module.exports = Object.freeze({
+export default Object.freeze({
 
   // ~~~~~~~~~~ Color ~~~~~~~~~~
   // Teal accent - everything else falls back to base.

@@ -5,7 +5,7 @@ import React from 'react';
 import { ScrollView, Pressable, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const { useLib } = require('../../app-core/contexts/lib-context');
+import { useLib } from '../../app-core/contexts/lib-context.js';
 
 
 export default function Launcher () {

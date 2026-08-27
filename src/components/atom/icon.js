@@ -2,12 +2,10 @@
 //   name  -> glyph name (vendor-specific, set by the host adapter)
 //   size  -> dimension token (xs..xxl) OR a raw number
 //   color -> color token (e.g. 'TEXT_PRIMARY' / 'text_primary') OR a raw hex
-'use strict';
-
-const React = require('react');
+import React from 'react';
 
 
-module.exports = function (Component, CommonStyle, theme, Lib) {
+export default function (Component, CommonStyle, theme, Lib) {
 
   // Return the Icon component factory for the host adapter to mount
   return function Icon (props) {
@@ -39,4 +37,4 @@ module.exports = function (Component, CommonStyle, theme, Lib) {
 
   };
 
-};
+}

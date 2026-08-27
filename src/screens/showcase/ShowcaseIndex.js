@@ -6,8 +6,8 @@
 import React from 'react';
 import { ScrollView, Pressable, StyleSheet } from 'react-native';
 
-const { useLib } = require('../../app-core/contexts/lib-context');
-import useShowcaseRegistry from './useShowcaseRegistry';
+import { useLib } from '../../app-core/contexts/lib-context.js';
+import useShowcaseRegistry from './useShowcaseRegistry.js';
 
 
 // One link card in the index. label + live count + route.

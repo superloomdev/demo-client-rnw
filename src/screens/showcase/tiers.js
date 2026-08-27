@@ -5,10 +5,9 @@
 //
 // Source-derived, not hand-maintained: every name below was extracted from the
 // published package's components.js build statements (Component.X =
-// make(require('./component/<tier>/...'))). A component that ships in the
+// make(import('./component/<tier>/...'))). A component that ships in the
 // package but is not listed here is never hidden - classify() routes any
 // unmapped live key into an 'uncategorized' bucket so the roster cannot drift.
-'use strict';
 
 const ATOMS = [
   'AspectRatio',
@@ -296,7 +295,7 @@ function classify (Component) {
 }
 
 
-module.exports = {
+export default {
   ATOMS: ATOMS,
   MOLECULES: MOLECULES,
   COMPOSITES: COMPOSITES,

@@ -3,8 +3,7 @@
 // DERIVED theme (primary background + auto-contrast title), so switching shapes
 // visibly re-themes everything from one variant value.
 import { Stack } from 'expo-router';
-
-const { useLib } = require('../../../../src/app-core/contexts/lib-context');
+import { useLib } from '../../../../src/app-core/contexts/lib-context.js';
 
 
 // Inner stack so we can read the derived theme for header styling

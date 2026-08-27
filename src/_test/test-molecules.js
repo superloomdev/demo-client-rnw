@@ -1,13 +1,12 @@
 // Info: L1 - Molecule component render tests. Verifies composite molecules
 // (Card, ButtonPrimary, ButtonPrimaryTypeA, RawBox) render with correct DOM
 // structure, accessibility attributes, and token-resolved styles.
-'use strict';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import TestRenderer from 'react-test-renderer';
+import loader from './loader.js';
 
-const { test } = require('node:test');
-const assert = require('node:assert/strict');
-const TestRenderer = require('react-test-renderer');
-
-const { Component: C, React } = require('./loader')();
+const { Component: C, React } = loader();
 
 if (typeof global.document === 'undefined') {
   global.document = { createElement: function () {

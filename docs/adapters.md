@@ -48,7 +48,7 @@ manifest. The web harness adapter supplies a no-op loader and an empty manifest.
 Every adapter file exports a factory function:
 
 ```js
-module.exports = function (Lib, config) {
+export default function (Lib, config) {
   return { /* ready-to-use object */ };
 };
 ```

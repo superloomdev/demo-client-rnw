@@ -1,11 +1,9 @@
 // Info: Expo adapter for the Navigation slot. Maps the navigation contract onto
 // expo-router primitives. Shared source never imports expo-router directly.
-'use strict';
-
-const { Link, Redirect } = require('expo-router');
+import { Link, Redirect } from 'expo-router';
 
 
-module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
+export default function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // Ready-to-use navigation surface; the loader assigns it to Lib.Navigation
   return {

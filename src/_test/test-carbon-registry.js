@@ -7,14 +7,12 @@
 // then exercises every registered component in isolation. Smoke-props are
 // owned locally (src/_test/smoke-props.js), not imported from the
 // carbon package.
-'use strict';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import loader from './loader.js';
+import SMOKE_PROPS from './smoke-props.js';
 
-const { test } = require('node:test');
-const assert = require('node:assert/strict');
-
-const loader = require('./loader');
 const { CarbonComponent, React, TestRenderer } = loader();
-const SMOKE_PROPS = require('./smoke-props');
 
 
 // Stub document for react-native-web TextInput and Overlay

@@ -2,8 +2,7 @@
 // (teal) VARIANT - including a larger type ratio - proving a shape can re-shape both
 // color and the numeric scale from the same engine.
 import { Stack } from 'expo-router';
-
-const { useLib } = require('../../../../src/app-core/contexts/lib-context');
+import { useLib } from '../../../../src/app-core/contexts/lib-context.js';
 
 
 function ThemedStack () {

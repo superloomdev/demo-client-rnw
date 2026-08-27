@@ -1,6 +1,7 @@
 {
   "name": "nimbus-demo-client-rnw",
   "version": "1.0.0",
+  "type": "module",
   "author": {
     "name": "sj00"
   },

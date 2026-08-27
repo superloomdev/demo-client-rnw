@@ -8,11 +8,10 @@
 // file exists only so the test tier can mount every component.
 //
 // Callbacks are no-ops; the harness does not assert behavior, only render.
-'use strict';
 
 const noop = function () {};
 
-module.exports = {
+export default {
   Button: { children: 'Button', onPress: noop },
   IconButton: { name: 'add', onPress: noop },
   Tag: { label: 'Tag' },

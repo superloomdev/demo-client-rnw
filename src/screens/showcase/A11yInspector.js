@@ -7,9 +7,9 @@ import React, { useMemo, useState } from 'react';
 import { ScrollView, View, Pressable, StyleSheet } from 'react-native';
 import TestRenderer from 'react-test-renderer';
 
-const { useLib } = require('../../app-core/contexts/lib-context');
-import useShowcaseRegistry from './useShowcaseRegistry';
-import SafeSample from './SafeSample';
+import { useLib } from '../../app-core/contexts/lib-context.js';
+import useShowcaseRegistry from './useShowcaseRegistry.js';
+import SafeSample from './SafeSample.js';
 
 
 // Curated selectable set (must include Checkbox, Tabs, Slider). Each entry

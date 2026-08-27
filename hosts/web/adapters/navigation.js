@@ -1,9 +1,7 @@
 // Info: Web adapter for the Navigation slot.
 // Maps the navigation contract onto simple web navigation primitives.
 // This is a portability harness, not a production router.
-'use strict';
-
-const React = require('react');
+import React from 'react';
 
 function Link (props) {
   const { href, asChild, children, ...rest } = props;
@@ -28,7 +26,7 @@ function Redirect (props) {
 }
 
 
-module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
+export default function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // Ready-to-use navigation surface; the loader assigns it to Lib.Navigation
   return {

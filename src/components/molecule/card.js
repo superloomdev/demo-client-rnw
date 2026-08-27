@@ -2,10 +2,8 @@
 // and an elevation shadow. The shadow shows the ONLY kind of platform exception
 // that exists (a platform-limited style prop, not a bundler feature):
 //   web -> boxShadow string | ios -> shadow* props | android -> elevation
-'use strict';
-
-const React = require('react');
-const { Platform } = require('react-native');
+import React from 'react';
+import { Platform } from 'react-native';
 
 // Platform-limited elevation styling, resolved once
 const SHADOW = Platform.select({
@@ -15,7 +13,7 @@ const SHADOW = Platform.select({
 });
 
 
-module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disable-line no-unused-vars
+export default function (Component, CommonStyle, theme, Lib) { // eslint-disable-line no-unused-vars
 
   // Return the Card component factory
   return function Card (props) {
@@ -37,4 +35,4 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
 
   };
 
-};
+}

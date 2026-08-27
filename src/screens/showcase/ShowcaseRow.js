@@ -10,7 +10,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import SafeSample from './SafeSample';
+import SafeSample from './SafeSample.js';
 
 
 // One labelled state cell within a showcase row
@@ -56,4 +56,4 @@ const rowStyles = StyleSheet.create({
 });
 
 
-module.exports = { ShowcaseRow: ShowcaseRow, StateCell: StateCell };
+export { ShowcaseRow, StateCell };

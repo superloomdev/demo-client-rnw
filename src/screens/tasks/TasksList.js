@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ScrollView, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
 
 
-const { useLib } = require('../../app-core/contexts/lib-context');
+import { useLib } from '../../app-core/contexts/lib-context.js';
 
 const ACCENTS = ['#4F46E5', '#7C3AED', '#DB2777', '#EA580C', '#0EA5E9'];
 

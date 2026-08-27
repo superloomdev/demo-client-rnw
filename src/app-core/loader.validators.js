@@ -1,7 +1,6 @@
 // Info: Loader validators. Validates the host-supplied adapter set before the
 // container is built. A missing or malformed adapter is a programmer error, so
 // it throws synchronously rather than returning an envelope.
-'use strict';
 
 
 // The adapter slots every host must supply. Adding a slot here is a breaking
@@ -52,4 +51,4 @@ const Validators = {
 };/////////////////////////// Public Functions END //////////////////////////////
 
 
-module.exports = { REQUIRED_ADAPTERS: REQUIRED_ADAPTERS, Validators: Validators };
+export { REQUIRED_ADAPTERS, Validators };

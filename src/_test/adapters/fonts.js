@@ -2,7 +2,6 @@
 // System-only: no platform font loader, empty manifest. Returns the minimal
 // contract surface the app-core loader expects from a Fonts adapter:
 // { adapter: { loadManifest, isReady, isFamilyLoaded }, manifest: {} }.
-'use strict';
 
 
 /********************************************************************
@@ -16,7 +15,7 @@ that always report success and readiness (no real font loading in tests).
 @return {Object} result.adapter  - { loadManifest, isReady, isFamilyLoaded }
 @return {Object} result.manifest - Empty font manifest
 *********************************************************************/
-module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
+export default function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // Stub adapter methods: all succeed immediately
   const adapter = {

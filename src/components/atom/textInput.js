@@ -1,13 +1,11 @@
 // Info: TextInput atom. A themed single-line input. Border/radius/padding/font all
 // come from tokens; focus swaps the border to the primary color. Placeholder color
 // uses a derived muted token so it reads consistently across shapes.
-'use strict';
-
-const React = require('react');
-const { TextInput: RNTextInput } = require('react-native');
+import React from 'react';
+import { TextInput as RNTextInput } from 'react-native';
 
 
-module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disable-line no-unused-vars
+export default function (Component, CommonStyle, theme, Lib) { // eslint-disable-line no-unused-vars
 
   // Return the TextInput component factory
   return function TextInput (props) {
@@ -52,4 +50,4 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
 
   };
 
-};
+}

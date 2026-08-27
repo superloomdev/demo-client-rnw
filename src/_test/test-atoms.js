@@ -1,13 +1,12 @@
 // Info: L1 - Atom component render tests. Verifies each atom in the app's
 // themed component registry renders correctly with token props (background,
 // radius, size, color, weight) and produces the expected DOM structure.
-'use strict';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import TestRenderer from 'react-test-renderer';
+import loader from './loader.js';
 
-const { test } = require('node:test');
-const assert = require('node:assert/strict');
-const TestRenderer = require('react-test-renderer');
-
-const { Component: C, React } = require('./loader')();
+const { Component: C, React } = loader();
 
 // react-native-web TextInput references document in a useEffect; stub it for Node
 if (typeof global.document === 'undefined') {

@@ -5,6 +5,10 @@ import path from 'path';
 
 const webNodeModules = path.resolve(__dirname, 'node_modules');
 
+// Browser stub for node:module - helper-utils uses createRequire for JSON
+// loading which is not needed in the browser bundle.
+const nodeModuleStub = path.resolve(__dirname, 'node-module-stub.js');
+
 export default defineConfig({
   plugins: [
     commonjs(),
@@ -33,7 +37,8 @@ export default defineConfig({
       { find: 'react-native', replacement: path.resolve(webNodeModules, 'react-native-web') },
       { find: 'react-native-safe-area-context', replacement: path.resolve(webNodeModules, 'react-native-safe-area-context') },
       { find: /@superloomdev\/(.*)/, replacement: path.resolve(webNodeModules, '@superloomdev/$1') },
-      { find: '@app', replacement: path.resolve(__dirname, '../../src') }
+      { find: '@app', replacement: path.resolve(__dirname, '../../src') },
+      { find: 'node:module', replacement: nodeModuleStub }
     ],
     extensions: ['.web.js', '.js', '.jsx', '.json']
   },

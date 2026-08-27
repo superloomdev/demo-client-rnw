@@ -6,9 +6,9 @@
 import React, { useMemo } from 'react';
 import { ScrollView, View, Pressable, Platform, StyleSheet } from 'react-native';
 
-const { useLib } = require('../../app-core/contexts/lib-context');
-import useShowcaseRegistry from './useShowcaseRegistry';
-const platforms = require('./platforms');
+import { useLib } from '../../app-core/contexts/lib-context.js';
+import useShowcaseRegistry from './useShowcaseRegistry.js';
+import platforms from './platforms.js';
 
 
 // Map Platform.OS ("web" | "ios" | "android") to the badge key used by SUPPORT.

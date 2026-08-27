@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ScrollView, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
 
-const { useLib } = require('../../app-core/contexts/lib-context');
+import { useLib } from '../../app-core/contexts/lib-context.js';
 
 
 export default function NotesList () {

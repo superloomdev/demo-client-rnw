@@ -8,7 +8,6 @@
 // Source-derived: extracted from the package's own component-roster fixture
 // (generated against @carbon/react and @carbon/react-native). "both" entries
 // are omitted to keep the map small; the default covers them.
-'use strict';
 
 
 // name -> capability for non-universal components. Universal ("both") is the
@@ -59,7 +58,7 @@ function capability (name) {
 }
 
 
-module.exports = {
+export default {
   NON_BOTH: NON_BOTH,
   LABELS: LABELS,
   SUPPORT: SUPPORT,

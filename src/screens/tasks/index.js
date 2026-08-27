@@ -1,5 +1,1 @@
-'use strict';
-
-module.exports = {
-  TasksList: require('./TasksList')
-};
+export { default as TasksList } from './TasksList.js';

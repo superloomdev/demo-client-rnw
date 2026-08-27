@@ -1,10 +1,7 @@
 // Info: Static configuration defaults for the Nimbus super-app demo.
 // Mirrors the server project config pattern: grouped sub-configs per concern.
 // Loader reads this and merges environment / runtime overrides on top.
-'use strict';
-
-
-module.exports = {
+export default {
 
   // ========================= APP IDENTITY ========================= //
 

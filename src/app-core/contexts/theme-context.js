@@ -18,7 +18,9 @@
 // common loader (Lib.ThemerReact). This file wraps the extension's interface
 // with app-specific logic and returns the wrapper. Consumers use
 // Lib.ThemeContext.* rather than requiring this file.
-'use strict';
+import themerTemplate from '../../themes/themer-template.js';
+import themerBridge from '../../themes/themer-bridge.js';
+import { assemble, platform as derivePlatform } from '../../themes/assemble.js';
 
 
 // Injected dependencies + module state, set by the loader (module-scope).
@@ -26,10 +28,6 @@ let Lib;              // Lib container (requires React, Themer, ThemerReact, The
 let React;            // injected React (required)
 let Ext;              // themer-ext-react instance (required)
 let baseScheme;       // complete fallback scheme (Lib.Themes.base)
-let themerTemplate;   // themer template for Nimbus tokens
-let themerBridge;     // bridge functions for scheme <-> themer conversion
-let assemble;         // theme assembly function (src/themes/assemble)
-let derivePlatform;   // platform derivation function (src/themes/assemble)
 
 
 /////////////////////////// Module-Loader START ////////////////////////////////
@@ -43,7 +41,7 @@ exposes the extension's context, and returns the provider/hooks wrapper.
 @return {Object} - { ThemeProvider, useThemeController, useTheme, useStyles,
                      useComponents, ThemeContext }
 *********************************************************************/
-module.exports = function loader (shared_libs) {
+export default function loader (shared_libs) {
 
   // Capture injected deps
   Lib = shared_libs || {};
@@ -62,13 +60,6 @@ module.exports = function loader (shared_libs) {
 
   // The complete base scheme comes from the theme registry
   baseScheme = (Lib.Themes && Lib.Themes.base) || {};
-
-  // The themer template, bridge, and assembly are host code
-  themerTemplate = require('../../themes/themer-template');
-  themerBridge = require('../../themes/themer-bridge');
-  const assembleModule = require('../../themes/assemble');
-  assemble = assembleModule.assemble;
-  derivePlatform = assembleModule.platform;
 
   // Expose the extension's context for advanced consumers
   Extension.ThemeContext = Ext.ThemeContext;

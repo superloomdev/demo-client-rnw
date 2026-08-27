@@ -3,10 +3,8 @@
 // screen/component can call useLib() to reach the SDK, helper modules
 // (Utils/Debug), the theme engine, etc. Memoization lives here, not in the
 // loader, so each provider mount gets a fresh container.
-'use strict';
-
-const React = require('react');
-const loader = require('../loader');
+import React from 'react';
+import loader from '../loader.js';
 
 const LibCtx = React.createContext(null);
 
@@ -31,4 +29,4 @@ function useLib () {
 }
 
 
-module.exports = { LibProvider: LibProvider, useLib: useLib, LibCtx: LibCtx };
+export { LibProvider, useLib, LibCtx };

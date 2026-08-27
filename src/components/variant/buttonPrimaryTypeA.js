@@ -3,13 +3,11 @@
 // subtle primary tint on hover/press. It DEVIATES in composition but still consumes
 // the token system, so it stays in sync with theme changes. Registered in the
 // variant registry (Component.variant) - discoverable, not a loose one-off.
-'use strict';
-
-const React = require('react');
-const { Pressable } = require('react-native');
+import React from 'react';
+import { Pressable } from 'react-native';
 
 
-module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disable-line no-unused-vars
+export default function (Component, CommonStyle, theme, Lib) { // eslint-disable-line no-unused-vars
 
   // Return the ButtonPrimaryTypeA component factory
   return function ButtonPrimaryTypeA (props) {
@@ -71,4 +69,4 @@ module.exports = function (Component, CommonStyle, theme, Lib) { // eslint-disab
 
   };
 
-};
+}

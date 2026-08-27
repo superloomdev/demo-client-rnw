@@ -1,5 +1,1 @@
-'use strict';
-
-module.exports = {
-  NotesList: require('./NotesList')
-};
+export { default as NotesList } from './NotesList.js';

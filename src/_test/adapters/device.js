@@ -1,7 +1,6 @@
 // Info: Test-tier stub adapter for the Device slot.
 // Returns a static viewport (375x812) and no-op subscription, matching the
 // js-rnw-helper-device contract: getPlatform, getViewport, onViewportChange.
-'use strict';
 
 
 /********************************************************************
@@ -13,7 +12,7 @@ values suitable for unit tests (no real viewport, no subscriptions).
 
 @return {Object} - { getPlatform, getViewport, onViewportChange }
 *********************************************************************/
-module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
+export default function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // Static viewport dimensions (iPhone 13 mini)
   const WIDTH = 375;

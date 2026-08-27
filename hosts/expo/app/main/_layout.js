@@ -2,8 +2,7 @@
 // with no variant - the launcher uses the neutral host base theme. ThemeProvider
 // and the theming hooks come from the DI container (Lib.ThemeContext).
 import { Stack } from 'expo-router';
-
-const { useLib } = require('../../../../src/app-core/contexts/lib-context');
+import { useLib } from '../../../../src/app-core/contexts/lib-context.js';
 
 
 // Inner stack so we can read the derived theme for header styling

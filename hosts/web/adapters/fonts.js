@@ -1,10 +1,9 @@
 // Info: Web adapter for the Fonts slot.
 // System-only: no platform font loader, empty manifest.
 // The harness proves portability, not font rendering.
-'use strict';
 
 
-module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
+export default function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // Minimal no-op font adapter satisfying the font extension contract
   const adapter = {

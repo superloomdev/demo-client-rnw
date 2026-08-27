@@ -1,5 +1,5 @@
 // Info: Host font manifest - owns LOADING the font families that themes NAME.
-// Keeping loading here (not in the themer package) is deliberate: require('font.ttf')
+// Keeping loading here (not in the themer package) is deliberate: importing font.ttf
 // is bundler-bound and a server-sent theme JSON cannot carry binaries, so the
 // engine stays bundler-agnostic. Contract: if a theme names family X, this file
 // must register X.
@@ -11,11 +11,10 @@
 // Loader pattern: SINGLETON with dependency injection. The font core (Lib.Font)
 // and the platform adapter (Lib.FontAdapter) arrive via Lib, matching the
 // centralized-deps pattern.
-'use strict';
 
 
 // Custom bundled fonts (local .ttf requires; {} until assets are added)
-const CustomFonts = require('./assets');
+import CustomFonts from './assets/index.js';
 
 
 // The font manifest is built in the loader from Lib.FontManifest (host-provided)
@@ -39,7 +38,7 @@ font families from the manifest, and returns the font interface.
 
 @return {Object} - { families, loadFonts, isReady }
 *********************************************************************/
-module.exports = function loader (shared_libs) {
+export default function loader (shared_libs) {
 
   // Capture injected deps
   Lib = shared_libs || {};

@@ -1,8 +1,9 @@
 {
   "name": "demo-client-test",
+  "type": "module",
   "private": true,
   "scripts": {
-    "test": "NODE_PATH=./node_modules node --test test-smoke.js test-atoms.js test-molecules.js test-loader.js test-themes.js test-carbon-registry.js"
+    "test": "node --import ./harness/register.js --test test-smoke.js test-atoms.js test-molecules.js test-loader.js test-themes.js test-carbon-registry.js"
   },
   "dependencies": {
     "react": "18.3.1",

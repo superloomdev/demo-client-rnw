@@ -2,9 +2,7 @@
 // Provides a minimal Glyph component that renders text placeholders
 // (e.g. '[add]') instead of real vector icons. Matches the contract
 // the app-core loader expects: { Glyph }.
-'use strict';
-
-const React = require('react');
+import React from 'react';
 
 
 /********************************************************************
@@ -16,7 +14,7 @@ component that renders a bracketed name as a span element.
 
 @return {Object} - { Glyph }
 *********************************************************************/
-module.exports = function (Lib, config) { // eslint-disable-line no-unused-vars
+export default function (Lib, config) { // eslint-disable-line no-unused-vars
 
   return {
     // Stub Glyph: renders [name] as text for assertions

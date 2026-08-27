@@ -4,9 +4,9 @@
 import React, { useState, useCallback } from 'react';
 import { ScrollView, View, Pressable, StyleSheet } from 'react-native';
 
-const { useLib } = require('../../app-core/contexts/lib-context');
-import useShowcaseRegistry from './useShowcaseRegistry';
-const { ShowcaseRow, StateCell } = require('./ShowcaseRow');
+import { useLib } from '../../app-core/contexts/lib-context.js';
+import useShowcaseRegistry from './useShowcaseRegistry.js';
+import { ShowcaseRow, StateCell } from './ShowcaseRow.js';
 
 
 const noop = function () {};

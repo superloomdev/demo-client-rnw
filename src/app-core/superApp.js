@@ -2,10 +2,7 @@
 // take, and the determineApp() switch the entry uses to decide what to mount -
 // the direct analogue of the reference root.js `determineApp`. Adding a new shape
 // = add an entry here + a matching app/<shape>/ route folder + its theme seeds.
-'use strict';
-
-
-module.exports = function loader (Lib, Config) {
+export default function loader (Lib, Config) {
 
   // Shape registry: presentation metadata for each hostable shape
   const SHAPES = {
@@ -69,4 +66,4 @@ module.exports = function loader (Lib, Config) {
   // Return the public SuperApp interface
   return SuperApp;
 
-};
+}

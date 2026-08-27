@@ -3,9 +3,7 @@
 // classes that components consume by name. Regenerated whenever the theme changes
 // (the runtime-theming seam). Spacing utilities are LOGICAL (start/end), so layouts
 // mirror correctly under RTL with no per-component work.
-'use strict';
-
-const { StyleSheet } = require('react-native');
+import { StyleSheet } from 'react-native';
 
 
 // Build the padding style object for a logical/physical side
@@ -46,7 +44,7 @@ Generate the atomic utility stylesheet from a theme.
 
 @return {Object} - StyleSheet of utility classes keyed by name
 *********************************************************************/
-module.exports = function generateCommonStyles (theme) {
+export default function generateCommonStyles (theme) {
 
   // Destructure theme tokens for concise utility-class generation
   const Color = theme.Color;
@@ -119,4 +117,4 @@ module.exports = function generateCommonStyles (theme) {
   // Freeze into a native StyleSheet
   return StyleSheet.create(styles);
 
-};
+}

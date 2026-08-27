@@ -3,17 +3,15 @@
 //   color -> font_<color>         (text_primary|text_secondary|app_primary|...)
 //   weight-> font_weight_<weight> (regular|medium|semibold|bold)
 // Applies iOS writingDirection under RTL (matches the reference's platform branch).
-'use strict';
-
-const React = require('react');
-const { Text: RNText, StyleSheet } = require('react-native');
+import React from 'react';
+import { Text as RNText, StyleSheet } from 'react-native';
 
 const Style = StyleSheet.create({
   rtlIOS: { writingDirection: 'rtl' }
 });
 
 
-module.exports = function (Component, CommonStyle, theme, Lib) {
+export default function (Component, CommonStyle, theme, Lib) {
 
   // Return the Text component factory
   return function Text (props) {
@@ -49,4 +47,4 @@ module.exports = function (Component, CommonStyle, theme, Lib) {
 
   };
 
-};
+}

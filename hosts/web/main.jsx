@@ -6,7 +6,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import libContext from '../../src/app-core/contexts/lib-context';
+import { LibProvider, useLib } from '../../src/app-core/contexts/lib-context';
 import * as navigationAdapterMod from './adapters/navigation';
 import * as fontsAdapterMod from './adapters/fonts';
 import * as iconsAdapterMod from './adapters/icons';
@@ -21,7 +21,6 @@ import CompositeGallery from '../../src/screens/showcase/CompositeGallery';
 import ProviderGallery from '../../src/screens/showcase/ProviderGallery';
 import CarbonParity from '../../src/screens/showcase/CarbonParity';
 
-const { LibProvider, useLib } = libContext;
 const navigationAdapter = navigationAdapterMod.default;
 const fontsAdapter = fontsAdapterMod.default;
 const iconsAdapter = iconsAdapterMod.default;

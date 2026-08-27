@@ -29,7 +29,8 @@ custom-bundled mechanism for the Notes app:
 
 1. Download **Lora** from <https://fonts.google.com/specimen/Lora> (OFL license).
 2. Drop `Lora-Regular.ttf` into `assets/`.
-3. Uncomment the `Lora: require('./Lora-Regular.ttf')` line in `assets/index.js`.
+3. Uncomment the `Lora: require('./Lora-Regular.ttf')` line in `assets/index.js`
+   (this is Metro's bundler asset loading, not CJS module loading).
 
 Until then, the Notes theme falls back to `System` - no build error, no missing
 asset.

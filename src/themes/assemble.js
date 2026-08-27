@@ -3,7 +3,8 @@
 // families against the font core registry, and builds the themed component
 // library. Also derives the themer platform string from the client
 // environment so the theme-context never hardcodes a platform.
-'use strict';
+import themerBridge from './themer-bridge.js';
+import combineComponent from '../components/index.js';
 
 
 /////////////////////////// Public Functions START /////////////////////////////
@@ -45,7 +46,6 @@ unregistered families), and builds the themed component library.
 function assemble (Lib, built, currentLayers, updateLayersRef) {
 
   // Bridge the themer's flat token map to { Color, Dimension, Font }
-  const themerBridge = require('./themer-bridge');
   const theme = themerBridge.bridgeTheme(built.tokens);
 
   // Validate font families against the font core registry.
@@ -88,7 +88,6 @@ function assemble (Lib, built, currentLayers, updateLayersRef) {
   }
 
   // Build the themed component library from the app's component source
-  const combineComponent = require('../components');
   const components = combineComponent(Lib, theme);
 
   // Return the assembled theme, component library, and shared styles
@@ -101,7 +100,4 @@ function assemble (Lib, built, currentLayers, updateLayersRef) {
 }
 
 
-module.exports = {
-  platform: platform,
-  assemble: assemble
-};/////////////////////////// Public Functions END //////////////////////////////
+export { platform, assemble };/////////////////////////// Public Functions END //////////////////////////////

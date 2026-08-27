@@ -2,8 +2,7 @@
 // themed with the tasks (indigo) VARIANT. The Carbon component showcase is a
 // read-only gallery, so the tasks accent is a neutral, brand-consistent skin.
 import { Stack } from 'expo-router';
-
-const { useLib } = require('../../../../src/app-core/contexts/lib-context');
+import { useLib } from '../../../../src/app-core/contexts/lib-context.js';
 
 
 // Inner stack so we can read the derived theme for header styling

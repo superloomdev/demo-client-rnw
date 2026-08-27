@@ -9,10 +9,9 @@
 //   font.family.primary        -> Font.family.primary
 //
 // Pure data, no logic. The engine interprets this against layered overrides.
-'use strict';
 
 
-module.exports = {
+export default {
 
   polarity: 'light',
 

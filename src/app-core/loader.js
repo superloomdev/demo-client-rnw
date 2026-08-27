@@ -3,9 +3,22 @@
 // Pattern: load foundation helpers first, then platform utils, then app modules.
 // Returns { Lib, Config } - same contract as the server loader.
 // Memoization is owned by the React context provider (lib-context.js), not here.
-'use strict';
-
-const { Validators } = require('./loader.validators');
+import { Validators } from './loader.validators.js';
+import static_config from './config.js';
+import client from './client.js';
+import superApp from './superApp.js';
+import React from 'react';
+import jsHelperUtils from '@superloomdev/js-helper-utils';
+import jsHelperDebug from '@superloomdev/js-helper-debug';
+import jsClientHelperThemer from '@superloomdev/js-client-helper-themer';
+import jsClientHelperThemerExtReact from '@superloomdev/js-client-helper-themer-ext-react';
+import jsClientHelperFont from '@superloomdev/js-client-helper-font';
+import baseTheme from '../themes/base-theme.js';
+import tasksTheme from '../themes/tasks-theme.js';
+import notesTheme from '../themes/notes-theme.js';
+import fonts from '../fonts/fonts.js';
+import themeContext from './contexts/theme-context.js';
+import _carbon from '@superloomdev/rnw-components-carbon';
 
 
 /////////////////////////// Module-Loader START ////////////////////////////////
@@ -23,16 +36,13 @@ adapter set. Called once per provider mount; the provider memoizes.
 @return {Object} result.Lib     - Dependency container with all loaded modules
 @return {Object} result.Config  - Fully resolved application configuration
 *********************************************************************/
-module.exports = function loader (adapters) {
+export default function loader (adapters) {
 
   // Gate: every host must supply all three adapter slots
   Validators.validateAdapters(adapters);
 
 
   // ========================= CONFIGURATION ========================= //
-
-  // Load static config
-  const static_config = require('./config');
 
   // Merge static config with any runtime overrides (extend as needed per environment)
   const Config = {
@@ -74,15 +84,15 @@ module.exports = function loader (adapters) {
   // Zero-dependency core helpers - same packages the server uses, run unchanged in RNW/Metro.
   // Each receives Lib + ONLY its relevant sub-config.
 
-  Lib.Utils = require('@superloomdev/js-helper-utils')(Lib, {});
-  Lib.Debug = require('@superloomdev/js-helper-debug')(Lib, config_debug);
+  Lib.Utils = jsHelperUtils(Lib, {});
+  Lib.Debug = jsHelperDebug(Lib, config_debug);
 
 
   // ==================== PLATFORM MODULES ========================== //
   // Client-side utilities with no server equivalent.
 
-  Lib.Client = require('./client')(Lib, Config);
-  Lib.SuperApp = require('./superApp')(Lib, Config);
+  Lib.Client = client(Lib, Config);
+  Lib.SuperApp = superApp(Lib, Config);
 
 
   // ==================== THEMER ==================================== //
@@ -92,13 +102,13 @@ module.exports = function loader (adapters) {
   //   Lib.React  - the centralized React lib
   //   Lib.Themer - the Themer instance (buildTheme)
 
-  Lib.React = require('react');
-  Lib.Themer = require('@superloomdev/js-client-helper-themer')(Lib, {});
+  Lib.React = React;
+  Lib.Themer = jsClientHelperThemer(Lib, {});
 
   // React extension for the themer: provides ThemeProvider, useTheme, useTokens,
   // useThemeController, and ThemeContext. Factory pattern - each call returns an
   // independent instance with its own React context.
-  Lib.ThemerReact = require('@superloomdev/js-client-helper-themer-ext-react')({
+  Lib.ThemerReact = jsClientHelperThemerExtReact({
     React: Lib.React,
     Themer: Lib.Themer,
     Utils: Lib.Utils,
@@ -116,13 +126,13 @@ module.exports = function loader (adapters) {
   //   Lib.Themes       - theme-data map ({ base, tasks, notes }) - loaded directly
   //   Lib.ThemeContext - React theming hub (ThemeProvider + hooks); needs Fonts + Themer
 
-  Lib.Font = require('@superloomdev/js-client-helper-font')(Lib, {
+  Lib.Font = jsClientHelperFont(Lib, {
     DEFAULT_FAMILY: 'System'
   });
   Lib.Themes = {
-    base:  require('../themes/base-theme'),
-    tasks: require('../themes/tasks-theme'),
-    notes: require('../themes/notes-theme')
+    base:  baseTheme,
+    tasks: tasksTheme,
+    notes: notesTheme
   };
 
 
@@ -132,7 +142,7 @@ module.exports = function loader (adapters) {
   // published. Until then, a stub SDK provides in-memory data so screens can
   // render without crashing.
 
-  // Lib.Sdk = require('@superloomdev/js-demo-sdk')(Lib, config_sdk);
+  // Lib.Sdk = jsDemoSdk(Lib, config_sdk);
   Lib.Sdk = _stubSdk();
 
 
@@ -152,18 +162,17 @@ module.exports = function loader (adapters) {
 
   // Font manifest needs the platform adapter (Lib.FontAdapter) set by the
   // Fonts adapter before it can build
-  Lib.Fonts = require('../fonts/fonts')(Lib);
+  Lib.Fonts = fonts(Lib);
 
   // Theme context needs Lib.Fonts (for font-family validation + async loading)
-  Lib.ThemeContext = require('./contexts/theme-context')(Lib);
+  Lib.ThemeContext = themeContext(Lib);
 
 
   // ==================== CARBON COMPONENTS ======================== //
   // The published Carbon component library (factory). Screens build the themed
   // registry from this via the showcase carbon-registry hook, so the showcase
   // always iterates the live package roster instead of a hardcoded list.
-  // The package is ESM; Node require() wraps it as { default: fn }, Metro does not.
-  const _carbon = require('@superloomdev/rnw-components-carbon');
+  // The package is ESM; under CJS interop the default export is the factory.
   Lib.CarbonComponents = _carbon.default || _carbon;
 
 

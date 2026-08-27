@@ -1,5 +1,5 @@
 // Info: Showcase registry bridge. The published Carbon package is a factory
-// (require('@superloomdev/rnw-components-carbon')(shared_libs, config) -> { build,
+// (import @superloomdev/rnw-components-carbon -> factory(shared_libs, config) -> { build,
 // rebuild, themeContract, useBreakpoint }). This hook builds the themed
 // Component registry from that factory against the LIVE theme from
 // ThemeContext, so the showcase galleries always iterate the package's actual
@@ -12,7 +12,7 @@
 import { useMemo } from 'react';
 import { Platform, Dimensions } from 'react-native';
 
-const { useLib } = require('../../app-core/contexts/lib-context');
+import { useLib } from '../../app-core/contexts/lib-context.js';
 
 
 // Static Carbon breakpoint map. The demo theme engine does not emit Breakpoint,
