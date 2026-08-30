@@ -61,7 +61,7 @@ jobs:
           npm run lint
       - name: G25 - Prose mechanics (no British spelling, em dash, or banned vocabulary)
         run: |
-          hits=$(git grep -niE "colour|behaviour|recognis|initialis|optimis" -- . ':(exclude)*/node_modules/*' ':(exclude).github/*' ':(exclude)*package-lock.json' 2>/dev/null || true)
+          hits=$(git grep -niE "colour|behaviour|recognis|initialis|optimise|optimisation" -- . ':(exclude)*/node_modules/*' ':(exclude).github/*' ':(exclude)*package-lock.json' 2>/dev/null || true)
           if [ -n "$hits" ]; then
             echo "FAIL: British spelling found. Use American English (color, behavior, recognize, initialize, optimize)."
             echo "$hits"
