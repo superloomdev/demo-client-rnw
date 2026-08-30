@@ -65,7 +65,7 @@ function SchemeSelector ({ C }) {
   };
 
   // Render one toggle per scheme plus a swatch showing the live accent.
-  // Colours and radii come from the theme, never from literals, so the
+  // Colors and radii come from the theme, never from literals, so the
   // selector re-skins itself along with everything else on the page.
   return (
     <C.Card style={styles.schemeCard}>

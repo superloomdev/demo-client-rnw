@@ -221,7 +221,7 @@ export default function A11yInspector () {
       <C.Card style={styles.props}>
         <C.Text size="sm" weight="semibold">Emitted accessibility props ({a11yKeys.length})</C.Text>
         {a11y.error ? <C.Text size="xs" color="STATUS_DANGER">{a11y.error}</C.Text> : null}
-        {a11yKeys.length === 0 && !a11y.error ? (
+        {Lib.Utils.isEmptyArray(a11yKeys) && !a11y.error ? (
           <C.Text size="xs" color="text_muted">No aria-* or accessibility* props emitted.</C.Text>
         ) : null}
         {a11yKeys.map(function (k) {

@@ -59,6 +59,30 @@ jobs:
         run: |
           npm ci
           npm run lint
+      - name: G25 - Prose mechanics (no British spelling, em dash, or banned vocabulary)
+        run: |
+          hits=$(git grep -niE "colour|behaviour|recognis|initialis|optimis" -- . ':(exclude)*/node_modules/*' ':(exclude).github/*' ':(exclude)*package-lock.json' 2>/dev/null || true)
+          if [ -n "$hits" ]; then
+            echo "FAIL: British spelling found. Use American English (color, behavior, recognize, initialize, optimize)."
+            echo "$hits"
+            exit 1
+          fi
+          em=$(git grep -n "—" -- . ':(exclude)*/node_modules/*' ':(exclude).github/*' ':(exclude)*package-lock.json' 2>/dev/null || true)
+          if [ -n "$em" ]; then
+            echo "FAIL: em dash found. Use a comma, a period, or ' - ' instead."
+            echo "$em"
+            exit 1
+          fi
+          echo "PASS: no British spelling or em dash in tracked files"
+      - name: G26 - Peer-dep utilization (use Lib.Utils primitives, not raw length/keys checks)
+        run: |
+          hits=$(git grep -nE "\.length (===|!==|>) 0|(===|!==) ''|Object\.keys\([^)]+\)\.length (===|!==|>) 0" -- '*.js' '*.jsx' ':(exclude)*/node_modules/*' ':(exclude).github/*' ':(exclude)src/_test/*' ':(exclude)src/app-core/loader.validators.js' 2>/dev/null || true)
+          if [ -n "$hits" ]; then
+            echo "FAIL: raw length or keys check found. Use Lib.Utils.isEmptyArray, isEmptyObject, or isEmptyString."
+            echo "$hits"
+            exit 1
+          fi
+          echo "PASS: no raw length or keys checks in module source"
 
   # =========================================================================
   # Build jobs: all depend on test, run in parallel.

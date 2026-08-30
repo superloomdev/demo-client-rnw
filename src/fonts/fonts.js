@@ -116,7 +116,7 @@ const Fonts = { // Public font-manifest interface accessible by the host
 
     // Nothing to load asynchronously -> ready immediately
     const manifestResult = Font.getManifest();
-    if (!manifestResult.success || Object.keys(manifestResult.manifest).length === 0) {
+    if (!manifestResult.success || Lib.Utils.isEmptyObject(manifestResult.manifest)) {
       return { success: true, error: null };
     }
 

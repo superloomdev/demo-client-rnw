@@ -8,6 +8,9 @@
 //
 // Pure functions, no side effects. The ThemeProvider calls these at assembly
 // time.
+//
+// Raw `typeof` is used deliberately: this module is pure data-shaping with no
+// `Lib` injection, so the Utils type primitives are not available.
 
 
 // Mapping from theme scheme keys to themer template token names

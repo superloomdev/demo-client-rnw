@@ -1,5 +1,5 @@
 // Info: Carbon scheme - spec-faithful IBM Carbon. Square corners (Carbon's
-// signature), Carbon Blue 60 as the interactive colour, Carbon's grey ramp,
+// signature), Carbon Blue 60 as the interactive color, Carbon's grey ramp,
 // and IBM Plex Sans. This is a complete scheme, not a partial variant: it
 // differs from neutral-scheme in every token group, so layering over base
 // would leave neutral values in place rather than replacing them.
@@ -18,7 +18,7 @@
 export default Object.freeze({
 
   // ~~~~~~~~~~ Color ~~~~~~~~~~
-  // Carbon Blue 60 (#0f62fe) as the interactive colour. The template derives
+  // Carbon Blue 60 (#0f62fe) as the interactive color. The template derives
   // the full UPPER_SNAKE token map (hovered, pressed, disabled, subtle) from
   // this single seed via mix operations against white.
   color: {
