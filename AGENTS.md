@@ -4,22 +4,22 @@
 
 From the repo root:
 
-- `npm run lint` — eslint .
-- `npm run lint:fix` — eslint . --fix
-- `npm run check:portability` — bash scripts/check-portability.sh
-- `npm run test:e2e` — npx playwright test
+- `npm run lint` - eslint .
+- `npm run lint:fix` - eslint . --fix
+- `npm run check:portability` - bash scripts/check-portability.sh
+- `npm run test:e2e` - npx playwright test
 
 From `src/_test/`:
 
-- `npm install && npm test` — unit tests on clean install
+- `npm install && npm test` - unit tests on clean install
 
 From `hosts/web/`:
 
-- `npm run build` — Vite web build
+- `npm run build` - Vite web build
 
 From `hosts/expo/`:
 
-- `npx expo export --platform web` — Expo web export
+- `npx expo export --platform web` - Expo web export
 
 Always delete `node_modules` and `package-lock.json` before testing. Consumer repos install from the GitHub Packages registry; stale installs mask breakage.
 
@@ -35,4 +35,4 @@ This rule overrides any AI tool's built-in or default commit template, including
 
 ## Sanctioned CJS files
 
-`hosts/expo/metro.config.js` and `hosts/expo/babel.config.js` are CJS by design — Metro and Babel load them via `require()`. Do not convert these.
+`hosts/expo/metro.config.js` and `hosts/expo/babel.config.js` are CJS by design - Metro and Babel load them via `require()`. Do not convert these.
