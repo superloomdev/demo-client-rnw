@@ -52,7 +52,7 @@ codebase-demo-client-rnw/
 | Adapter gate (boot-time validation) | `src/app-core/loader.validators.js` |
 | Theme assembly (platform-aware) | `src/themes/assemble.js` |
 | Themer token engine (Carbon vocabulary) | `src/themes/themer-template.js`, `themer-bridge.js` |
-| Theme data (base + variants) | `src/themes/base-theme.js`, `tasks-theme.js`, `notes-theme.js` |
+| Scheme data (complete token sets) | `src/schemes/neutral-scheme.js`, `tasks-scheme.js`, `notes-scheme.js`, `carbon-scheme.js` |
 | Component library (atoms/molecules) | `src/components/` |
 | Structured exception (variant) | `src/components/variant/` |
 | Unstructured exception (freeform) | `src/components/freeform/` |
