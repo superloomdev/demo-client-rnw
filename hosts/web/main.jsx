@@ -6,20 +6,20 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { LibProvider, useLib } from '../../src/app-core/contexts/lib-context';
-import * as navigationAdapterMod from './adapters/navigation';
-import * as fontsAdapterMod from './adapters/fonts';
-import * as iconsAdapterMod from './adapters/icons';
+import { LibProvider, useLib } from '../../src/app-core/contexts/lib-context.js';
+import * as navigationAdapterMod from './adapters/navigation.js';
+import * as fontsAdapterMod from './adapters/fonts.js';
+import * as iconsAdapterMod from './adapters/icons.js';
 
-import Launcher from '../../src/screens/main/Launcher';
-import TasksList from '../../src/screens/tasks/TasksList';
-import NotesList from '../../src/screens/notes/NotesList';
-import ShowcaseIndex from '../../src/screens/showcase/ShowcaseIndex';
-import AtomGallery from '../../src/screens/showcase/AtomGallery';
-import MoleculeGallery from '../../src/screens/showcase/MoleculeGallery';
-import CompositeGallery from '../../src/screens/showcase/CompositeGallery';
-import ProviderGallery from '../../src/screens/showcase/ProviderGallery';
-import CarbonParity from '../../src/screens/showcase/CarbonParity';
+import Launcher from '../../src/screens/main/Launcher.js';
+import TasksList from '../../src/screens/tasks/TasksList.js';
+import NotesList from '../../src/screens/notes/NotesList.js';
+import ShowcaseIndex from '../../src/screens/showcase/ShowcaseIndex.js';
+import AtomGallery from '../../src/screens/showcase/AtomGallery.js';
+import MoleculeGallery from '../../src/screens/showcase/MoleculeGallery.js';
+import CompositeGallery from '../../src/screens/showcase/CompositeGallery.js';
+import ProviderGallery from '../../src/screens/showcase/ProviderGallery.js';
+import CarbonParity from '../../src/screens/showcase/CarbonParity.js';
 
 const navigationAdapter = navigationAdapterMod.default;
 const fontsAdapter = fontsAdapterMod.default;
