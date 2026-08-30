@@ -3,11 +3,11 @@
 // only bucket each live key into its Carbon tier (atom / molecule / composite)
 // so the showcase can group components the way the Carbon design system does.
 //
-// Source-derived, not hand-maintained: every name below was extracted from the
-// published package's components.js build statements (Component.X =
-// make(import('./component/<tier>/...'))). A component that ships in the
-// package but is not listed here is never hidden - classify() routes any
-// unmapped live key into an 'uncategorized' bucket so the roster cannot drift.
+// Source-derived, not hand-maintained: every name below corresponds to a file
+// in the published package's component/<tier>/ directory, which is the tier's
+// only source of truth. A component that ships in the package but is not
+// listed here is never hidden - classify() routes any unmapped live key into
+// an 'uncategorized' bucket so the roster cannot drift.
 
 const ATOMS = [
   'AspectRatio',
