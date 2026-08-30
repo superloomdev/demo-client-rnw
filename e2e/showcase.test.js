@@ -82,24 +82,46 @@ test('showcase has a scheme selector with Tasks and Carbon options', async funct
   await expect(schemeCard.getByText('Carbon')).toBeVisible();
 });
 
-test('clicking Carbon switches the theme without errors', async function ({ page }) {
+// Carbon Blue 60 (#0f62fe) and the tasks indigo (#4f46e5) as rgb(), which is
+// what getComputedStyle returns. The swatch renders APP_PRIMARY, so these are
+// the exact values it must carry before and after the swap.
+const TASKS_ACCENT_RGB = 'rgb(79, 70, 229)';
+const CARBON_ACCENT_RGB = 'rgb(15, 98, 254)';
+
+test('scheme selector swaps APP_PRIMARY to Carbon Blue 60', async function ({ page }) {
   const errors = [];
   page.on('pageerror', function (e) {
     errors.push(e.message);
   });
 
   await page.goto('/showcase');
-  await expect(page.getByText('Carbon Components')).toBeVisible({ timeout: 10000 });
+  const swatch = page.getByTestId('scheme-accent-swatch');
+  await expect(swatch).toBeVisible({ timeout: 10000 });
 
-  // The scheme selector uses RNW Pressable which detaches on hover re-render.
-  // Use dispatchEvent to bypass detachment, matching the pattern used in
-  // the existing showcase navigation test.
-  await page.getByText('Carbon').first().dispatchEvent('click');
+  // The showcase mounts under the tasks scheme, so the accent starts indigo
+  await expect(swatch).toHaveCSS('background-color', TASKS_ACCENT_RGB);
 
-  // The theme switch triggers a React re-render; give it time
-  await page.waitForTimeout(500);
+  // The selector uses RNW Pressable, which detaches on hover re-render.
+  // dispatchEvent bypasses the detachment, matching the pattern used by the
+  // showcase navigation test above.
+  await page.getByTestId('scheme-option-carbon').dispatchEvent('click');
 
-  // The page should still be interactive with no errors after switching
-  await expect(page.getByText('Carbon Components')).toBeVisible();
+  // toHaveCSS retries until the re-derive lands, so no fixed wait is needed
+  await expect(swatch).toHaveCSS('background-color', CARBON_ACCENT_RGB);
+
   expect(errors).toEqual([]);
+});
+
+test('scheme selector swaps back to the tasks accent', async function ({ page }) {
+  await page.goto('/showcase');
+  const swatch = page.getByTestId('scheme-accent-swatch');
+  await expect(swatch).toBeVisible({ timeout: 10000 });
+
+  await page.getByTestId('scheme-option-carbon').dispatchEvent('click');
+  await expect(swatch).toHaveCSS('background-color', CARBON_ACCENT_RGB);
+
+  // Swapping back proves updateScheme replaces the base rather than
+  // accumulating layers, which would leave the Carbon accent in place
+  await page.getByTestId('scheme-option-tasks').dispatchEvent('click');
+  await expect(swatch).toHaveCSS('background-color', TASKS_ACCENT_RGB);
 });

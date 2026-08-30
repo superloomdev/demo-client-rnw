@@ -24,7 +24,7 @@
     "@superloomdev/js-client-helper-themer-ext-react": "^1.0.0",
     "@superloomdev/js-helper-debug": "^1.0.0",
     "@superloomdev/js-helper-utils": "^1.0.0",
-    "@superloomdev/rnw-components-carbon": "^1.0.1",
+    "@superloomdev/rnw-components-carbon": "^1.0.0",
     "expo": "~52.0.0",
     "expo-asset": "~11.0.5",
     "expo-constants": "~17.0.3",

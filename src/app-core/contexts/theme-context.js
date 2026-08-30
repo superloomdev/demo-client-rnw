@@ -28,7 +28,6 @@ let Lib;              // Lib container (requires React, Themer, ThemerReact, The
 let React;            // injected React (required)
 let Ext;              // themer-ext-react instance (required)
 let baseScheme;       // complete fallback scheme (Lib.Schemes.neutral)
-let activeScheme;      // currently active scheme (defaults to baseScheme)
 
 
 /////////////////////////// Module-Loader START ////////////////////////////////
@@ -61,7 +60,6 @@ export default function loader (shared_libs) {
 
   // The complete base scheme comes from the theme registry
   baseScheme = (Lib.Schemes && Lib.Schemes.neutral) || {};
-  activeScheme = baseScheme;
 
   // Expose the extension's context for advanced consumers
   Extension.ThemeContext = Ext.ThemeContext;
@@ -97,6 +95,8 @@ const Extension = { // Public theming interface accessible by the host
   extension's update_layers to trigger a live re-derive.
 
   @param {Object} props          - React props
+  @param {Object} props.scheme   - complete token set replacing the neutral
+                                   base (optional; defaults to neutral)
   @param {Object} props.variant  - the shape's partial override values (optional)
   @param {Node}   props.children - subtree to provide the theme to
 
@@ -109,9 +109,9 @@ const Extension = { // Public theming interface accessible by the host
     // re-derive when an async font load completes.
     const updateLayersRef = React.useRef(null);
 
-    // Use the active scheme (set by updateScheme) or the prop override.
-    // When neither is set, fall back to the neutral base scheme.
-    const scheme = props.scheme || activeScheme;
+    // A scheme is a complete token set and replaces the base outright; the
+    // neutral scheme is the fallback when the host names none.
+    const scheme = props.scheme || baseScheme;
 
     // Convert the scheme + shape variant to themer layers: scheme first,
     // then variant overrides. This replaces the old Styler.extend() merge.
@@ -155,9 +155,10 @@ const Extension = { // Public theming interface accessible by the host
 
   /********************************************************************
   Hook: the full controller - { Lib, theme, Component, CommonStyle,
-  updateTheme }. Wraps the extension's context with the app-shaped API.
-  updateTheme(nextVariant) converts the variant to layers and calls the
-  extension's update_layers for a live re-derive.
+  updateTheme, updateScheme }. Wraps the extension's context with the
+  app-shaped API. updateTheme(nextVariant) overlays a partial variant on the
+  neutral base; updateScheme(nextScheme) replaces the base outright. Both
+  call the extension's update_layers for a live re-derive.
 
   @return {Object|null} - context value, or null when outside a provider
   *********************************************************************/
@@ -177,18 +178,18 @@ const Extension = { // Public theming interface accessible by the host
       CommonStyle: ctx.CommonStyle,
       updateTheme: function (nextVariant) {
         // Convert the variant to layers and trigger a live re-derive
-        const baseLayer = themerBridge.schemeToLayer(activeScheme, 'base');
+        const baseLayer = themerBridge.schemeToLayer(baseScheme, 'base');
         const variantLayer = themerBridge.schemeToLayer(nextVariant, 'variant');
         ctx.update_layers([baseLayer, variantLayer]);
       },
       updateScheme: function (nextScheme) {
-        // Swap the base scheme entirely and re-derive with no variant.
+        // Replace the base outright and re-derive with no variant on top.
         // A scheme is a complete token set; a variant is a partial overlay.
-        activeScheme = nextScheme;
-        const baseLayer = themerBridge.schemeToLayer(nextScheme, 'base');
-        ctx.update_layers([baseLayer]);
-      },
-      activeScheme: activeScheme
+        // The extension holds the layers in React state, so the swap survives
+        // re-renders without any module-scope state of its own.
+        const schemeLayer = themerBridge.schemeToLayer(nextScheme, 'base');
+        ctx.update_layers([schemeLayer]);
+      }
     };
   },
 

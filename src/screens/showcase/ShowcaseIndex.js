@@ -37,50 +37,75 @@ function IndexCard ({ C, label, count, blurb, href, icon }) {
 }
 
 
-// Scheme selector - switches the showcase between neutral and Carbon themes.
-// The Carbon scheme is spec-faithful: square corners, Carbon Blue 60, IBM Plex Sans.
+// The schemes the selector offers, in display order. Each names a key on
+// Lib.Schemes; the blurb states what makes the scheme visually distinct.
+const SELECTABLE_SCHEMES = [
+  { key: 'tasks', label: 'Tasks', blurb: 'Indigo accent, rounded corners' },
+  { key: 'carbon', label: 'Carbon', blurb: 'Carbon Blue 60, square corners' }
+];
+
+
+// Scheme selector - swaps the whole base token set at runtime. A scheme is a
+// complete token set, so this calls updateScheme (replace) rather than
+// updateTheme (partial overlay). The accent swatch renders APP_PRIMARY from
+// the live theme, so it is the visible proof the swap reached the tokens.
 function SchemeSelector ({ C }) {
 
   // Resolve the theme controller and the lib for scheme access
   const Lib = useLib();
   const ctl = Lib.ThemeContext.useThemeController();
-  const [selected, setSelected] = React.useState('tasks');
+  const [selected, setSelected] = React.useState(SELECTABLE_SCHEMES[0].key);
 
-  // Switch the scheme via the controller's updateScheme method
-  const switchTo = function (name) {
-    setSelected(name);
-    if (ctl && ctl.updateScheme && Lib.Schemes[name]) {
-      ctl.updateScheme(Lib.Schemes[name]);
+  // Replace the base scheme and record which button is active
+  const switchTo = function (key) {
+    setSelected(key);
+    if (ctl && ctl.updateScheme && Lib.Schemes[key]) {
+      ctl.updateScheme(Lib.Schemes[key]);
     }
   };
 
-  // Render a two-button toggle: Tasks (indigo, rounded) vs Carbon (blue, square)
+  // Render one toggle per scheme plus a swatch showing the live accent.
+  // Colours and radii come from the theme, never from literals, so the
+  // selector re-skins itself along with everything else on the page.
   return (
-    <C.Card style={{ gap: 8 }}>
+    <C.Card style={styles.schemeCard}>
       <C.Text size="sm" color="text_muted">Scheme</C.Text>
-      <C.View style={{ flexDirection: 'row', gap: 8 }}>
-        <Pressable
-          onPress={function () {
-            switchTo('tasks');
-          }}
-          style={[
-            styles.schemeBtn,
-            selected === 'tasks' ? styles.schemeBtnActive : null
-          ]}
-        >
-          <C.Text size="sm" weight={selected === 'tasks' ? 'bold' : 'regular'}>Tasks</C.Text>
-        </Pressable>
-        <Pressable
-          onPress={function () {
-            switchTo('carbon');
-          }}
-          style={[
-            styles.schemeBtn,
-            selected === 'carbon' ? styles.schemeBtnActive : null
-          ]}
-        >
-          <C.Text size="sm" weight={selected === 'carbon' ? 'bold' : 'regular'}>Carbon</C.Text>
-        </Pressable>
+      <C.View style={styles.schemeRow}>
+        {SELECTABLE_SCHEMES.map(function (scheme) {
+          // Render one scheme toggle; the active one takes the accent tint
+          return (
+            <Pressable
+              key={scheme.key}
+              testID={'scheme-option-' + scheme.key}
+              onPress={function () {
+                switchTo(scheme.key);
+              }}
+            >
+              <C.View
+                background={selected === scheme.key ? 'app_primary_subtle' : null}
+                radius="md"
+                style={styles.schemeBtn}
+              >
+                <C.Text size="sm" weight={selected === scheme.key ? 'bold' : 'regular'}>
+                  {scheme.label}
+                </C.Text>
+              </C.View>
+            </Pressable>
+          );
+        })}
+      </C.View>
+      <C.View style={styles.swatchRow}>
+        <C.View
+          testID="scheme-accent-swatch"
+          background="app_primary"
+          radius="sm"
+          style={styles.swatch}
+        />
+        <C.Text size="xs" color="text_secondary">
+          {SELECTABLE_SCHEMES.find(function (s) {
+            return s.key === selected;
+          }).blurb}
+        </C.Text>
       </C.View>
     </C.Card>
   );
@@ -150,6 +175,9 @@ const styles = StyleSheet.create({
   iconWrap: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
   cardText: { flex: 1, gap: 2 },
   home: { alignItems: 'center', paddingVertical: 12 },
-  schemeBtn: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8, borderWidth: 1, borderColor: '#e0e0e0' },
-  schemeBtnActive: { backgroundColor: '#edf5ff', borderColor: '#0f62fe' }
+  schemeCard: { gap: 8 },
+  schemeRow: { flexDirection: 'row', gap: 8 },
+  schemeBtn: { paddingHorizontal: 16, paddingVertical: 8 },
+  swatchRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  swatch: { width: 20, height: 20 }
 });
