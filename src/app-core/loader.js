@@ -18,7 +18,8 @@ import tasksTheme from '../themes/tasks-theme.js';
 import notesTheme from '../themes/notes-theme.js';
 import fonts from '../fonts/fonts.js';
 import themeContext from './contexts/theme-context.js';
-import _carbon from '@superloomdev/rnw-components-carbon';
+import { createSystem as carbonCreateSystem } from '@superloomdev/rnw-components-carbon';
+import carbonRoster from '@superloomdev/rnw-components-carbon/all';
 
 
 /////////////////////////// Module-Loader START ////////////////////////////////
@@ -169,11 +170,15 @@ export default function loader (adapters) {
 
 
   // ==================== CARBON COMPONENTS ======================== //
-  // The published Carbon component library (factory). Screens build the themed
-  // registry from this via the showcase carbon-registry hook, so the showcase
-  // always iterates the live package roster instead of a hardcoded list.
-  // The package is ESM; under CJS interop the default export is the factory.
-  Lib.CarbonComponents = _carbon.default || _carbon;
+  // The published Carbon component library. createSystem is its only entry
+  // point: it builds the themed infrastructure and the caller registers the
+  // components it needs. The showcase iterates the whole roster, so the
+  // registration barrel is injected alongside. A screen using a bounded set
+  // imports those components by name and ships only those factories.
+  Lib.CarbonComponents = {
+    createSystem: carbonCreateSystem,
+    roster: carbonRoster
+  };
 
 
   // First boot log

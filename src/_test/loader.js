@@ -49,17 +49,24 @@ export default function loader () {
   });
   const contract = Object.assign({}, theme, { Breakpoint: BREAKPOINTS });
 
-  // Instantiate the Carbon factory with the full shared_libs set
+  // Build a Carbon system with the full shared_libs set, then register the
+  // whole roster - the suite walks every namespace, same as the showcase
   const Device = deviceAdapter(Lib, {});
-  const CarbonComponents = Lib.CarbonComponents({
+  const carbonSystem = Lib.CarbonComponents.createSystem({
     Utils: Lib.Utils,
     Debug: Lib.Debug,
     React: Lib.React,
     Device: Device,
     Icons: Lib.Icons,
     Font: Lib.Font
-  }, {});
-  const carbonBuilt = CarbonComponents.build(contract, 'base');
+  }, {}, contract, 'base');
+
+  const carbonRoster = Lib.CarbonComponents.roster;
+
+  carbonSystem.addComponents(carbonRoster.COMPONENTS);
+  carbonSystem.addVariants(carbonRoster.VARIANTS);
+  carbonSystem.addFreeforms(carbonRoster.FREEFORMS);
+  carbonSystem.addProviders(carbonRoster.PROVIDERS);
 
   // Return runtime objects
   return {
@@ -67,8 +74,8 @@ export default function loader () {
     theme: theme,
     Component: assembled.Component,
     CommonStyle: assembled.CommonStyle,
-    CarbonComponent: carbonBuilt.Component,
-    CarbonStyle: carbonBuilt.Style,
+    CarbonComponent: carbonSystem.Component,
+    CarbonStyle: carbonSystem.Style,
     React: React,
     TestRenderer: TestRenderer
   };

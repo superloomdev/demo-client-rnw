@@ -1,9 +1,13 @@
-// Info: Showcase registry bridge. The published Carbon package is a factory
-// (import @superloomdev/rnw-components-carbon -> factory(shared_libs, config) -> { build,
-// rebuild, themeContract, useBreakpoint }). This hook builds the themed
-// Component registry from that factory against the LIVE theme from
-// ThemeContext, so the showcase galleries always iterate the package's actual
-// roster instead of a hardcoded list.
+// Info: Showcase registry bridge. The published Carbon package exposes one
+// entry point, createSystem, which builds the themed infrastructure without
+// instantiating any component. This hook builds a system against the LIVE
+// theme from ThemeContext and registers the whole roster from the package's
+// registration barrel, so the showcase galleries always iterate the package's
+// actual roster instead of a hardcoded list.
+//
+// The showcase renders every component, so it registers everything. A screen
+// that uses a bounded set imports those components by name instead and ships
+// only those factories.
 //
 // The Carbon build requires a theme contract with a Breakpoint group (which the
 // demo's assembled theme does not carry) and a Device adapter (which the demo
@@ -108,18 +112,33 @@ export default function useCarbonRegistry () {
     // a Breakpoint group. Layer it on.
     const contract = Object.assign({}, theme, { Breakpoint: BREAKPOINTS });
 
-    // Build the Carbon factory with the shared Lib injections + a Device adapter
-    const Components = Lib.CarbonComponents({
+    // Build the Carbon system with the shared Lib injections + a Device adapter
+    const system = Lib.CarbonComponents.createSystem({
       Utils: Lib.Utils,
       Debug: Lib.Debug,
       React: Lib.React,
       Device: createDeviceAdapter(Lib),
       Icons: Lib.Icons,
       Font: Lib.Font
-    }, {});
+    }, {}, contract, 'base');
+
+    // Register the whole roster; the showcase iterates every namespace
+    const roster = Lib.CarbonComponents.roster;
+
+    system.addComponents(roster.COMPONENTS);
+    system.addVariants(roster.VARIANTS);
+    system.addFreeforms(roster.FREEFORMS);
+    system.addProviders(roster.PROVIDERS);
+
+    // A missing sibling would surface as a render-time mystery, so fail here
+    const check = system.checkRegistry();
+
+    if (!check.complete) {
+      throw new Error('Incomplete Carbon registry: ' + JSON.stringify(check.missing));
+    }
 
     // Return the built Carbon component registry for the showcase galleries
-    return Components.build(contract, 'base');
+    return { Component: system.Component, Style: system.Style };
 
   }, [Lib, theme]);
 
