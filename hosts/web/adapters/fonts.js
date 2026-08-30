@@ -18,7 +18,10 @@ export default function (Lib, config) { // eslint-disable-line no-unused-vars
     }
   };
 
-  // No bundled font assets in the harness
+  // IBM Plex Sans is loaded via @font-face in index.html (Google Fonts CDN).
+  // The web adapter has no native font loader, so the manifest stays empty.
+  // The @font-face declaration makes the family available to CSS directly;
+  // the font system's isFamilyLoaded returns true for all families on web.
   const manifest = {};
 
   return {

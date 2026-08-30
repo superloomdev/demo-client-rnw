@@ -26,7 +26,7 @@ export default function ShowcaseLayout () {
   const Lib = useLib();
   const { ThemeProvider } = Lib.ThemeContext;
   return (
-    <ThemeProvider variant={Lib.Themes.tasks}>
+    <ThemeProvider scheme={Lib.Schemes.tasks}>
       <ThemedStack />
     </ThemeProvider>
   );

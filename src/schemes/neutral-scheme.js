@@ -1,5 +1,5 @@
-// Info: Base theme - the COMPLETE fallback scheme. This is the neutral host
-// theme used by the launcher (main app). Every other theme is a partial VARIANT
+// Info: Neutral scheme - the complete fallback scheme. This is the neutral host
+// theme used by the launcher (main app). Every other scheme is a partial variant
 // layered over this base via Themer's native layer cascade, so this file must
 // declare a value for every token group the template needs (color, dimension,
 // font).

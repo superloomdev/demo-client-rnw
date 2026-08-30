@@ -3,6 +3,7 @@
 // is required here and nowhere else.
 import FontExtExpo from '@superloomdev/js-client-helper-font-ext-expo';
 import Poppins from '@expo-google-fonts/poppins';
+import IBMPlexSans from '@expo-google-fonts/ibm-plex-sans';
 
 
 export default function (Lib, config) { // eslint-disable-line no-unused-vars
@@ -26,6 +27,25 @@ export default function (Lib, config) { // eslint-disable-line no-unused-vars
         semibold: {
           asset: Poppins.Poppins_600SemiBold,
           weight: '600',
+          style: 'normal'
+        }
+      }
+    },
+    'IBM Plex Sans': {
+      styles: {
+        normal: {
+          asset: IBMPlexSans.IBMPlexSans_400Regular,
+          weight: '400',
+          style: 'normal'
+        },
+        semibold: {
+          asset: IBMPlexSans.IBMPlexSans_600SemiBold,
+          weight: '600',
+          style: 'normal'
+        },
+        bold: {
+          asset: IBMPlexSans.IBMPlexSans_700Bold,
+          weight: '700',
           style: 'normal'
         }
       }

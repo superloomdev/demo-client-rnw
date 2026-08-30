@@ -19,5 +19,8 @@
     "@playwright/test": "^1.62.1",
     "@superloomdev/js-helper-eslint-config": "^1.0.0",
     "eslint": "^10.2.0"
+  },
+  "dependencies": {
+    "@expo-google-fonts/ibm-plex-sans": "^0.4.1"
   }
 }

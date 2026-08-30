@@ -19,7 +19,7 @@ test('Lib has Utils, Debug, Client, React, Themer, ThemerReact, Font, Fonts, The
   assert.equal(typeof Lib.ThemerReact, 'object');
   assert.equal(typeof Lib.Font, 'object');
   assert.equal(typeof Lib.Fonts, 'object');
-  assert.equal(typeof Lib.Themes, 'object');
+  assert.equal(typeof Lib.Schemes, 'object');
   assert.equal(typeof Lib.ThemeContext, 'object');
 });
 

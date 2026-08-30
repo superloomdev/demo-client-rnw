@@ -80,6 +80,15 @@ function schemeToLayer (scheme, name) {
     }
   }
 
+  // Dimension radius overrides - a scheme may declare dimension.radius as a
+  // nested object { sm, md, lg, pill } to override the template's literals.
+  // This is the path Carbon uses: its radius is 0 for every step except pill.
+  if (dimension.radius && typeof dimension.radius === 'object') {
+    for (const [step, value] of Object.entries(dimension.radius)) {
+      tokens['dimension.radius.' + step] = value;
+    }
+  }
+
   // Font families - prefer font.roles (per-theme), fall back to legacy keys
   if (font.roles && typeof font.roles === 'object') {
     for (const [roleName, familyName] of Object.entries(font.roles)) {

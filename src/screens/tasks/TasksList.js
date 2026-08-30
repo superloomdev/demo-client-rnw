@@ -65,7 +65,7 @@ export default function TasksList () {
   const shuffleAccent = function () {
     const next = (accentIndex + 1) % ACCENTS.length;
     setAccentIndex(next);
-    ctl.updateTheme({ color: { primary: ACCENTS[next] }, font: Lib.Themes.tasks.font });
+    ctl.updateTheme({ color: { primary: ACCENTS[next] }, font: Lib.Schemes.tasks.font });
   };
 
   // Render the tasks screen with input, accent shuffle, list, and back link

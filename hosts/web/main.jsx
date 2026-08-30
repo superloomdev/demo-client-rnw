@@ -42,12 +42,19 @@ const ROUTES = {
 
 
 // Themed wrapper for shape screens (tasks, notes, showcase)
-function ThemedScreen ({ Screen, variant }) {
+function ThemedScreen ({ Screen, variant, scheme }) {
   const Lib = useLib();
   const { ThemeProvider } = Lib.ThemeContext;
-  if (variant && Lib.Themes[variant]) {
+  if (scheme && Lib.Schemes[scheme]) {
     return (
-      <ThemeProvider variant={Lib.Themes[variant]}>
+      <ThemeProvider scheme={Lib.Schemes[scheme]} variant={variant ? Lib.Schemes[variant] : null}>
+        <Screen />
+      </ThemeProvider>
+    );
+  }
+  if (variant && Lib.Schemes[variant]) {
+    return (
+      <ThemeProvider variant={Lib.Schemes[variant]}>
         <Screen />
       </ThemeProvider>
     );
@@ -88,9 +95,13 @@ function Router () {
     variant = 'tasks';
   }
 
+  // The showcase starts under the tasks scheme; the in-page selector can
+  // switch to Carbon via updateScheme (which replaces the base, not layers over it).
+  const scheme = path.indexOf('/showcase') === 0 ? 'tasks' : null;
+
   return (
     <SafeAreaProvider>
-      <ThemedScreen Screen={Screen} variant={variant} />
+      <ThemedScreen Screen={Screen} variant={variant} scheme={scheme} />
     </SafeAreaProvider>
   );
 }

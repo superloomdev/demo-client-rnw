@@ -25,7 +25,7 @@ export default function NotesLayout () {
   const Lib = useLib();
   const { ThemeProvider } = Lib.ThemeContext;
   return (
-    <ThemeProvider variant={Lib.Themes.notes}>
+    <ThemeProvider variant={Lib.Schemes.notes}>
       <ThemedStack />
     </ThemeProvider>
   );

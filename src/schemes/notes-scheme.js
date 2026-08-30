@@ -1,4 +1,4 @@
-// Info: Notes theme - a partial VARIANT merged over base-theme. It re-brands the
+// Info: Notes scheme - a partial variant merged over neutral-scheme. It re-brands the
 // Notes app (teal), bumps the type ratio, and switches to a CUSTOM bundled font.
 //
 // DATA module (not a loader): pure, frozen, portable. Only the keys that differ

@@ -34,7 +34,7 @@ export default function loader () {
   });
 
   // Build the assembled theme from the base scheme via the themer
-  const baseLayer = themerBridge.schemeToLayer(Lib.Themes.base, 'base');
+  const baseLayer = themerBridge.schemeToLayer(Lib.Schemes.neutral, 'base');
   const built = Lib.Themer.buildTheme(themerTemplate, [baseLayer], 'native');
   const assembled = assemble(Lib, built, [baseLayer], null);
   const theme = assembled.theme;

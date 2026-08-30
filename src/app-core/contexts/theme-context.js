@@ -27,7 +27,8 @@ import { assemble, platform as derivePlatform } from '../../themes/assemble.js';
 let Lib;              // Lib container (requires React, Themer, ThemerReact, Themes, Fonts)
 let React;            // injected React (required)
 let Ext;              // themer-ext-react instance (required)
-let baseScheme;       // complete fallback scheme (Lib.Themes.base)
+let baseScheme;       // complete fallback scheme (Lib.Schemes.neutral)
+let activeScheme;      // currently active scheme (defaults to baseScheme)
 
 
 /////////////////////////// Module-Loader START ////////////////////////////////
@@ -59,7 +60,8 @@ export default function loader (shared_libs) {
   }
 
   // The complete base scheme comes from the theme registry
-  baseScheme = (Lib.Themes && Lib.Themes.base) || {};
+  baseScheme = (Lib.Schemes && Lib.Schemes.neutral) || {};
+  activeScheme = baseScheme;
 
   // Expose the extension's context for advanced consumers
   Extension.ThemeContext = Ext.ThemeContext;
@@ -107,9 +109,13 @@ const Extension = { // Public theming interface accessible by the host
     // re-derive when an async font load completes.
     const updateLayersRef = React.useRef(null);
 
-    // Convert the shape variant to themer layers: base layer first, then
-    // variant overrides. This replaces the old Styler.extend() merge.
-    const baseLayer = themerBridge.schemeToLayer(baseScheme, 'base');
+    // Use the active scheme (set by updateScheme) or the prop override.
+    // When neither is set, fall back to the neutral base scheme.
+    const scheme = props.scheme || activeScheme;
+
+    // Convert the scheme + shape variant to themer layers: scheme first,
+    // then variant overrides. This replaces the old Styler.extend() merge.
+    const baseLayer = themerBridge.schemeToLayer(scheme, 'base');
     const variantLayer = themerBridge.schemeToLayer(props.variant || {}, 'variant');
     const layers = [baseLayer, variantLayer];
 
@@ -171,10 +177,18 @@ const Extension = { // Public theming interface accessible by the host
       CommonStyle: ctx.CommonStyle,
       updateTheme: function (nextVariant) {
         // Convert the variant to layers and trigger a live re-derive
-        const baseLayer = themerBridge.schemeToLayer(baseScheme, 'base');
+        const baseLayer = themerBridge.schemeToLayer(activeScheme, 'base');
         const variantLayer = themerBridge.schemeToLayer(nextVariant, 'variant');
         ctx.update_layers([baseLayer, variantLayer]);
-      }
+      },
+      updateScheme: function (nextScheme) {
+        // Swap the base scheme entirely and re-derive with no variant.
+        // A scheme is a complete token set; a variant is a partial overlay.
+        activeScheme = nextScheme;
+        const baseLayer = themerBridge.schemeToLayer(nextScheme, 'base');
+        ctx.update_layers([baseLayer]);
+      },
+      activeScheme: activeScheme
     };
   },
 

@@ -6,7 +6,7 @@
 // StateCell   - one labelled state cell within a row
 //
 // All text uses C.Text from the component library so typography follows the
-// active theme (Poppins via tasks-theme). No hardcoded font sizes or colors.
+// active theme (Poppins via tasks-scheme). No hardcoded font sizes or colors.
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 

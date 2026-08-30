@@ -13,13 +13,14 @@ import jsHelperDebug from '@superloomdev/js-helper-debug';
 import jsClientHelperThemer from '@superloomdev/js-client-helper-themer';
 import jsClientHelperThemerExtReact from '@superloomdev/js-client-helper-themer-ext-react';
 import jsClientHelperFont from '@superloomdev/js-client-helper-font';
-import baseTheme from '../themes/base-theme.js';
-import tasksTheme from '../themes/tasks-theme.js';
-import notesTheme from '../themes/notes-theme.js';
+import neutralScheme from '../schemes/neutral-scheme.js';
+import tasksScheme from '../schemes/tasks-scheme.js';
+import notesScheme from '../schemes/notes-scheme.js';
+import carbonScheme from '../schemes/carbon-scheme.js';
 import fonts from '../fonts/fonts.js';
 import themeContext from './contexts/theme-context.js';
 import { createSystem as carbonCreateSystem } from '@superloomdev/rnw-components-carbon';
-import carbonRoster from '@superloomdev/rnw-components-carbon/all';
+import { COMPONENTS as carbonComponents, VARIANTS as carbonVariants, FREEFORMS as carbonFreeforms, PROVIDERS as carbonProviders } from '@superloomdev/rnw-components-carbon/all';
 
 
 /////////////////////////// Module-Loader START ////////////////////////////////
@@ -124,16 +125,17 @@ export default function loader (adapters) {
   //   Lib.FontAdapter  - the platform font loader (from the Fonts adapter)
   //   Lib.FontManifest - host-owned font asset sources (from the Fonts adapter)
   //   Lib.Fonts        - font manifest (families + loadFonts async gate)
-  //   Lib.Themes       - theme-data map ({ base, tasks, notes }) - loaded directly
+  //   Lib.Schemes      - scheme-data map ({ neutral, tasks, notes }) - loaded directly
   //   Lib.ThemeContext - React theming hub (ThemeProvider + hooks); needs Fonts + Themer
 
   Lib.Font = jsClientHelperFont(Lib, {
     DEFAULT_FAMILY: 'System'
   });
-  Lib.Themes = {
-    base:  baseTheme,
-    tasks: tasksTheme,
-    notes: notesTheme
+  Lib.Schemes = {
+    neutral: neutralScheme,
+    tasks:   tasksScheme,
+    notes:   notesScheme,
+    carbon:  carbonScheme
   };
 
 
@@ -177,7 +179,12 @@ export default function loader (adapters) {
   // imports those components by name and ships only those factories.
   Lib.CarbonComponents = {
     createSystem: carbonCreateSystem,
-    roster: carbonRoster
+    roster: {
+      COMPONENTS: carbonComponents,
+      VARIANTS: carbonVariants,
+      FREEFORMS: carbonFreeforms,
+      PROVIDERS: carbonProviders
+    }
   };
 
 

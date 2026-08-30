@@ -69,3 +69,37 @@ test.describe('Showcase E2E', function () {
   });
 
 });
+
+
+// ========================= SCHEME SELECTOR ================================= //
+
+test('showcase has a scheme selector with Tasks and Carbon options', async function ({ page }) {
+  await page.goto('/showcase');
+  await expect(page.getByText('Scheme')).toBeVisible({ timeout: 10000 });
+  // The scheme selector buttons are inside the Scheme card
+  const schemeCard = page.locator('text=Scheme').locator('..');
+  await expect(schemeCard.getByText('Tasks')).toBeVisible();
+  await expect(schemeCard.getByText('Carbon')).toBeVisible();
+});
+
+test('clicking Carbon switches the theme without errors', async function ({ page }) {
+  const errors = [];
+  page.on('pageerror', function (e) {
+    errors.push(e.message);
+  });
+
+  await page.goto('/showcase');
+  await expect(page.getByText('Carbon Components')).toBeVisible({ timeout: 10000 });
+
+  // The scheme selector uses RNW Pressable which detaches on hover re-render.
+  // Use dispatchEvent to bypass detachment, matching the pattern used in
+  // the existing showcase navigation test.
+  await page.getByText('Carbon').first().dispatchEvent('click');
+
+  // The theme switch triggers a React re-render; give it time
+  await page.waitForTimeout(500);
+
+  // The page should still be interactive with no errors after switching
+  await expect(page.getByText('Carbon Components')).toBeVisible();
+  expect(errors).toEqual([]);
+});
