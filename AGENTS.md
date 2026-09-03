@@ -4,10 +4,23 @@
 
 From the repo root:
 
+- `npm run verify` - **run this before every push.** Every gate `ci.yml` runs, in CI order
+- `npm run verify:fast` - the same gates minus the host builds and Playwright, for the inner loop
 - `npm run lint` - eslint .
 - `npm run lint:fix` - eslint . --fix
 - `npm run check:portability` - bash scripts/check-portability.sh
 - `npm run test:e2e` - npx playwright test
+
+### `npm run lint` is not the lint gate
+
+The CI `lint` job runs ESLint **and** two `git grep` gates, `G25` (prose mechanics) and `G26`
+(peer-dep utilization), which are written inline in `.github/workflows/ci.yml`. `npm run lint` covers
+only ESLint, so it can pass while the `lint` job fails. `npm run verify` runs all three and asserts
+that it mirrors every G-gate the workflow declares, so a new CI-only gate cannot silently reopen the
+gap. Push only after `verify` reports `all gates passed`.
+
+Re-run `verify` after the last edit, not before it. A whole-file rewrite following a green lint is
+the specific mistake this rule exists to prevent.
 
 From `src/_test/`:
 
