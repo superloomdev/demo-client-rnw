@@ -2,13 +2,12 @@
 // Component.provider (no tokens, no visual output). This screen iterates the
 // live provider keys and renders each in a full-width row with a functional
 // demonstration of what the provider does, not just "wrapped by X".
-import React, { useMemo, useCallback } from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import React from 'react';
+import { ScrollView, View, Pressable, StyleSheet } from 'react-native';
 
 import { useLib } from '../../app-core/contexts/lib-context.js';
 import useShowcaseRegistry from './useShowcaseRegistry.js';
 import { ShowcaseRow, StateCell } from './ShowcaseRow.js';
-import GalleryList from './GalleryList.js';
 import SafeSample from './SafeSample.js';
 
 
@@ -61,32 +60,15 @@ export default function ProviderGallery () {
   const names = Object.keys(providers);
   const Layer = providers.Layer;
 
-  // Build the row descriptor array: Layer first (custom demo), then the rest
-  const rows = useMemo(function () {
+  // Render the provider gallery with a custom Layer demo and generic provider rows
+  return (
+    <ScrollView contentContainerStyle={styles.content}>
 
-    const out = [];
-    if (Layer) {
-      out.push({ key: 'Layer', kind: 'custom' });
-    }
+      <C.Text size="lg" weight="semibold">Providers ({names.length})</C.Text>
+      <C.Text color="text_secondary">Context-only components. Each wraps its children with a specific capability.</C.Text>
 
-    for (let i = 0; i < names.length; i++) {
-      if (names[i] === 'Layer') {
-        continue;
-      }
-      out.push({ key: names[i], kind: 'generic' });
-    }
-
-    return out;
-
-  }, [Layer, names]);
-
-  // Render one row from its descriptor, memoized so scrolling does not rebuild
-  // every row closure
-  const renderRow = useCallback(function (item) {
-
-    if (item.kind === 'custom') {
-      // Layer gets a custom demo with nested levels
-      return (
+      {/* Layer gets a custom demo with nested levels */}
+      {Layer ? (
         <ShowcaseRow name="Layer" C={C}>
           <StateCell label="level 0" C={C}>
             <SafeSample name="Layer-0">
@@ -122,59 +104,46 @@ export default function ProviderGallery () {
             </SafeSample>
           </StateCell>
         </ShowcaseRow>
-      );
-    }
+      ) : null}
 
-    // Generic provider row
-    const Provider = providers[item.key];
-    const info = PROVIDER_INFO[item.key] || {};
-    return (
-      <ShowcaseRow name={item.key} C={C}>
-        <StateCell label="wrapping" C={C}>
-          <SafeSample name={item.key}>
-            <Provider>
-              <View style={styles.providerDemo}>
-                <C.Text size="xs" color="text_muted">{info.blurb || 'Context provider'}</C.Text>
-                <C.Text size="sm">Content inside {item.key}</C.Text>
-              </View>
-            </Provider>
-          </SafeSample>
-        </StateCell>
-      </ShowcaseRow>
-    );
+      {/* All other providers */}
+      {names.map(function (k) {
+        // Skip Layer since it has a custom demo above
+        if (k === 'Layer') {
+          // Skip the Layer provider in the generic loop
+          return null;
+        }
+        const Provider = providers[k];
+        const info = PROVIDER_INFO[k] || {};
+        // Render one showcase row per provider with a wrapping demo
+        return (
+          <ShowcaseRow key={k} name={k} C={C}>
+            <StateCell label="wrapping" C={C}>
+              <SafeSample name={k}>
+                <Provider>
+                  <View style={styles.providerDemo}>
+                    <C.Text size="xs" color="text_muted">{info.blurb || 'Context provider'}</C.Text>
+                    <C.Text size="sm">Content inside {k}</C.Text>
+                  </View>
+                </Provider>
+              </SafeSample>
+            </StateCell>
+          </ShowcaseRow>
+        );
+      })}
 
-  }, [C, Layer, providers]);
+      <Link href="/showcase" asChild>
+        <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
+      </Link>
 
-  // Header: gallery title and description
-  const header = (
-    <React.Fragment>
-      <C.Text size="lg" weight="semibold">Providers ({names.length})</C.Text>
-      <C.Text color="text_secondary">Context-only components. Each wraps its children with a specific capability.</C.Text>
-    </React.Fragment>
-  );
-
-  // Footer: back link
-  const footer = (
-    <Link href="/showcase" asChild>
-      <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
-    </Link>
-  );
-
-  // Render the virtualized gallery
-  return (
-    <GalleryList
-      rows={rows}
-      renderRow={renderRow}
-      header={header}
-      footer={footer}
-      testID="provider-gallery-list"
-    />
+    </ScrollView>
   );
 
 }
 
 
 const styles = StyleSheet.create({
+  content: { padding: 16, gap: 12, maxWidth: 960, width: '100%', alignSelf: 'center' },
   layerBox: { padding: 8, minWidth: 80 },
   providerDemo: { gap: 4 },
   back: { alignItems: 'center', paddingVertical: 12 }

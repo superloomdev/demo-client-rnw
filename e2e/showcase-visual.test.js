@@ -19,24 +19,14 @@ test.beforeAll(function () {
 });
 
 
-// Scroll a virtualized gallery until the named row mounts
-async function scrollToRow (page, listTestId, rowName) {
+// Bring a gallery row into view and return it. The galleries render their
+// whole roster eagerly, so the row is already in the DOM and needs only to be
+// scrolled to before a screenshot.
+async function showRow (page, rowName) {
   const row = page.getByTestId('showcase-row-' + rowName);
-  for (let i = 0; i < 80; i++) {
-    if (await row.count() > 0) {
-      await row.scrollIntoViewIfNeeded();
-      return row;
-    }
-    await page.evaluate(function (id) {
-      const list = document.querySelector('[data-testid="' + id + '"]');
-      const node = list && list.firstElementChild ? list.firstElementChild : list;
-      if (node) {
-        node.scrollTop = node.scrollTop + 1500;
-      }
-    }, listTestId);
-    await page.waitForTimeout(100);
-  }
-  throw new Error('row never mounted: ' + rowName);
+  await expect(row).toBeAttached({ timeout: 10000 });
+  await row.scrollIntoViewIfNeeded();
+  return row;
 }
 
 
@@ -72,9 +62,7 @@ test.describe('showcase visual baselines', function () {
   for (const name of CURATED_MOLECULES) {
     test('should capture the ' + name + ' molecule row', async function ({ page }) {
       await page.goto('/showcase/molecules');
-      await expect(page.getByTestId('molecule-gallery-list')).toBeVisible({ timeout: 10000 });
-      const row = await scrollToRow(page, 'molecule-gallery-list', name);
-      await expect(row).toBeVisible();
+      const row = await showRow(page, name);
       await row.screenshot({ path: path.join(SCREENSHOT_DIR, 'molecule-' + name + '.png') });
     });
   }
@@ -82,9 +70,7 @@ test.describe('showcase visual baselines', function () {
   for (const name of CURATED_ATOMS) {
     test('should capture the ' + name + ' atom row', async function ({ page }) {
       await page.goto('/showcase/atoms');
-      await expect(page.getByTestId('atom-gallery-list')).toBeVisible({ timeout: 10000 });
-      const row = page.getByTestId('showcase-row-' + name);
-      await expect(row).toBeVisible({ timeout: 10000 });
+      const row = await showRow(page, name);
       await row.screenshot({ path: path.join(SCREENSHOT_DIR, 'atom-' + name + '.png') });
     });
   }

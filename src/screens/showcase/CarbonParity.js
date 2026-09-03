@@ -3,12 +3,11 @@
 // currently viewing on (Platform.OS). The roster is registry-driven; the
 // per-component capability comes from the source-derived platforms metadata,
 // defaulting to "both" for anything unmapped.
-import React, { useMemo, useCallback } from 'react';
-import { View, Pressable, Platform, StyleSheet } from 'react-native';
+import React, { useMemo } from 'react';
+import { ScrollView, View, Pressable, Platform, StyleSheet } from 'react-native';
 
 import { useLib } from '../../app-core/contexts/lib-context.js';
 import useShowcaseRegistry from './useShowcaseRegistry.js';
-import GalleryList from './GalleryList.js';
 import platforms from './platforms.js';
 
 
@@ -71,8 +70,8 @@ export default function CarbonParity () {
     // Build sorted parity rows with per-component capability and support info
     return flat.sort().map(function (k) {
       const cap = platforms.capability(k);
-      // Return one row object per component with key, name, capability, and support
-      return { key: k, name: k, capability: cap, support: platforms.SUPPORT[cap] || platforms.SUPPORT.both };
+      // Return one row object per component with name, capability, and support
+      return { name: k, capability: cap, support: platforms.SUPPORT[cap] || platforms.SUPPORT.both };
     });
 
   }, [reg]);
@@ -83,27 +82,10 @@ export default function CarbonParity () {
     return null;
   }
 
-  // Adapt the parity row to the FlatList renderItem signature, memoized so
-  // scrolling does not rebuild every row closure
-  const renderRow = useCallback(function (item) {
+  // Render the parity screen with legend and per-component platform badges
+  return (
+    <ScrollView contentContainerStyle={styles.content}>
 
-    // Render one parity row per component with platform support badges
-    return (
-      <View style={styles.row}>
-        <C.Text size="sm" weight="medium" style={styles.rowName}>{item.name}</C.Text>
-        <View style={styles.badges}>
-          <PlatformBadge C={C} label="Web" level={item.support.web} current={current === 'web'} />
-          <PlatformBadge C={C} label="iOS" level={item.support.ios} current={current === 'ios'} />
-          <PlatformBadge C={C} label="Android" level={item.support.android} current={current === 'android'} />
-        </View>
-      </View>
-    );
-
-  }, [C, current]);
-
-  // Header: title, description, and legend card
-  const header = (
-    <React.Fragment>
       <C.Text size="lg" weight="semibold">Carbon Parity</C.Text>
       <C.Text color="text_secondary">Roster + platform capability. You are viewing on: <C.Text weight="semibold">{Platform.OS}</C.Text></C.Text>
 
@@ -115,33 +97,38 @@ export default function CarbonParity () {
           <PlatformBadge C={C} label="Android" level="full" current={current === 'android'} />
         </View>
       </C.Card>
-    </React.Fragment>
-  );
 
-  // Footer: back link
-  const footer = (
-    <Link href="/showcase" asChild>
-      <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
-    </Link>
-  );
+      <View style={styles.table}>
+        {rows.map(function (row) {
+          // Render one parity row per component with platform support badges
+          return (
+            <View key={row.name} style={styles.row}>
+              <C.Text size="sm" weight="medium" style={styles.rowName}>{row.name}</C.Text>
+              <View style={styles.badges}>
+                <PlatformBadge C={C} label="Web" level={row.support.web} current={current === 'web'} />
+                <PlatformBadge C={C} label="iOS" level={row.support.ios} current={current === 'ios'} />
+                <PlatformBadge C={C} label="Android" level={row.support.android} current={current === 'android'} />
+              </View>
+            </View>
+          );
+        })}
+      </View>
 
-  // Render the virtualized parity list
-  return (
-    <GalleryList
-      rows={rows}
-      renderRow={renderRow}
-      header={header}
-      footer={footer}
-      testID="carbon-parity-list"
-    />
+      <Link href="/showcase" asChild>
+        <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
+      </Link>
+
+    </ScrollView>
   );
 
 }
 
 
 const styles = StyleSheet.create({
+  content: { padding: 16, gap: 12, maxWidth: 720, width: '100%', alignSelf: 'center' },
   legend: { gap: 8 },
   legendRow: { flexDirection: 'row', gap: 8 },
+  table: { gap: 6 },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12, paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#E5E7EB' },
   rowName: { flexShrink: 1 },
   badges: { flexDirection: 'row', gap: 6 },
