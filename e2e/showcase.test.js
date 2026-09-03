@@ -62,8 +62,7 @@ test.describe('Showcase E2E', function () {
   test('showcase navigation: index to atoms and back', async function ({ page }) {
     await page.goto('/showcase');
     // Click the "Atoms (N)" card label, not the summary text
-    // Use dispatchEvent to bypass detachment from RNW Pressable hover re-renders
-    await page.getByText(/Atoms \(\d+\)/).dispatchEvent('click');
+    await page.getByText(/Atoms \(\d+\)/).click();
     await expect(page).toHaveURL('/showcase/atoms');
     await expect(page.getByText('Atoms')).toBeVisible();
   });
@@ -101,10 +100,9 @@ test('scheme selector swaps APP_PRIMARY to Carbon Blue 60', async function ({ pa
   // The showcase mounts under the tasks scheme, so the accent starts indigo
   await expect(swatch).toHaveCSS('background-color', TASKS_ACCENT_RGB);
 
-  // The selector uses RNW Pressable, which detaches on hover re-render.
-  // dispatchEvent bypasses the detachment, matching the pattern used by the
-  // showcase navigation test above.
-  await page.getByTestId('scheme-option-carbon').dispatchEvent('click');
+  // Real click - the Pressable hover detachment was fixed by the scheme
+  // option hit target fix (E2) and the re-derive loop fix (C1)
+  await page.getByTestId('scheme-option-carbon').click();
 
   // toHaveCSS retries until the re-derive lands, so no fixed wait is needed
   await expect(swatch).toHaveCSS('background-color', CARBON_ACCENT_RGB);
@@ -117,11 +115,11 @@ test('scheme selector swaps back to the tasks accent', async function ({ page })
   const swatch = page.getByTestId('scheme-accent-swatch');
   await expect(swatch).toBeVisible({ timeout: 10000 });
 
-  await page.getByTestId('scheme-option-carbon').dispatchEvent('click');
+  await page.getByTestId('scheme-option-carbon').click();
   await expect(swatch).toHaveCSS('background-color', CARBON_ACCENT_RGB);
 
   // Swapping back proves updateScheme replaces the base rather than
   // accumulating layers, which would leave the Carbon accent in place
-  await page.getByTestId('scheme-option-tasks').dispatchEvent('click');
+  await page.getByTestId('scheme-option-tasks').click();
   await expect(swatch).toHaveCSS('background-color', TASKS_ACCENT_RGB);
 });

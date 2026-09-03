@@ -137,6 +137,13 @@ export default function useCarbonRegistry () {
       throw new Error('Incomplete Carbon registry: ' + JSON.stringify(check.missing));
     }
 
+    // Expose the build count so an E2E test can lock the re-derive count. A
+    // runaway count is invisible to a functional assertion but is the loudest
+    // possible signal that the theme is spinning.
+    if (typeof globalThis !== 'undefined') {
+      globalThis.__carbonSystemBuilds = (globalThis.__carbonSystemBuilds || 0) + 1;
+    }
+
     // Return the built Carbon component registry for the showcase galleries
     return { Component: system.Component, Style: system.Style };
 

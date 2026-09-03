@@ -166,7 +166,7 @@ test('carbon-scheme radius overrides are square except pill', function () {
   });
 });
 
-test('carbon-scheme builds through the themer with all 22 required tokens', function () {
+test('carbon-scheme builds through the themer with all 37 required tokens', function () {
   const layer = themerBridge.schemeToLayer(carbonScheme, 'carbon');
   const built = Lib.Themer.buildTheme(themerTemplate, [layer], 'native');
   const assembled = assemble(Lib, built, [layer], null);
@@ -179,7 +179,12 @@ test('carbon-scheme builds through the themer with all 22 required tokens', func
     'STATUS_SUCCESS', 'STATUS_SUCCESS_SUBTLE',
     'STATUS_DANGER', 'STATUS_DANGER_SUBTLE',
     'STATUS_WARNING', 'STATUS_WARNING_SUBTLE',
-    'STATUS_INFO', 'STATUS_INFO_SUBTLE'
+    'STATUS_INFO', 'STATUS_INFO_SUBTLE',
+    'BUTTON_PRIMARY', 'BUTTON_PRIMARY_HOVER', 'BUTTON_PRIMARY_ACTIVE',
+    'BUTTON_SECONDARY', 'BUTTON_SECONDARY_HOVER', 'BUTTON_SECONDARY_ACTIVE',
+    'BUTTON_TERTIARY', 'BUTTON_TERTIARY_HOVER', 'BUTTON_TERTIARY_ACTIVE',
+    'BUTTON_DANGER_PRIMARY', 'BUTTON_DANGER_HOVER', 'BUTTON_DANGER_ACTIVE',
+    'BUTTON_DANGER_SECONDARY', 'BUTTON_DISABLED', 'BUTTON_SEPARATOR'
   ];
   const missing = required.filter(function (t) {
     return !assembled.theme.Color[t];
@@ -207,4 +212,246 @@ test('carbon-scheme produces Carbon Blue 60 as APP_PRIMARY', function () {
 test('carbon-scheme is registered in Lib.Schemes', function () {
   assert.ok(Lib.Schemes.carbon);
   assert.equal(Lib.Schemes.carbon, carbonScheme);
+});
+
+
+// ========================= BUTTON TOKEN FAMILY (C4) ====================== //
+
+// The button token family the Carbon package requires. Iterate this list
+// rather than listing each token in the test body.
+const BUTTON_TOKENS = [
+  'BUTTON_PRIMARY', 'BUTTON_PRIMARY_HOVER', 'BUTTON_PRIMARY_ACTIVE',
+  'BUTTON_SECONDARY', 'BUTTON_SECONDARY_HOVER', 'BUTTON_SECONDARY_ACTIVE',
+  'BUTTON_TERTIARY', 'BUTTON_TERTIARY_HOVER', 'BUTTON_TERTIARY_ACTIVE',
+  'BUTTON_DANGER_PRIMARY', 'BUTTON_DANGER_HOVER', 'BUTTON_DANGER_ACTIVE',
+  'BUTTON_DANGER_SECONDARY', 'BUTTON_DISABLED', 'BUTTON_SEPARATOR'
+];
+
+test('should emit every BUTTON_* token the library requires when built through the themer', function () {
+  const layer = themerBridge.schemeToLayer(carbonScheme, 'carbon');
+  const built = Lib.Themer.buildTheme(themerTemplate, [layer], 'native');
+  const bridged = themerBridge.bridgeTheme(built.tokens);
+  const missing = BUTTON_TOKENS.filter(function (t) {
+    return !bridged.Color[t];
+  });
+  assert.deepEqual(missing, []);
+});
+
+test('should resolve BUTTON_SECONDARY to Carbon Gray 80 (#393939) under the carbon scheme', function () {
+  const layer = themerBridge.schemeToLayer(carbonScheme, 'carbon');
+  const built = Lib.Themer.buildTheme(themerTemplate, [layer], 'native');
+  const bridged = themerBridge.bridgeTheme(built.tokens);
+  assert.equal(bridged.Color.BUTTON_SECONDARY, '#393939');
+});
+
+test('should resolve BUTTON_PRIMARY to the scheme accent under the carbon scheme', function () {
+  const layer = themerBridge.schemeToLayer(carbonScheme, 'carbon');
+  const built = Lib.Themer.buildTheme(themerTemplate, [layer], 'native');
+  const bridged = themerBridge.bridgeTheme(built.tokens);
+  assert.equal(bridged.Color.BUTTON_PRIMARY, '#0f62fe');
+});
+
+test('should resolve BUTTON_PRIMARY to the tasks accent under the tasks scheme', function () {
+  const baseLayer = themerBridge.schemeToLayer(neutralScheme, 'base');
+  const tasksLayer = themerBridge.schemeToLayer(tasksScheme, 'tasks');
+  const built = Lib.Themer.buildTheme(themerTemplate, [baseLayer, tasksLayer], 'native');
+  const bridged = themerBridge.bridgeTheme(built.tokens);
+  assert.equal(bridged.Color.BUTTON_PRIMARY, '#4f46e5');
+});
+
+test('should produce no contrast violations naming a BUTTON_* token', function () {
+  const layer = themerBridge.schemeToLayer(carbonScheme, 'carbon');
+  const built = Lib.Themer.buildTheme(themerTemplate, [layer], 'native');
+  const buttonViolations = (built.violations || []).filter(function (v) {
+    return BUTTON_TOKENS.some(function (t) {
+      return v.token === t || v.fg === t || v.bg === t ||
+        (typeof v.message === 'string' && v.message.indexOf(t) !== -1);
+    });
+  });
+  assert.deepEqual(buttonViolations, []);
+});
+
+
+// ========================= STRICT_THEME (C5) ============================= //
+
+test('should throw on a contrast violation when STRICT_THEME is on', function () {
+  // Inject a deliberately unreadable pairing by adding a contrast rule
+  // that cannot pass: white text on a white background
+  const badTemplate = Object.assign({}, themerTemplate, {
+    contrast_rules: themerTemplate.contrast_rules.concat([
+      ['color.BACKGROUND_PRIMARY', 'color.BACKGROUND_PRIMARY', 4.5]
+    ])
+  });
+  const layer = themerBridge.schemeToLayer(carbonScheme, 'carbon');
+  const built = Lib.Themer.buildTheme(badTemplate, [layer], 'native');
+  const strictLib = Object.assign({}, Lib, {
+    CONFIG: Object.assign({}, Lib.CONFIG || {}, { STRICT_THEME: true })
+  });
+  assert.throws(
+    function () {
+      assemble(strictLib, built, [layer], null);
+    },
+    TypeError
+  );
+});
+
+test('should throw when a token was auto-corrected and STRICT_THEME is on', function () {
+  // Build with a template that has a correction-triggering bad value
+  const badTemplate = Object.assign({}, themerTemplate, {
+    tokens: Object.assign({}, themerTemplate.tokens, {
+      'color.TEXT_PRIMARY': '#000000'
+    })
+  });
+  const layer = themerBridge.schemeToLayer(carbonScheme, 'carbon');
+  const built = Lib.Themer.buildTheme(badTemplate, [layer], 'native');
+  // Only test if corrections were actually produced
+  if (built.corrections && built.corrections.length > 0) {
+    const strictLib = Object.assign({}, Lib, {
+      CONFIG: Object.assign({}, Lib.CONFIG || {}, { STRICT_THEME: true })
+    });
+    assert.throws(
+      function () {
+        assemble(strictLib, built, [layer], null);
+      },
+      TypeError
+    );
+  }
+});
+
+test('should return a complete theme despite a violation when STRICT_THEME is off', function () {
+  const badTemplate = Object.assign({}, themerTemplate, {
+    contrast_rules: themerTemplate.contrast_rules.concat([
+      ['color.BACKGROUND_PRIMARY', 'color.BACKGROUND_PRIMARY', 4.5]
+    ])
+  });
+  const layer = themerBridge.schemeToLayer(carbonScheme, 'carbon');
+  const built = Lib.Themer.buildTheme(badTemplate, [layer], 'native');
+  const assembled = assemble(Lib, built, [layer], null);
+  assert.ok(assembled.theme);
+  assert.ok(assembled.theme.Color);
+});
+
+
+// ========================= FONT LOOP GUARD (C1) ========================== //
+
+// Because ATTEMPTED is module scope, these tests share state. Use a distinct
+// family name per test rather than trying to reset the ledger.
+
+test('should attempt a font load once per family across multiple assemble calls', function () {
+  const familyName = 'TestOnceOnly-' + Math.random().toString(36).slice(2);
+  let loadCount = 0;
+  const stubLib = Object.assign({}, Lib, {
+    Font: {
+      isRegistered: function () {
+        return false;
+      }
+    },
+    Fonts: {
+      loadFamily: function () {
+        loadCount++;
+        return Promise.resolve({ success: true });
+      }
+    },
+    Debug: { warn: function () {} }
+  });
+  const layer = themerBridge.schemeToLayer(carbonScheme, 'carbon');
+  const built = Lib.Themer.buildTheme(themerTemplate, [layer], 'native');
+  // Override the theme's font family to our test family
+  built.tokens['font.family.primary'] = familyName;
+  for (let i = 0; i < 5; i++) {
+    assemble(stubLib, built, [layer], { current: function () {} });
+  }
+  assert.equal(loadCount, 1);
+});
+
+test('should not re-derive when the family stays unregistered', function () {
+  const familyName = 'TestNoRederive-' + Math.random().toString(36).slice(2);
+  let deriveCount = 0;
+  const updateLayersRef = {
+    current: function () {
+      deriveCount++;
+    }
+  };
+  const stubLib = Object.assign({}, Lib, {
+    Font: {
+      isRegistered: function () {
+        return false;
+      }
+    },
+    Fonts: {
+      loadFamily: function () {
+        return Promise.resolve({ success: true });
+      }
+    },
+    Debug: { warn: function () {} }
+  });
+  const layer = themerBridge.schemeToLayer(carbonScheme, 'carbon');
+  const built = Lib.Themer.buildTheme(themerTemplate, [layer], 'native');
+  built.tokens['font.family.primary'] = familyName;
+  assemble(stubLib, built, [layer], updateLayersRef);
+  // Wait for the promise to settle
+  return new Promise(function (resolve) {
+    setTimeout(function () {
+      assert.equal(deriveCount, 0);
+      resolve();
+    }, 50);
+  });
+});
+
+test('should re-derive once when the family registers after load', function () {
+  const familyName = 'TestRederiveOnce-' + Math.random().toString(36).slice(2);
+  let deriveCount = 0;
+  let registered = false;
+  const updateLayersRef = {
+    current: function () {
+      deriveCount++;
+    }
+  };
+  const stubLib = Object.assign({}, Lib, {
+    Font: {
+      isRegistered: function () {
+        return registered;
+      }
+    },
+    Fonts: {
+      loadFamily: function () {
+        registered = true;
+        return Promise.resolve({ success: true });
+      }
+    },
+    Debug: { warn: function () {} }
+  });
+  const layer = themerBridge.schemeToLayer(carbonScheme, 'carbon');
+  const built = Lib.Themer.buildTheme(themerTemplate, [layer], 'native');
+  built.tokens['font.family.primary'] = familyName;
+  assemble(stubLib, built, [layer], updateLayersRef);
+  // Wait for the promise to settle
+  return new Promise(function (resolve) {
+    setTimeout(function () {
+      assert.equal(deriveCount, 1);
+      resolve();
+    }, 50);
+  });
+});
+
+test('should fall back to System for an unregistered family', function () {
+  const familyName = 'TestFallback-' + Math.random().toString(36).slice(2);
+  const stubLib = Object.assign({}, Lib, {
+    Font: {
+      isRegistered: function () {
+        return false;
+      }
+    },
+    Fonts: {
+      loadFamily: function () {
+        return Promise.resolve({ success: true });
+      }
+    },
+    Debug: { warn: function () {} }
+  });
+  const layer = themerBridge.schemeToLayer(carbonScheme, 'carbon');
+  const built = Lib.Themer.buildTheme(themerTemplate, [layer], 'native');
+  built.tokens['font.family.primary'] = familyName;
+  const assembled = assemble(stubLib, built, [layer], null);
+  assert.equal(assembled.theme.Font.family.primary, 'System');
 });
