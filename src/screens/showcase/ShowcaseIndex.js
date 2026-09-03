@@ -54,6 +54,7 @@ function SchemeSelector ({ C }) {
   // Resolve the theme controller and the lib for scheme access
   const Lib = useLib();
   const ctl = Lib.ThemeContext.useThemeController();
+  const theme = Lib.ThemeContext.useTheme();
   const [selected, setSelected] = React.useState(SELECTABLE_SCHEMES[0].key);
 
   // Replace the base scheme and record which button is active
@@ -72,7 +73,13 @@ function SchemeSelector ({ C }) {
       <C.Text size="sm" color="text_muted">Scheme</C.Text>
       <C.View style={styles.schemeRow}>
         {SELECTABLE_SCHEMES.map(function (scheme) {
-          // Render one scheme toggle; the active one takes the accent tint
+
+          // Hoist the active flag so it is read once, not per-JSX-child
+          const active = selected === scheme.key;
+
+          // Move the visual properties onto the Pressable itself so the hit
+          // target is the visible element, not a wrapper that RNW can detach
+          // from under the pointer on hover re-render
           return (
             <Pressable
               key={scheme.key}
@@ -80,16 +87,17 @@ function SchemeSelector ({ C }) {
               onPress={function () {
                 switchTo(scheme.key);
               }}
+              style={[
+                styles.schemeBtn,
+                {
+                  backgroundColor: active ? theme.Color.APP_PRIMARY_SUBTLE : 'transparent',
+                  borderRadius: theme.Dimension.radius.md
+                }
+              ]}
             >
-              <C.View
-                background={selected === scheme.key ? 'app_primary_subtle' : null}
-                radius="md"
-                style={styles.schemeBtn}
-              >
-                <C.Text size="sm" weight={selected === scheme.key ? 'bold' : 'regular'}>
-                  {scheme.label}
-                </C.Text>
-              </C.View>
+              <C.Text size="sm" weight={active ? 'bold' : 'regular'}>
+                {scheme.label}
+              </C.Text>
             </Pressable>
           );
         })}
