@@ -12,7 +12,9 @@
     "check:portability": "bash scripts/check-portability.sh",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test:e2e": "npx playwright test"
+    "test:e2e": "npx playwright test",
+    "verify": "bash scripts/verify.sh",
+    "verify:fast": "bash scripts/verify.sh --fast"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
