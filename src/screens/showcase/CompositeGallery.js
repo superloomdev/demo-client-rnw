@@ -179,7 +179,7 @@ function MultiStateCompositeRow ({ name, Comp, states, C }) {
       {states.map(function (state) {
         // Render one error-isolated state cell per configured state
         return (
-          <StateCell key={state.label} label={state.label} C={C}>
+          <StateCell key={state.label} label={state.label} C={C} stageWidth={state.stageWidth}>
             <SafeSample name={name + ' ' + state.label}>
               <Comp {...state.props} />
             </SafeSample>

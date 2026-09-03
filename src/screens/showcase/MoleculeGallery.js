@@ -449,7 +449,9 @@ const MULTI_STATE = {
 
   // ---- Batch 6: ContainedList and List families ----
   ContainedList: [
-    { label: 'default', props: { label: 'My list', children: 'List items' } }
+    // A list needs room to read as a list; the default cell width collapses the
+    // bordered container to the width of its own label
+    { label: 'default', props: { label: 'My list', children: 'List items' }, stageWidth: 240 }
   ],
   List: [
     { label: 'unordered', props: { children: 'List items' } },
@@ -868,7 +870,7 @@ function MultiStateMoleculeRow ({ name, Comp, states, C }) {
       {states.map(function (state) {
         // Render one error-isolated state cell per configured state
         return (
-          <StateCell key={state.label} label={state.label} C={C}>
+          <StateCell key={state.label} label={state.label} C={C} stageWidth={state.stageWidth}>
             <SafeSample name={name + ' ' + state.label}>
               <Comp {...state.props} />
             </SafeSample>

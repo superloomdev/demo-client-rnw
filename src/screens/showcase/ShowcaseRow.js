@@ -13,13 +13,18 @@ import { View, StyleSheet } from 'react-native';
 import SafeSample from './SafeSample.js';
 
 
-// One labelled state cell within a showcase row
-function StateCell ({ label, children, C }) {
+// One labelled state cell within a showcase row.
+//
+// stageWidth is an opt-in minimum width for the stage. The default 100 crushes
+// a container component down to the width of its own label text, which reads
+// as a broken box rather than a list. A component that needs room to look like
+// itself declares a width instead of every row paying for the widest case.
+function StateCell ({ label, children, C, stageWidth }) {
   // Render the label above an error-isolated stage for the child content
   return (
-    <View style={cellStyles.cell}>
+    <View style={[cellStyles.cell, stageWidth ? { minWidth: stageWidth } : null]}>
       <C.Text size="xs" color="text_muted" style={cellStyles.labelStyle}>{label}</C.Text>
-      <View style={cellStyles.stage}>
+      <View style={[cellStyles.stage, stageWidth ? { width: '100%' } : null]}>
         <SafeSample name={label}>{children}</SafeSample>
       </View>
     </View>
