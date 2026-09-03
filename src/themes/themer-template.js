@@ -72,6 +72,28 @@ export default {
     'color.STATUS_WARNING_SUBTLE': { op: 'mix', args: ['color.STATUS_WARNING', 'color.BACKGROUND_PRIMARY', 12] },
     'color.STATUS_INFO_SUBTLE': { op: 'mix', args: ['color.STATUS_INFO', 'color.BACKGROUND_PRIMARY', 12] },
 
+    // ---- Color: button token family ----
+    // Primary follows the scheme accent so a scheme swap retunes the buttons.
+    // Secondary is Carbon Gray 80 (ramp step 8), the dark fill Carbon uses for
+    // the secondary button. Tertiary shares the primary accent. Danger uses
+    // the danger status color. Hover and active states mix toward white and
+    // black respectively to darken or lighten the fill on interaction.
+    'color.BUTTON_PRIMARY': '{color.APP_PRIMARY}',
+    'color.BUTTON_PRIMARY_HOVER': { op: 'mix', args: ['color.BUTTON_PRIMARY', '_white', 90] },
+    'color.BUTTON_PRIMARY_ACTIVE': { op: 'mix', args: ['color.BUTTON_PRIMARY', '_black', 88] },
+    'color.BUTTON_SECONDARY': { op: 'rampStep', args: [8] },
+    'color.BUTTON_SECONDARY_HOVER': { op: 'mix', args: ['color.BUTTON_SECONDARY', '_white', 88] },
+    'color.BUTTON_SECONDARY_ACTIVE': { op: 'mix', args: ['color.BUTTON_SECONDARY', '_white', 80] },
+    'color.BUTTON_TERTIARY': '{color.APP_PRIMARY}',
+    'color.BUTTON_TERTIARY_HOVER': { op: 'mix', args: ['color.BUTTON_TERTIARY', '_white', 90] },
+    'color.BUTTON_TERTIARY_ACTIVE': { op: 'mix', args: ['color.BUTTON_TERTIARY', '_black', 88] },
+    'color.BUTTON_DANGER_PRIMARY': '{color.STATUS_DANGER}',
+    'color.BUTTON_DANGER_HOVER': { op: 'mix', args: ['color.BUTTON_DANGER_PRIMARY', '_black', 88] },
+    'color.BUTTON_DANGER_ACTIVE': { op: 'mix', args: ['color.BUTTON_DANGER_PRIMARY', '_black', 80] },
+    'color.BUTTON_DANGER_SECONDARY': '{color.STATUS_DANGER}',
+    'color.BUTTON_DISABLED': { op: 'rampStep', args: [3] },
+    'color.BUTTON_SEPARATOR': { op: 'rampStep', args: [2] },
+
     // ---- Dimension: font size scale (geometric, step offset from base) ----
     'dimension.font_size.xs': { scale: 'geometric', step: -1 },
     'dimension.font_size.sm': { scale: 'geometric', step: 0 },
@@ -140,6 +162,21 @@ export default {
     'color.STATUS_DANGER_SUBTLE': { group: 'color' },
     'color.STATUS_WARNING_SUBTLE': { group: 'color' },
     'color.STATUS_INFO_SUBTLE': { group: 'color' },
+    'color.BUTTON_PRIMARY': { group: 'color' },
+    'color.BUTTON_PRIMARY_HOVER': { group: 'color' },
+    'color.BUTTON_PRIMARY_ACTIVE': { group: 'color' },
+    'color.BUTTON_SECONDARY': { group: 'color' },
+    'color.BUTTON_SECONDARY_HOVER': { group: 'color' },
+    'color.BUTTON_SECONDARY_ACTIVE': { group: 'color' },
+    'color.BUTTON_TERTIARY': { group: 'color' },
+    'color.BUTTON_TERTIARY_HOVER': { group: 'color' },
+    'color.BUTTON_TERTIARY_ACTIVE': { group: 'color' },
+    'color.BUTTON_DANGER_PRIMARY': { group: 'color' },
+    'color.BUTTON_DANGER_HOVER': { group: 'color' },
+    'color.BUTTON_DANGER_ACTIVE': { group: 'color' },
+    'color.BUTTON_DANGER_SECONDARY': { group: 'color' },
+    'color.BUTTON_DISABLED': { group: 'color' },
+    'color.BUTTON_SEPARATOR': { group: 'color' },
 
     'dimension.font_size.xs': { group: 'fontSize' },
     'dimension.font_size.sm': { group: 'fontSize' },
@@ -181,7 +218,11 @@ export default {
     ['color.STATUS_SUCCESS', 'color.BACKGROUND_PRIMARY', 4.5],
     ['color.STATUS_DANGER', 'color.BACKGROUND_PRIMARY', 4.5],
     ['color.STATUS_WARNING', 'color.BACKGROUND_PRIMARY', 4.5],
-    ['color.STATUS_INFO', 'color.BACKGROUND_PRIMARY', 4.5]
+    ['color.STATUS_INFO', 'color.BACKGROUND_PRIMARY', 4.5],
+    ['color.TEXT_ON_PRIMARY', 'color.BUTTON_PRIMARY', 4.5],
+    ['color.TEXT_ON_PRIMARY', 'color.BUTTON_SECONDARY', 4.5],
+    ['color.TEXT_ON_PRIMARY', 'color.BUTTON_TERTIARY', 4.5],
+    ['color.TEXT_ON_PRIMARY', 'color.BUTTON_DANGER_PRIMARY', 4.5]
   ]
 
 };
