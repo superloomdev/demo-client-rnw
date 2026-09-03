@@ -3,12 +3,13 @@
 // compound contexts (Tabs, Accordion, Menu, etc.). Each renders in an
 // error-isolated cell; composites that need specific child shapes degrade
 // to a neutral fallback.
-import React, { useState, useCallback } from 'react';
-import { ScrollView, Pressable, StyleSheet } from 'react-native';
+import React, { useState, useCallback, useMemo } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
 
 import { useLib } from '../../app-core/contexts/lib-context.js';
 import useShowcaseRegistry from './useShowcaseRegistry.js';
 import { ShowcaseRow, StateCell } from './ShowcaseRow.js';
+import GalleryList from './GalleryList.js';
 import SafeSample from './SafeSample.js';
 
 
@@ -210,50 +211,87 @@ export default function CompositeGallery () {
   const R = reg.Component;
   const keys = reg.buckets.composite;
 
-  // Render the composite gallery with custom interactive rows and multi-state rows
-  return (
-    <ScrollView contentContainerStyle={styles.content}>
+  // Build the row descriptor array: custom interactive rows first, then
+  // multi-state rows for the remaining composites
+  const rows = useMemo(function () {
 
+    const out = [];
+
+    // Custom interactive rows in the original order
+    if (R.CheckboxGroup) {
+      out.push({ key: 'CheckboxGroup', kind: 'custom' });
+    }
+    if (R.RadioButtonGroup) {
+      out.push({ key: 'RadioButtonGroup', kind: 'custom' });
+    }
+
+    // Multi-state rows for the remaining composites in alphabetical order
+    for (let j = 0; j < keys.length; j++) {
+      const k = keys[j];
+      if (CUSTOM_ROWS[k]) {
+        continue;
+      }
+      if (!R[k]) {
+        continue;
+      }
+      if (MULTI_STATE[k]) {
+        out.push({ key: k, kind: 'multi' });
+      }
+    }
+
+    return out;
+
+  }, [R, keys]);
+
+  // Render one row from its descriptor, memoized so scrolling does not rebuild
+  // every row closure
+  const renderRow = useCallback(function (item) {
+
+    if (item.kind === 'custom') {
+      if (item.key === 'CheckboxGroup') {
+        return <CheckboxGroupRow C={C} R={R} />;
+      }
+      if (item.key === 'RadioButtonGroup') {
+        return <RadioButtonGroupRow C={C} R={R} />;
+      }
+    }
+
+    // Multi-state row
+    const Comp = R[item.key];
+    const states = MULTI_STATE[item.key];
+    return <MultiStateCompositeRow name={item.key} Comp={Comp} states={states} C={C} />;
+
+  }, [C, R]);
+
+  // Header: gallery title and description
+  const header = (
+    <React.Fragment>
       <C.Text size="lg" weight="semibold">Composites ({keys.length})</C.Text>
       <C.Text color="text_secondary">Multi-part components with parent-child coordination.</C.Text>
+    </React.Fragment>
+  );
 
-      {/* Custom interactive rows */}
-      {R.CheckboxGroup ? <CheckboxGroupRow C={C} R={R} /> : null}
-      {R.RadioButtonGroup ? <RadioButtonGroupRow C={C} R={R} /> : null}
+  // Footer: back link
+  const footer = (
+    <Link href="/showcase" asChild>
+      <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
+    </Link>
+  );
 
-      {/* All other composites in alphabetical order */}
-      {keys.map(function (k) {
-        // Skip components that have custom interactive rows above
-        if (CUSTOM_ROWS[k]) {
-          // Skip custom-row components in the generic loop
-          return null;
-        }
-        const Comp = R[k];
-        // Skip if the component is not available in the registry
-        if (!Comp) {
-          // Skip missing components gracefully
-          return null;
-        }
-        const states = MULTI_STATE[k];
-        if (states) {
-          // Render a multi-state row for components with defined states
-          return <MultiStateCompositeRow key={k} name={k} Comp={Comp} states={states} C={C} />;
-        }
-        // Skip components without any defined states
-        return null;
-      })}
-
-      <Link href="/showcase" asChild>
-        <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
-      </Link>
-
-    </ScrollView>
+  // Render the virtualized gallery
+  return (
+    <GalleryList
+      rows={rows}
+      renderRow={renderRow}
+      header={header}
+      footer={footer}
+      testID="composite-gallery-list"
+    />
   );
 
 }
 
 
 const styles = StyleSheet.create({
-  content: { padding: 16, gap: 12, maxWidth: 960, width: '100%', alignSelf: 'center' },
   back: { alignItems: 'center', paddingVertical: 12 }
 });

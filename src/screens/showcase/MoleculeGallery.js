@@ -2,12 +2,13 @@
 // multiple visual states where applicable. Components with interactive states
 // (toggles, inputs, selections) respond to user input. The roster is registry-
 // driven - every molecule in the package appears here.
-import React, { useState, useCallback } from 'react';
-import { ScrollView, Pressable, StyleSheet } from 'react-native';
+import React, { useState, useCallback, useMemo } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
 
 import { useLib } from '../../app-core/contexts/lib-context.js';
 import useShowcaseRegistry from './useShowcaseRegistry.js';
 import { ShowcaseRow, StateCell } from './ShowcaseRow.js';
+import GalleryList from './GalleryList.js';
 import SafeSample from './SafeSample.js';
 
 
@@ -899,55 +900,105 @@ export default function MoleculeGallery () {
   const R = reg.Component;
   const keys = reg.buckets.molecule;
 
-  // Render the molecule gallery with custom interactive rows and multi-state rows
-  return (
-    <ScrollView contentContainerStyle={styles.content}>
+  // Build the row descriptor array: custom interactive rows first, then
+  // multi-state rows for the remaining molecules. The order preserves the
+  // original gallery layout so screenshot baselines stay valid.
+  const rows = useMemo(function () {
 
+    const out = [];
+
+    // Custom interactive rows in the original order
+    const customOrder = ['PasswordInput', 'Search', 'ExpandableSearch', 'NumberInput',
+      'Switch', 'MenuItem', 'IconSwitch'];
+    for (let i = 0; i < customOrder.length; i++) {
+      if (R[customOrder[i]]) {
+        out.push({ key: customOrder[i], kind: 'custom' });
+      }
+    }
+
+    // Multi-state rows for the remaining molecules in alphabetical order
+    for (let j = 0; j < keys.length; j++) {
+      const k = keys[j];
+      if (CUSTOM_ROWS[k]) {
+        continue;
+      }
+      if (!R[k]) {
+        continue;
+      }
+      if (MULTI_STATE[k]) {
+        out.push({ key: k, kind: 'multi' });
+      }
+    }
+
+    return out;
+
+  }, [R, keys]);
+
+  // Render one row from its descriptor, memoized so scrolling does not rebuild
+  // every row closure
+  const renderRow = useCallback(function (item) {
+
+    if (item.kind === 'custom') {
+      // Dispatch to the matching custom interactive row component
+      if (item.key === 'PasswordInput') {
+        return <PasswordInputRow C={C} R={R} />;
+      }
+      if (item.key === 'Search') {
+        return <SearchRow C={C} R={R} />;
+      }
+      if (item.key === 'ExpandableSearch') {
+        return <ExpandableSearchRow C={C} R={R} />;
+      }
+      if (item.key === 'NumberInput') {
+        return <NumberInputRow C={C} R={R} />;
+      }
+      if (item.key === 'Switch') {
+        return <SwitchRow C={C} R={R} />;
+      }
+      if (item.key === 'MenuItem') {
+        return <MenuItemRow C={C} R={R} />;
+      }
+      if (item.key === 'IconSwitch') {
+        return <IconSwitchRow C={C} R={R} />;
+      }
+    }
+
+    // Multi-state row
+    const Comp = R[item.key];
+    const states = MULTI_STATE[item.key];
+    return <MultiStateMoleculeRow name={item.key} Comp={Comp} states={states} C={C} />;
+
+  }, [C, R]);
+
+  // Header: gallery title and description
+  const header = (
+    <React.Fragment>
       <C.Text size="lg" weight="semibold">Molecules ({keys.length})</C.Text>
       <C.Text color="text_secondary">Each molecule with its visual states. Interactive components respond to input.</C.Text>
+    </React.Fragment>
+  );
 
-      {/* Custom interactive rows first */}
-      {R.PasswordInput ? <PasswordInputRow C={C} R={R} /> : null}
-      {R.Search ? <SearchRow C={C} R={R} /> : null}
-      {R.ExpandableSearch ? <ExpandableSearchRow C={C} R={R} /> : null}
-      {R.NumberInput ? <NumberInputRow C={C} R={R} /> : null}
-      {R.Switch ? <SwitchRow C={C} R={R} /> : null}
-      {R.MenuItem ? <MenuItemRow C={C} R={R} /> : null}
-      {R.IconSwitch ? <IconSwitchRow C={C} R={R} /> : null}
+  // Footer: back link
+  const footer = (
+    <Link href="/showcase" asChild>
+      <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
+    </Link>
+  );
 
-      {/* All other molecules in alphabetical order */}
-      {keys.map(function (k) {
-        // Skip components that have custom interactive rows above
-        if (CUSTOM_ROWS[k]) {
-          // Skip custom-row components in the generic loop
-          return null;
-        }
-        const Comp = R[k];
-        // Skip if the component is not available in the registry
-        if (!Comp) {
-          // Skip missing components gracefully
-          return null;
-        }
-        const states = MULTI_STATE[k];
-        if (states) {
-          // Render a multi-state row for components with defined states
-          return <MultiStateMoleculeRow key={k} name={k} Comp={Comp} states={states} C={C} />;
-        }
-        // Skip components without any defined states
-        return null;
-      })}
-
-      <Link href="/showcase" asChild>
-        <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
-      </Link>
-
-    </ScrollView>
+  // Render the virtualized gallery
+  return (
+    <GalleryList
+      rows={rows}
+      renderRow={renderRow}
+      header={header}
+      footer={footer}
+      testID="molecule-gallery-list"
+    />
   );
 
 }
 
 
 const styles = StyleSheet.create({
-  content: { padding: 16, gap: 12, maxWidth: 960, width: '100%', alignSelf: 'center' },
   back: { alignItems: 'center', paddingVertical: 12 }
 });

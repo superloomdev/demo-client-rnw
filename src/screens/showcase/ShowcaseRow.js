@@ -35,9 +35,11 @@ const cellStyles = StyleSheet.create({
 
 // Full-width row for one component with multiple state cells
 function ShowcaseRow ({ name, children, C }) {
-  // Render the component name label above a flex-wrap container of state cells
+  // Render the component name label above a flex-wrap container of state cells.
+  // The testID lets per-row screenshots and virtualization tests address a
+  // single component out of the full roster.
   return (
-    <View style={rowStyles.row}>
+    <View testID={'showcase-row-' + name} style={rowStyles.row}>
       <C.Text size="sm" weight="semibold">{name}</C.Text>
       <View style={rowStyles.states}>{children}</View>
     </View>
