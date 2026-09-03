@@ -50,7 +50,13 @@ export default function loader () {
   const contract = Object.assign({}, theme, { Breakpoint: BREAKPOINTS });
 
   // Build a Carbon system with the full shared_libs set, then register the
-  // whole roster - the suite walks every namespace, same as the showcase
+  // whole roster - the suite walks every namespace, same as the showcase.
+  //
+  // STRICT_TOKENS is on so reading an undeclared utility key throws instead of
+  // returning undefined. That turns the whole-roster smoke suite into a guard
+  // against a dead token name anywhere in the library: without it a component
+  // referencing a token that does not exist renders silently unstyled, which
+  // is exactly how the Button shipped with no background.
   const Device = deviceAdapter(Lib, {});
   const carbonSystem = Lib.CarbonComponents.createSystem({
     Utils: Lib.Utils,
@@ -59,7 +65,7 @@ export default function loader () {
     Device: Device,
     Icons: Lib.Icons,
     Font: Lib.Font
-  }, {}, contract, 'base');
+  }, { STRICT_TOKENS: true }, contract, 'base');
 
   const carbonRoster = Lib.CarbonComponents.roster;
 
