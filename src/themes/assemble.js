@@ -57,12 +57,12 @@ function assemble (Lib, built, currentLayers, updateLayersRef) {
   if (Lib.CONFIG && Lib.CONFIG.STRICT_THEME) {
 
     // An unsatisfiable pairing is an authoring error, so name every one
-    if (built.violations && built.violations.length > 0) {
+    if (built.violations && !Lib.Utils.isEmptyArray(built.violations)) {
       throw new TypeError('theme: contrast violations: ' + JSON.stringify(built.violations));
     }
 
     // A correction means the authored value was wrong, not that the theme is fine
-    if (built.corrections && built.corrections.length > 0) {
+    if (built.corrections && !Lib.Utils.isEmptyArray(built.corrections)) {
       throw new TypeError('theme: tokens were auto-corrected: ' + JSON.stringify(built.corrections));
     }
 
@@ -70,11 +70,11 @@ function assemble (Lib, built, currentLayers, updateLayersRef) {
 
     // In lenient mode, log the counts so a correction is visible rather than
     // silently discarded. A correction nobody sees is how a theme drifts.
-    if (built.violations && built.violations.length > 0) {
+    if (built.violations && !Lib.Utils.isEmptyArray(built.violations)) {
       Lib.Debug.warn('theme: ' + built.violations.length + ' contrast violation(s)');
     }
 
-    if (built.corrections && built.corrections.length > 0) {
+    if (built.corrections && !Lib.Utils.isEmptyArray(built.corrections)) {
       Lib.Debug.warn('theme: ' + built.corrections.length + ' token correction(s)');
     }
 

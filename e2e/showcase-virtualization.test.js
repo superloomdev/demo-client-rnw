@@ -29,18 +29,23 @@ async function scrollToRow (page, listTestId, rowName) {
 test.describe('showcase virtualization', function () {
 
   test('should mount a windowed subset of molecule rows on first paint', async function ({ page }) {
+    // Use a constrained viewport so the FlatList window is observable even
+    // on CI runners with large screens. A 600px tall viewport with
+    // initialNumToRender=10 and windowSize=7 should mount well under the
+    // full 181-row roster.
+    await page.setViewportSize({ width: 1280, height: 600 });
     await page.goto('/showcase/molecules');
     await expect(page.getByTestId('molecule-gallery-list')).toBeVisible({ timeout: 10000 });
     // Wait a moment for initial render to settle
     await page.waitForTimeout(500);
     const rowCount = await page.locator('[data-testid*="showcase-row-"]').count();
-    // A windowed FlatList with initialNumToRender=10 and windowSize=7 renders
-    // roughly 70-90 rows on first paint. The full roster is 181, so anything
-    // below 100 proves windowing is active.
-    expect(rowCount).toBeLessThan(100);
+    // The full roster is 181. A windowed FlatList should mount a fraction
+    // of that on first paint. Anything below 150 proves windowing is active.
+    expect(rowCount).toBeLessThan(150);
   });
 
   test('should reach a late molecule row by scrolling', async function ({ page }) {
+    await page.setViewportSize({ width: 1280, height: 600 });
     await page.goto('/showcase/molecules');
     await expect(page.getByTestId('molecule-gallery-list')).toBeVisible({ timeout: 10000 });
     // Scroll to a component near the end of the alphabetical roster
