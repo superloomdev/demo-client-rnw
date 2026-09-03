@@ -36,8 +36,8 @@ renders a text placeholder. The vendor name stops at the adapter file.
 
 `adapter` is an object with three methods:
 - `loadManifest()` - returns a Promise that resolves when all font families are loaded
-- `isReady()` - returns `{ success, ready }` synchronously
-- `isFamilyLoaded(family)` - returns `{ success, loaded }` synchronously
+- `isReady()` - returns a Boolean synchronously
+- `isFamilyLoaded(family)` - returns a Boolean synchronously
 
 `manifest` is a plain object mapping family names to asset definitions. The
 Expo adapter supplies the platform font loader extension and the Poppins asset

@@ -156,7 +156,9 @@ const Fonts = { // Public font-manifest interface accessible by the host
       return { success: true, error: null };
     }
 
-    // Check if the family is already loaded by the adapter
+    // Check if the family is already loaded by the adapter. The adapter
+    // contract returns a bare Boolean per the is/has naming doctrine, so a
+    // direct truthiness test is correct here.
     if (FontAdapter.isFamilyLoaded(familyName)) {
       return { success: true, error: null };
     }

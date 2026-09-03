@@ -11,10 +11,15 @@ export default function (Lib, config) { // eslint-disable-line no-unused-vars
       return Promise.resolve({ success: true, error: null });
     },
     isReady: function () {
-      return { success: true, ready: true };
+      // Return true: the web host declares its fonts through CSS, so there is
+      // no asynchronous load for this adapter to be waiting on
+      return true;
     },
     isFamilyLoaded: function () {
-      return { loaded: true };
+      // Return true for every family: the web host resolves families through
+      // CSS @font-face, which this adapter cannot inspect, so it cannot report
+      // a per-family answer and must not block the caller
+      return true;
     }
   };
 
