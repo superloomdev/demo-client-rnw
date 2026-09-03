@@ -7,6 +7,12 @@ import themerBridge from './themer-bridge.js';
 import combineComponent from '../components/index.js';
 
 
+// Families whose async load has already been attempted this session. A family
+// that cannot register, because the host manifest does not carry it, must not
+// re-trigger a re-derive on every assemble, which would spin the theme forever.
+const ATTEMPTED = new Set();
+
+
 /////////////////////////// Public Functions START /////////////////////////////
 
 
@@ -45,6 +51,35 @@ unregistered families), and builds the themed component library.
 *********************************************************************/
 function assemble (Lib, built, currentLayers, updateLayersRef) {
 
+  // Strict mode: refuse a theme the contrast pass could not satisfy, and refuse
+  // one it had to rewrite. Off by default so a server-driven theme degrades
+  // rather than crashing; the test tier and CI turn it on.
+  if (Lib.CONFIG && Lib.CONFIG.STRICT_THEME) {
+
+    // An unsatisfiable pairing is an authoring error, so name every one
+    if (built.violations && built.violations.length > 0) {
+      throw new TypeError('theme: contrast violations: ' + JSON.stringify(built.violations));
+    }
+
+    // A correction means the authored value was wrong, not that the theme is fine
+    if (built.corrections && built.corrections.length > 0) {
+      throw new TypeError('theme: tokens were auto-corrected: ' + JSON.stringify(built.corrections));
+    }
+
+  } else if (Lib.Debug) {
+
+    // In lenient mode, log the counts so a correction is visible rather than
+    // silently discarded. A correction nobody sees is how a theme drifts.
+    if (built.violations && built.violations.length > 0) {
+      Lib.Debug.warn('theme: ' + built.violations.length + ' contrast violation(s)');
+    }
+
+    if (built.corrections && built.corrections.length > 0) {
+      Lib.Debug.warn('theme: ' + built.corrections.length + ' token correction(s)');
+    }
+
+  }
+
   // Bridge the themer's flat token map to { Color, Dimension, Font }
   const theme = themerBridge.bridgeTheme(built.tokens);
 
@@ -68,10 +103,13 @@ function assemble (Lib, built, currentLayers, updateLayersRef) {
           // Fall back to System for now
           theme.Font.family[role] = 'System';
 
-          // Trigger async loading of the family, then re-derive
-          if (Lib.Fonts && Lib.Fonts.loadFamily) {
+          // Trigger async loading of the family, then re-derive. The ledger
+          // makes the attempt once per family; the isRegistered check makes
+          // the re-derive conditional on the load having really landed.
+          if (Lib.Fonts && Lib.Fonts.loadFamily && !ATTEMPTED.has(familyName)) {
+            ATTEMPTED.add(familyName);
             Lib.Fonts.loadFamily(familyName).then(function (result) {
-              if (result.success) {
+              if (result.success && Lib.Font.isRegistered(familyName)) {
 
                 // Re-derive by calling update_layers with a fresh copy
                 if (updateLayersRef && updateLayersRef.current) {
