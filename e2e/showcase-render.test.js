@@ -113,4 +113,19 @@ test.describe('showcase render correctness', function () {
     expect(contrast.bg).not.toBe(contrast.fg);
   });
 
+  test('should render ContainedList with two semantic list items', async function ({ page }) {
+    await page.goto('/showcase/molecules');
+    const row = page.getByTestId('showcase-row-ContainedList');
+    await expect(row).toBeVisible({ timeout: 10000 });
+
+    const lists = row.locator('[role="list"]');
+    await expect(lists).toHaveCount(1);
+
+    const items = row.locator('[role="listitem"]');
+    await expect(items).toHaveCount(2);
+
+    await expect(row.getByText('First item')).toBeVisible();
+    await expect(row.getByText('Second item')).toBeVisible();
+  });
+
 });

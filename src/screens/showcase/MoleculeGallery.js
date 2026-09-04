@@ -136,6 +136,23 @@ function IconSwitchRow ({ C, R }) {
 }
 
 
+function ContainedListRow ({ C, R }) {
+  // Render the ContainedList with real ContainedListItem children so the
+  // showcase composes the component the way real consumers do, with semantic
+  // list items that supply their own padding and accessibility roles
+  return (
+    <ShowcaseRow name="ContainedList" C={C}>
+      <StateCell label="default" C={C} stageWidth={240}>
+        <R.ContainedList label="My list">
+          <R.ContainedListItem label="First item" onPress={noop} />
+          <R.ContainedListItem label="Second item" onPress={noop} />
+        </R.ContainedList>
+      </StateCell>
+    </ShowcaseRow>
+  );
+}
+
+
 // ---- Static multi-state molecule rows (keyed by component name) ----
 
 const MULTI_STATE = {
@@ -448,11 +465,6 @@ const MULTI_STATE = {
   ],
 
   // ---- Batch 6: ContainedList and List families ----
-  ContainedList: [
-    // A list needs room to read as a list; the default cell width collapses the
-    // bordered container to the width of its own label
-    { label: 'default', props: { label: 'My list', children: 'List items' }, stageWidth: 240 }
-  ],
   List: [
     { label: 'unordered', props: { children: 'List items' } },
     { label: 'ordered', props: { children: 'List items', ordered: true } }
@@ -858,7 +870,8 @@ const CUSTOM_ROWS = {
   NumberInput: true,
   Switch: true,
   MenuItem: true,
-  IconSwitch: true
+  IconSwitch: true,
+  ContainedList: true
 };
 
 
@@ -916,6 +929,7 @@ export default function MoleculeGallery () {
       {R.Switch ? <SwitchRow C={C} R={R} /> : null}
       {R.MenuItem ? <MenuItemRow C={C} R={R} /> : null}
       {R.IconSwitch ? <IconSwitchRow C={C} R={R} /> : null}
+      {R.ContainedList ? <ContainedListRow C={C} R={R} /> : null}
 
       {/* All other molecules in alphabetical order */}
       {keys.map(function (k) {
