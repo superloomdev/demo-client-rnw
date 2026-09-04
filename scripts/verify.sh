@@ -3,9 +3,8 @@
 # in the same order, so a push never discovers a failure the workstation could
 # have reported in seconds.
 #
-# The grep gates (G25, G26) live only in the workflow YAML, so they are
-# duplicated here. When a gate changes in ci.yml it must change here too;
-# GATE COUNT below is asserted against the workflow to catch that drift.
+# The grep gates (G25, G26) are extracted from the workflow YAML at runtime by
+# scripts/verify-gates.js, so they can never drift from the workflow source.
 #
 # Usage:
 #   bash scripts/verify.sh          full parity, including builds and e2e
@@ -47,74 +46,19 @@ gate_portability () {
 }
 
 
+# --------------------------- Gate: root install --------------------------- #
+# CI runs npm ci at the repo root before lint and Playwright. A clean checkout
+# must have the root dev dependencies that both require.
+
+gate_root_install () {
+  npm ci
+}
+
+
 # ------------------------------ Gate: eslint ------------------------------ #
 
 gate_eslint () {
   npx eslint .
-}
-
-
-# ------------------------- Gate: G25 prose mechanics ---------------------- #
-# Mirrors ci.yml "G25 - Prose mechanics" on the same file set.
-#
-# The patterns are assembled from fragments rather than written out, because
-# this file is itself a tracked file the gate scans: spelling out the banned
-# words here would make the gate fail on its own source. ci.yml escapes that
-# by living under an excluded path. Adding scripts/ to the exclusions instead
-# would blind the gate to every future script, so the pattern is split.
-
-gate_g25 () {
-  local brit em hits em_hits
-  brit="colo""ur|behavi""our|recogni""s|initiali""s|optimi""se|optimi""sation"
-  em=$(printf '\xe2\x80\x94')
-
-  hits=$(git grep -niE "$brit" -- . ':(exclude)*/node_modules/*' ':(exclude).github/*' ':(exclude)*package-lock.json' 2>/dev/null || true)
-  if [ -n "$hits" ]; then
-    echo "FAIL: British spelling found. Use American English (color, behavior, recognize, initialize, optimize)."
-    echo "$hits"
-    return 1
-  fi
-
-  em_hits=$(git grep -n "$em" -- . ':(exclude)*/node_modules/*' ':(exclude).github/*' ':(exclude)*package-lock.json' 2>/dev/null || true)
-  if [ -n "$em_hits" ]; then
-    echo "FAIL: em dash found. Use a comma, a period, or ' - ' instead."
-    echo "$em_hits"
-    return 1
-  fi
-
-  echo "PASS: no British spelling or em dash in tracked files"
-}
-
-
-# ---------------------- Gate: G26 peer-dep utilization -------------------- #
-# Mirrors ci.yml "G26 - Peer-dep utilization". Kept byte-identical.
-
-gate_g26 () {
-  local hits
-  hits=$(git grep -nE "\.length (===|!==|>) 0|(===|!==) ''|Object\.keys\([^)]+\)\.length (===|!==|>) 0" -- '*.js' '*.jsx' ':(exclude)*/node_modules/*' ':(exclude).github/*' ':(exclude)src/_test/*' ':(exclude)src/app-core/loader.validators.js' 2>/dev/null || true)
-  if [ -n "$hits" ]; then
-    echo "FAIL: raw length or keys check found. Use Lib.Utils.isEmptyArray, isEmptyObject, or isEmptyString."
-    echo "$hits"
-    return 1
-  fi
-  echo "PASS: no raw length or keys checks in module source"
-}
-
-
-# --------------------- Gate: workflow gate-count drift -------------------- #
-# A grep gate added to ci.yml but not to this script would leave a CI-only
-# check, which is the exact gap this script exists to close.
-
-gate_parity () {
-  local declared expected
-  declared=$(grep -cE '^      - name: G[0-9]+' .github/workflows/ci.yml || true)
-  expected=2
-  if [ "$declared" != "$expected" ]; then
-    echo "FAIL: ci.yml declares $declared G-gates but verify.sh mirrors $expected."
-    echo "Add the new gate to scripts/verify.sh and update the expected count."
-    return 1
-  fi
-  echo "PASS: verify.sh mirrors all $declared ci.yml grep gates"
 }
 
 
@@ -149,10 +93,9 @@ gate_e2e () {
 # ------------------------------- Run gates -------------------------------- #
 
 run_gate 'portability fence' gate_portability
+run_gate 'root install' gate_root_install
+run_gate 'workflow policy gates' node scripts/verify-gates.js --gates
 run_gate 'eslint' gate_eslint
-run_gate 'G25 prose mechanics' gate_g25
-run_gate 'G26 peer-dep utilization' gate_g26
-run_gate 'ci.yml gate parity' gate_parity
 run_gate 'unit tests (src/_test)' gate_unit
 
 if [ "$FAST" = "0" ]; then
