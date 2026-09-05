@@ -332,6 +332,66 @@ test('should return a complete theme despite a violation when STRICT_THEME is of
 });
 
 
+// ========================= CARBON PROFILE IMPORT (Step 4.2) ============== //
+
+// Verify the Carbon profiles from the published package are importable
+// and carry the expected token values. These are data-only templates
+// that can be fed to the Themer engine.
+//
+// These tests are skipped until the Carbon package is republished with
+// the ./theme export. The republish is pending same-version deletion
+// approval per the pre-release version policy.
+
+let carbonThemeAvailable = false;
+let carbonTheme = null;
+
+try {
+  carbonTheme = await import('@superloomdev/rnw-components-carbon/theme');
+  carbonThemeAvailable = !!carbonTheme;
+} catch {
+  // Expected: ./theme export not in published package yet
+}
+
+test('should import Carbon white profile from the published package', function (t) {
+  if (!carbonThemeAvailable) {
+    t.skip(); return;
+  }
+  assert.ok(carbonTheme.white, 'white profile must exist');
+  assert.ok(carbonTheme.g10, 'g10 profile must exist');
+  assert.ok(carbonTheme.g90, 'g90 profile must exist');
+  assert.ok(carbonTheme.g100, 'g100 profile must exist');
+});
+
+test('Carbon white profile background matches Carbon White theme', function (t) {
+  if (!carbonThemeAvailable) {
+    t.skip(); return;
+  }
+  assert.equal(carbonTheme.white.tokens['color.background'], '#ffffff');
+  assert.equal(carbonTheme.white.tokens['color.layer_01'], '#f4f4f4');
+  assert.equal(carbonTheme.white.tokens['color.text_primary'], '#161616');
+  assert.equal(carbonTheme.white.tokens['color.interactive'], '#0f62fe');
+});
+
+test('Carbon g100 profile background matches Carbon G100 theme', function (t) {
+  if (!carbonThemeAvailable) {
+    t.skip(); return;
+  }
+  assert.equal(carbonTheme.g100.tokens['color.background'], '#161616');
+  assert.equal(carbonTheme.g100.tokens['color.layer_01'], '#262626');
+  assert.equal(carbonTheme.g100.tokens['color.text_primary'], '#f4f4f4');
+});
+
+test('Carbon profiles have 203 tokens each', function (t) {
+  if (!carbonThemeAvailable) {
+    t.skip(); return;
+  }
+  assert.equal(Object.keys(carbonTheme.white.tokens).length, 203);
+  assert.equal(Object.keys(carbonTheme.g10.tokens).length, 203);
+  assert.equal(Object.keys(carbonTheme.g90.tokens).length, 203);
+  assert.equal(Object.keys(carbonTheme.g100.tokens).length, 203);
+});
+
+
 // ========================= FONT LOOP GUARD (C1) ========================== //
 
 // Because ATTEMPTED is module scope, these tests share state. Use a distinct
