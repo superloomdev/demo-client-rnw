@@ -158,6 +158,8 @@ jobs:
         with:
           node-version: '24'
           registry-url: 'https://npm.pkg.github.com'
+      - name: Install root deps
+        run: npm ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
       - name: Install and build web host
@@ -165,10 +167,8 @@ jobs:
         run: |
           npm ci
           npx vite build
-      - name: Install root deps and run E2E
-        run: |
-          npm ci
-          npx playwright test
+      - name: Run E2E
+        run: npx playwright test
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7
