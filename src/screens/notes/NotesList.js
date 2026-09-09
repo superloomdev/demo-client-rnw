@@ -103,10 +103,10 @@ const styles = StyleSheet.create({
   content: { padding: 16, gap: 12, maxWidth: 640, width: '100%', alignSelf: 'center' },
   banner: { backgroundColor: '#111827', borderRadius: 10, padding: 12 },
   bannerText: { color: '#FBBF24' },
-  composer: { gap: 10 },
+  composer: { gap: 10, padding: 16 },
   bodyInput: { minHeight: 80, textAlignVertical: 'top' },
   loader: { marginTop: 24 },
-  note: { gap: 6 },
+  note: { gap: 6, padding: 16 },
   noteHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   noteTitle: { flex: 1 },
   home: { alignItems: 'center', paddingVertical: 12 }

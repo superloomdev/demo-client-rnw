@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   addRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   input: { flex: 1 },
   loader: { marginTop: 24 },
-  list: { gap: 0 },
+  list: { gap: 0, padding: 0 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 },
   rowDivider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: '#E5E7EB' },
   rowTitle: { flex: 1 },

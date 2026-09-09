@@ -187,13 +187,13 @@ export default function ShowcaseIndex () {
 
 const styles = StyleSheet.create({
   content: { padding: 16, gap: 12, maxWidth: 640, width: '100%', alignSelf: 'center' },
-  summary: { gap: 2 },
+  summary: { gap: 2, padding: 16 },
   cardWrap: {},
-  card: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  card: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16 },
   iconWrap: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
   cardText: { flex: 1, gap: 2 },
   home: { alignItems: 'center', paddingVertical: 12 },
-  schemeCard: { gap: 8 },
+  schemeCard: { gap: 8, padding: 16 },
   schemeRow: { flexDirection: 'row', gap: 8 },
   schemeBtn: { paddingHorizontal: 16, paddingVertical: 8 },
   swatchRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },

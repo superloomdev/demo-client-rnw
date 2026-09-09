@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   content: { padding: 24, gap: 12, maxWidth: 560, width: '100%', alignSelf: 'center' },
   subtitle: { marginBottom: 12 },
   cardWrap: { width: '100%' },
-  card: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+  card: { flexDirection: 'row', alignItems: 'center', gap: 16, padding: 16 },
   iconWrap: { width: 56, height: 56, alignItems: 'center', justifyContent: 'center' },
   cardText: { flex: 1, gap: 2 }
 });
