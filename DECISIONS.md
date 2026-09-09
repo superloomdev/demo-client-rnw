@@ -56,8 +56,8 @@ src/app-core/contexts/lib-context.js
 src/app-core/loader.js              ← builds Lib + Config
     ↓ then ThemeProvider
 src/app-core/contexts/theme-context.js
-    ↓ calls combineComponent()
-src/components/index.js           ← builds themed component library
+    ↓ calls buildSystem()
+src/themes/build-system.js          ← builds themed component system
     ↓
 hosts/expo/app/index.js                  ← re-export → src/screens/main/Launcher.js
 ```
@@ -80,24 +80,35 @@ Mirrors the server-side helper module convention:
 
 ---
 
-## Theme vocabulary: Template / Theme (base + variant)
+## Theme vocabulary: Contract, profile, layers
 
-- **Themer engine** - label-agnostic token resolution (Carbon vocabulary).
-  Knows no `primary`, no `xs`. Zero deps. Published as
-  `@superloomdev/js-client-helper-themer`.
-- **Template** - the opinionated structure built on the engine. Declares the
-  named tokens and their relationships: color tokens via mix/ref operations,
-  modular/linear scales, font roles. Lives at `src/themes/themer-template.js`.
-- **Theme** - the *values* that fill a template. A theme is **base + variant**.
-  `base` is the complete fallback; a `variant` is a partial that mints a new
-  theme. Pure data → portable, server-sendable. Lives at
-  `hosts/expo/themes/{base,tasks,notes}-theme.js`.
+- **Themer engine** - the Superloom token contract owner. Published as
+  `@superloomdev/js-client-helper-themer`. Knows every token name through
+  `Themer.getContract()`; no component invents a name.
+- **Profile** - a named, versioned set of reference templates with identity.
+  `@superloomdev/js-client-helper-themer-template-carbon` is a profile with
+  four schemes (`white`, `g10`, `g90`, `g100`).
+- **Scheme** - a complete token set that replaces the base template.
+  Switching a scheme changes the visual system.
+- **Brand** - a sparse layer (only the tokens that differ). A brand overlays
+  a scheme without rebuilding it. `tasks` and `notes` are brands.
+- **Component system** - `@superloomdev/rnw-components`, a library whose
+  components read tokens through generated style utilities and nothing else.
 
-**Flow:** Themer's `buildTheme(template, [baseLayer, variantLayer], 'native')`
-resolves the template against layered overrides and emits platform-ready tokens.
-The `themer-bridge.js` converts theme scheme data into Themer layers and
-reshapes emitted tokens into the `{ Color, Dimension, Font }` structure
-components consume.
+**Flow:** `buildTheme(template, [schemeLayer, brandLayer], 'native')` resolves
+the template against layered overrides and emits platform-ready tokens.
+`src/themes/build-system.js` builds the component system and registers the
+published roster plus local app components.
+
+---
+
+## Two reference themes, one component system
+
+The demo proves the token contract is a superset by rendering
+Carbon-anatomy components under Material values without a single component
+change. Anything that looks wrong under Material is either a mapping error in
+the Material template package or a hardcoded value in the component library,
+and both are defects; the demo is where they become visible.
 
 ---
 
@@ -113,8 +124,8 @@ unified through a single `expo-font` interface.
 | **Custom (bundled)** | `notes` | `Lora` | Raw `.ttf` in `fonts/assets/` → `expo-font` |
 
 **Architecture separation:**
-- **Theme data** (`themes/*.js`) - names the font FAMILY (e.g.,
-  `primaryFamily: 'Poppins_400Regular'`)
+- **Theme data** (`themes/brand-layers.js`) - names the font FAMILY (e.g.,
+  `font.family.sans: 'Poppins_400Regular'`)
 - **Font manifest** (`fonts/fonts.js`) - owns LOADING those families
 
 This separation is deliberate: `require('./font.ttf')` is bundler-bound
@@ -192,11 +203,11 @@ adapter throws `TypeError` at boot through `validateAdapters` in
 
 ---
 
-## Unified CI with five jobs, iOS on macOS
+## Unified CI with seven jobs, iOS on macOS
 
 A single `.github/workflows/ci.yml` runs on every push and PR to `main`. The
-`test` job (portability fence + unit tests) gates four parallel build jobs:
-`expo-web`, `rnw-web`, `expo-android` (all ubuntu), and `expo-ios` (macOS).
+`test` and `lint` jobs gate five parallel jobs:
+`expo-web`, `rnw-web`, `e2e`, `expo-android` (all ubuntu), and `expo-ios` (macOS).
 All `superloomdev` repos are public, so macOS runners are free and unlimited.
 The `test` job gates all builds because a coupling leak or unit test failure
 invalidates every downstream artifact. iOS runs on every push, not

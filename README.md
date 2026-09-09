@@ -1,6 +1,6 @@
 # Nimbus - RNW Super-App Demo (Client)
 
-A runnable validation demo for the React Native Web super-app architecture: one pipeline for web, iOS, and Android, a Carbon-vocabulary token engine (Themer), and a super-app shape mechanism.
+A runnable validation demo for the React Native Web super-app architecture: one pipeline for web, iOS, and Android, a Superloom token contract engine (Themer), and a super-app shape mechanism.
 
 **Nimbus** is a shared spaces network - one account and one pass for finding, booking, and using bookable spaces across independent venue operators. For the full product definition, see the server repo's `PROJECT.md`.
 
@@ -23,10 +23,10 @@ The demo currently validates the architecture with two placeholder shapes (Tasks
 ```
 codebase-demo-client-rnw/
   src/                       Shared source. No package.json. Never published.
-    components/              Atoms, molecules, variants, freeform
+    components/              Variants, freeforms (local app components)
     screens/                 Demo screens (main/Launcher, tasks/TasksList, notes/NotesList)
     app-core/                Loader, config, lib-context, super-app, client
-    themes/                  Theme data, themer template, bridge, assemble
+    themes/                  Brand layers, system builder
     fonts/                   Font manifest and loading
     _test/                   Node test tier (stub adapters + real loader)
   hosts/
@@ -50,12 +50,11 @@ codebase-demo-client-rnw/
 | Super-app entry / shape routing | `hosts/expo/app/main/index.js`, `hosts/expo/app/_layout.js` |
 | Lib loader / DI (same idiom as the backend) | `src/app-core/loader.js` |
 | Adapter gate (boot-time validation) | `src/app-core/loader.validators.js` |
-| Theme assembly (platform-aware) | `src/themes/assemble.js` |
-| Themer token engine (Carbon vocabulary) | `src/themes/themer-template.js`, `themer-bridge.js` |
-| Scheme data (complete token sets) | `src/schemes/neutral-scheme.js`, `tasks-scheme.js`, `notes-scheme.js`, `carbon-scheme.js` |
-| Component library (atoms/molecules) | `src/components/` |
+| Theme assembly (platform-aware) | `src/themes/build-system.js` |
+| Brand layers (partial overlays) | `src/themes/brand-layers.js` |
+| Component library (published roster) | `@superloomdev/rnw-components` via `src/themes/build-system.js` |
 | Structured exception (variant) | `src/components/variant/` |
-| Unstructured exception (freeform) | `src/components/freeform/` |
+| Unstructured exception (freeform) | `src/components/freeform/ | |
 | Stub SDK (in-memory, no backend) | `src/app-core/loader.js` (`_stubSdk()`) |
 | Font loading (3 delivery mechanisms) | `src/fonts/` |
 | Portability harness (non-Expo host) | `hosts/web/` |
@@ -70,16 +69,24 @@ All Superloom helper modules are consumed from the GitHub Packages registry as n
 - `@superloomdev/js-client-helper-themer-ext-react`
 - `@superloomdev/js-client-helper-font`
 - `@superloomdev/js-client-helper-font-ext-expo`
+- `@superloomdev/rnw-components`
+- `@superloomdev/js-client-helper-themer-template-carbon`
 
-The themer engine resolves templates against layered overrides (base + variant) and emits platform-ready tokens. The app's theme assembly uses `buildTheme(template, [baseLayer, variantLayer], PLATFORM)` where `PLATFORM` is defined in `src/themes/assemble.js`.
+The themer engine resolves templates against layered overrides (base + brand) and emits platform-ready tokens. The app's theme assembly uses `buildTheme(template, [baseLayer, brandLayer], 'native')` where the platform is defined in `src/themes/build-system.js`.
+
+## Themes
+
+The demo renders one component system, `@superloomdev/rnw-components`, under two design systems and two brands. The scheme selector switches the base template among Carbon `white`, `g10`, `g90`, `g100` and Material `light` and `dark`; the brand selector applies the `tasks` or `notes` layer over the selected scheme. Switching a scheme replaces the template; switching a brand replaces one layer and never rebuilds the template. Every value on screen is a Superloom contract token; the demo defines no token names and no colors of its own outside `src/themes/brand-layers.js`.
 
 ## CI
 
-A single workflow (`.github/workflows/ci.yml`) runs on every push and PR to `main`. The `test` job gates all build jobs.
+A single workflow (`.github/workflows/ci.yml`) runs on every push and PR to `main`. The `test` and `lint` jobs gate all build jobs.
 
 | Job | Runner | What it proves | Artifact |
 |---|---|---|---|
-| `test` | ubuntu | Portability fence + 57 unit tests | none |
+| `test` | ubuntu | Portability fence + 323 unit tests | none |
+| `lint` | ubuntu | ESLint + G25 prose + G26 peer-dep | none |
+| `e2e` | ubuntu | Playwright E2E (55 tests) | test-results |
 | `expo-web` | ubuntu | Expo web export via Metro | `expo-web` (7 days) |
 | `rnw-web` | ubuntu | React Native Web build via Vite | `rnw-web` (7 days) |
 | `expo-android` | ubuntu | Expo prebuild + Gradle debug APK | `expo-android-apk` (7 days) |
