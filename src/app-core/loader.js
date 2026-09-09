@@ -13,14 +13,13 @@ import jsHelperDebug from '@superloomdev/js-helper-debug';
 import jsClientHelperThemer from '@superloomdev/js-client-helper-themer';
 import jsClientHelperThemerExtReact from '@superloomdev/js-client-helper-themer-ext-react';
 import jsClientHelperFont from '@superloomdev/js-client-helper-font';
-import neutralScheme from '../schemes/neutral-scheme.js';
-import tasksScheme from '../schemes/tasks-scheme.js';
-import notesScheme from '../schemes/notes-scheme.js';
-import carbonScheme from '../schemes/carbon-scheme.js';
+import { createSystem } from '@superloomdev/rnw-components';
+import { COMPONENTS, VARIANTS, FREEFORMS, PROVIDERS } from '@superloomdev/rnw-components/all';
+import carbonV11Profile from '@superloomdev/js-client-helper-themer-template-carbon';
+import { BRAND_LAYERS } from '../themes/brand-layers.js';
 import fonts from '../fonts/fonts.js';
 import themeContext from './contexts/theme-context.js';
-import { createSystem as carbonCreateSystem } from '@superloomdev/rnw-components-carbon';
-import { COMPONENTS as carbonComponents, VARIANTS as carbonVariants, FREEFORMS as carbonFreeforms, PROVIDERS as carbonProviders } from '@superloomdev/rnw-components-carbon/all';
+import deviceAdapter from './device.js';
 
 
 /////////////////////////// Module-Loader START ////////////////////////////////
@@ -125,18 +124,13 @@ export default function loader (adapters) {
   //   Lib.FontAdapter  - the platform font loader (from the Fonts adapter)
   //   Lib.FontManifest - host-owned font asset sources (from the Fonts adapter)
   //   Lib.Fonts        - font manifest (families + loadFonts async gate)
-  //   Lib.Schemes      - scheme-data map ({ neutral, tasks, notes }) - loaded directly
+  //   Lib.Schemes      - Carbon profile scheme-data map ({ white, g10, g90, g100 })
   //   Lib.ThemeContext - React theming hub (ThemeProvider + hooks); needs Fonts + Themer
 
   Lib.Font = jsClientHelperFont(Lib, {
     DEFAULT_FAMILY: 'System'
   });
-  Lib.Schemes = {
-    neutral: neutralScheme,
-    tasks:   tasksScheme,
-    notes:   notesScheme,
-    carbon:  carbonScheme
-  };
+  Lib.Schemes = carbonV11Profile.schemes;
 
 
   // ==================== SDK ======================================= //
@@ -167,25 +161,34 @@ export default function loader (adapters) {
   // Fonts adapter before it can build
   Lib.Fonts = fonts(Lib);
 
-  // Theme context needs Lib.Fonts (for font-family validation + async loading)
-  Lib.ThemeContext = themeContext(Lib);
+  // Device adapter for the component system (getPlatform, getViewport)
+  Lib.Device = deviceAdapter(Lib, {});
 
-
-  // ==================== CARBON COMPONENTS ======================== //
-  // The published Carbon component library. createSystem is its only entry
+  // ==================== COMPONENTS =============================== //
+  // The published rnw-components library. createSystem is its only entry
   // point: it builds the themed infrastructure and the caller registers the
   // components it needs. The showcase iterates the whole roster, so the
   // registration barrel is injected alongside. A screen using a bounded set
   // imports those components by name and ships only those factories.
-  Lib.CarbonComponents = {
-    createSystem: carbonCreateSystem,
+  Lib.Components = {
+    createSystem: createSystem,
     roster: {
-      COMPONENTS: carbonComponents,
-      VARIANTS: carbonVariants,
-      FREEFORMS: carbonFreeforms,
-      PROVIDERS: carbonProviders
+      COMPONENTS: COMPONENTS,
+      VARIANTS: VARIANTS,
+      FREEFORMS: FREEFORMS,
+      PROVIDERS: PROVIDERS
     }
   };
+
+  // Brand layers for the demo (tasks, notes). See D16.
+  Lib.Themes = {
+    profile: carbonV11Profile,
+    brands: BRAND_LAYERS
+  };
+
+  // Theme context needs Lib.Fonts (for font-family validation + async loading)
+  // and Lib.Themes (for the Carbon profile). Must be loaded after both.
+  Lib.ThemeContext = themeContext(Lib);
 
 
   // First boot log

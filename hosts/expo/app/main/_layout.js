@@ -13,8 +13,8 @@ function ThemedStack () {
     <Stack
       screenOptions={{
         title: 'Nimbus',
-        headerStyle: { backgroundColor: theme.Color.APP_PRIMARY },
-        headerTintColor: theme.Color.TEXT_ON_PRIMARY,
+        headerStyle: { backgroundColor: theme['color.interactive'] },
+        headerTintColor: theme['color.text_on_color'],
         headerTitleStyle: { fontWeight: '600' }
       }}
     />

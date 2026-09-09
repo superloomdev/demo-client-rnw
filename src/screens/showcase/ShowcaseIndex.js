@@ -20,16 +20,16 @@ function IndexCard ({ C, label, count, blurb, href, icon }) {
   return (
     <Link href={href} asChild>
       <Pressable style={styles.cardWrap}>
-        <C.Card style={styles.card}>
-          <C.View background="app_primary_subtle" radius="md" style={styles.iconWrap}>
-            <C.Icon name={icon} size="xxl" color="APP_PRIMARY" />
+        <C.View background="layer_02" radius="radius_08" border={true} style={styles.card}>
+          <C.View background="layer_accent_01" radius="radius_04" style={styles.iconWrap}>
+            <C.Icon name={icon} size="xxl" color="interactive" />
           </C.View>
           <C.View style={styles.cardText}>
-            <C.Text size="lg" weight="semibold">{label} ({count})</C.Text>
+            <C.Text typeSet="heading02" weight="semibold">{label} ({count})</C.Text>
             <C.Text color="text_secondary">{blurb}</C.Text>
           </C.View>
-          <C.Icon name="chevron-forward" size="lg" color="TEXT_MUTED" />
-        </C.Card>
+          <C.Icon name="chevron-forward" size="lg" color="text_secondary" />
+        </C.View>
       </Pressable>
     </Link>
   );
@@ -37,17 +37,22 @@ function IndexCard ({ C, label, count, blurb, href, icon }) {
 }
 
 
-// The schemes the selector offers, in display order. Each names a key on
-// Lib.Schemes; the blurb states what makes the scheme visually distinct.
+// The schemes and brands the selector offers, in display order. Schemes are
+// Carbon base token sets; brands are accent overlays. Each names a string
+// passed to ctl.updateScheme or ctl.updateBrand.
 const SELECTABLE_SCHEMES = [
-  { key: 'tasks', label: 'Tasks', blurb: 'Indigo accent, rounded corners' },
-  { key: 'carbon', label: 'Carbon', blurb: 'Carbon Blue 60, square corners' }
+  { key: 'white', label: 'White', blurb: 'Carbon White theme, light background', type: 'scheme' },
+  { key: 'g10', label: 'Gray 10', blurb: 'Carbon g10, subtle gray background', type: 'scheme' },
+  { key: 'g90', label: 'Gray 90', blurb: 'Carbon g90, dark background', type: 'scheme' },
+  { key: 'g100', label: 'Gray 100', blurb: 'Carbon g100, deep dark background', type: 'scheme' },
+  { key: 'tasks', label: 'Tasks', blurb: 'Indigo accent, rounded corners', type: 'brand' },
+  { key: 'notes', label: 'Notes', blurb: 'Teal accent, larger type ratio', type: 'brand' }
 ];
 
 
 // Scheme selector - swaps the whole base token set at runtime. A scheme is a
 // complete token set, so this calls updateScheme (replace) rather than
-// updateTheme (partial overlay). The accent swatch renders APP_PRIMARY from
+// updateTheme (partial overlay). The accent swatch renders color.interactive from
 // the live theme, so it is the visible proof the swap reached the tokens.
 function SchemeSelector ({ C }) {
 
@@ -57,11 +62,16 @@ function SchemeSelector ({ C }) {
   const theme = Lib.ThemeContext.useTheme();
   const [selected, setSelected] = React.useState(SELECTABLE_SCHEMES[0].key);
 
-  // Replace the base scheme and record which button is active
+  // Replace the base scheme or brand and record which button is active
   const switchTo = function (key) {
+    const item = SELECTABLE_SCHEMES.find(function (s) {
+      return s.key === key;
+    });
     setSelected(key);
-    if (ctl && ctl.updateScheme && Lib.Schemes[key]) {
-      ctl.updateScheme(Lib.Schemes[key]);
+    if (item && item.type === 'scheme' && ctl && ctl.updateScheme) {
+      ctl.updateScheme(key);
+    } else if (item && item.type === 'brand' && ctl && ctl.updateBrand) {
+      ctl.updateBrand(key);
     }
   };
 
@@ -69,8 +79,8 @@ function SchemeSelector ({ C }) {
   // Colors and radii come from the theme, never from literals, so the
   // selector re-skins itself along with everything else on the page.
   return (
-    <C.Card style={styles.schemeCard}>
-      <C.Text size="sm" color="text_muted">Scheme</C.Text>
+    <C.View background="layer_02" radius="radius_08" border={true} style={styles.schemeCard}>
+      <C.Text typeSet="caption02" color="text_secondary">Scheme</C.Text>
       <C.View style={styles.schemeRow}>
         {SELECTABLE_SCHEMES.map(function (scheme) {
 
@@ -90,12 +100,12 @@ function SchemeSelector ({ C }) {
               style={[
                 styles.schemeBtn,
                 {
-                  backgroundColor: active ? theme.Color.APP_PRIMARY_SUBTLE : 'transparent',
-                  borderRadius: theme.Dimension.radius.md
+                  backgroundColor: active ? theme['color.layer_accent_01'] : 'transparent',
+                  borderRadius: theme['shape.radius_04']
                 }
               ]}
             >
-              <C.Text size="sm" weight={active ? 'bold' : 'regular'}>
+              <C.Text typeSet="caption02" weight={active ? 'bold' : 'regular'}>
                 {scheme.label}
               </C.Text>
             </Pressable>
@@ -105,17 +115,17 @@ function SchemeSelector ({ C }) {
       <C.View style={styles.swatchRow}>
         <C.View
           testID="scheme-accent-swatch"
-          background="app_primary"
-          radius="sm"
+          background="interactive"
+          radius="radius_02"
           style={styles.swatch}
         />
-        <C.Text size="xs" color="text_secondary">
+        <C.Text typeSet="caption01" color="text_secondary">
           {SELECTABLE_SCHEMES.find(function (s) {
             return s.key === selected;
           }).blurb}
         </C.Text>
       </C.View>
-    </C.Card>
+    </C.View>
   );
 
 }
@@ -142,19 +152,19 @@ export default function ShowcaseIndex () {
   return (
     <ScrollView contentContainerStyle={styles.content}>
 
-      <C.Text size="xxl" weight="bold">Carbon Components</C.Text>
-      <C.Text color="text_secondary">Every component from @superloomdev/rnw-components-carbon, live.</C.Text>
+      <C.Text typeSet="heading04" weight="bold">Carbon Components</C.Text>
+      <C.Text color="text_secondary">Every component from @superloomdev/rnw-components, live.</C.Text>
 
-      <C.Card style={styles.summary}>
-        <C.Text size="sm" color="text_muted">Live registry total</C.Text>
-        <C.Text size="xl" weight="bold">{counts.total} components</C.Text>
-        <C.Text size="xs" color="text_secondary">
+      <C.View background="layer_02" radius="radius_08" border={true} style={styles.summary}>
+        <C.Text typeSet="caption02" color="text_secondary">Live registry total</C.Text>
+        <C.Text typeSet="heading03" weight="bold">{counts.total} components</C.Text>
+        <C.Text typeSet="caption01" color="text_secondary">
           {counts.atoms} atoms · {counts.molecules} molecules · {counts.composites} composites · {counts.providers} providers
         </C.Text>
         {counts.uncategorized > 0 ? (
-          <C.Text size="xs" color="text_muted">+ {counts.uncategorized} uncategorized (new since tier map)</C.Text>
+          <C.Text typeSet="caption01" color="text_secondary">+ {counts.uncategorized} uncategorized (new since tier map)</C.Text>
         ) : null}
-      </C.Card>
+      </C.View>
 
       <SchemeSelector C={C} />
 
@@ -166,7 +176,7 @@ export default function ShowcaseIndex () {
       <IndexCard C={C} label="Carbon Parity" count={null} blurb="Roster + platform capability" href="/showcase/parity" icon="checkmark-done-outline" />
 
       <Link href="/" asChild>
-        <Pressable style={styles.home}><C.Text color="app_primary" weight="medium">Back to launcher</C.Text></Pressable>
+        <Pressable style={styles.home}><C.Text color="interactive" weight="medium">Back to launcher</C.Text></Pressable>
       </Link>
 
     </ScrollView>

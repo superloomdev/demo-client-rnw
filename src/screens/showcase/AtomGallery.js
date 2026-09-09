@@ -180,8 +180,8 @@ export default function AtomGallery () {
         <StateCell label="md" C={C}><R.Text size="md">Medium</R.Text></StateCell>
         <StateCell label="lg" C={C}><R.Text size="lg">Large</R.Text></StateCell>
         <StateCell label="bold" C={C}><R.Text weight="bold">Bold</R.Text></StateCell>
-        <StateCell label="muted" C={C}><R.Text color="text_muted">Muted</R.Text></StateCell>
-        <StateCell label="primary color" C={C}><R.Text color="app_primary">Primary</R.Text></StateCell>
+        <StateCell label="muted" C={C}><R.Text color="text_secondary">Muted</R.Text></StateCell>
+        <StateCell label="primary color" C={C}><R.Text color="interactive">Primary</R.Text></StateCell>
       </ShowcaseRow>
 
       {/* Heading */}
@@ -197,8 +197,8 @@ export default function AtomGallery () {
         <StateCell label="default" C={C}><R.Icon name="add" size="md" /></StateCell>
         <StateCell label="small" C={C}><R.Icon name="chevron-forward" size="sm" /></StateCell>
         <StateCell label="large" C={C}><R.Icon name="close" size="lg" /></StateCell>
-        <StateCell label="primary" C={C}><R.Icon name="heart" size="md" color="APP_PRIMARY" /></StateCell>
-        <StateCell label="danger" C={C}><R.Icon name="alert-circle" size="md" color="STATUS_DANGER" /></StateCell>
+        <StateCell label="primary" C={C}><R.Icon name="heart" size="md" color="interactive" /></StateCell>
+        <StateCell label="danger" C={C}><R.Icon name="alert-circle" size="md" color="text_error" /></StateCell>
       </ShowcaseRow>
 
       {/* Link */}
@@ -277,7 +277,7 @@ export default function AtomGallery () {
       {/* Image */}
       <ShowcaseRow name="Image" C={C}>
         <StateCell label="with placeholder" C={C}>
-          <R.Image source={{ uri: 'https://picsum.photos/80/80' }} style={{ width: 80, height: 80 }} radius="md" />
+          <R.Image source={{ uri: 'https://picsum.photos/80/80' }} style={{ width: 80, height: 80 }} radius="radius_08" />
         </StateCell>
         <StateCell label="rounded" C={C}>
           <R.Image source={{ uri: 'https://picsum.photos/60/60' }} style={{ width: 60, height: 60 }} radius="pill" />
@@ -290,7 +290,7 @@ export default function AtomGallery () {
           <R.View border style={{ width: 80, height: 40 }} />
         </StateCell>
         <StateCell label="with background" C={C}>
-          <R.View background="app_primary" radius="md" style={{ width: 80, height: 40 }} />
+          <R.View background="button_primary" radius="radius_08" style={{ width: 80, height: 40 }} />
         </StateCell>
       </ShowcaseRow>
 
@@ -298,12 +298,12 @@ export default function AtomGallery () {
       <ShowcaseRow name="AspectRatio" C={C}>
         <StateCell label="1:1" C={C}>
           <R.AspectRatio ratio={1} style={{ width: 60 }}>
-            <R.View background="app_primary" style={{ flex: 1 }} radius="sm" />
+            <R.View background="button_primary" style={{ flex: 1 }} radius="radius_04" />
           </R.AspectRatio>
         </StateCell>
         <StateCell label="16:9" C={C}>
           <R.AspectRatio ratio={16 / 9} style={{ width: 96 }}>
-            <R.View background="app_primary" style={{ flex: 1 }} radius="sm" />
+            <R.View background="button_primary" style={{ flex: 1 }} radius="radius_04" />
           </R.AspectRatio>
         </StateCell>
       </ShowcaseRow>
@@ -320,19 +320,19 @@ export default function AtomGallery () {
         <StateCell label="circle" C={C}><R.ShapeIndicator shape="circle" size={16} /></StateCell>
         <StateCell label="square" C={C}><R.ShapeIndicator shape="square" size={16} /></StateCell>
         <StateCell label="triangle" C={C}><R.ShapeIndicator shape="triangle" size={16} /></StateCell>
-        <StateCell label="large" C={C}><R.ShapeIndicator shape="circle" size={24} color="STATUS_DANGER" /></StateCell>
+        <StateCell label="large" C={C}><R.ShapeIndicator shape="circle" size={24} color="text_error" /></StateCell>
       </ShowcaseRow>
 
       {/* IconIndicator */}
       <ShowcaseRow name="IconIndicator" C={C}>
         <StateCell label="info" C={C}><R.IconIndicator iconName="information-circle" /></StateCell>
-        <StateCell label="alert" C={C}><R.IconIndicator iconName="alert-circle" color="STATUS_DANGER" /></StateCell>
+        <StateCell label="alert" C={C}><R.IconIndicator iconName="alert-circle" color="text_error" /></StateCell>
         <StateCell label="large" C={C}><R.IconIndicator iconName="checkmark-circle" size={32} /></StateCell>
       </ShowcaseRow>
 
       <Link href="/showcase" asChild>
         <Pressable style={styles.back}>
-          <C.Text color="app_primary" weight="medium">Back to showcase</C.Text>
+          <C.Text color="interactive" weight="medium">Back to showcase</C.Text>
         </Pressable>
       </Link>
 

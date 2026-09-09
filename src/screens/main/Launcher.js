@@ -32,8 +32,8 @@ export default function Launcher () {
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.content}>
 
-        <C.Text size="xxl" weight="bold">Nimbus</C.Text>
-        <C.Text size="md" color="text_secondary" style={styles.subtitle}>
+        <C.Text typeSet="heading04" weight="bold">Nimbus</C.Text>
+        <C.Text typeSet="body01" color="text_secondary" style={styles.subtitle}>
           One core, many apps. Pick one to launch.
         </C.Text>
 
@@ -42,16 +42,16 @@ export default function Launcher () {
           return (
             <Link key={shape.key} href={shape.route} asChild>
               <Pressable style={styles.cardWrap}>
-                <C.Card style={styles.card}>
-                  <C.View background="app_primary_subtle" radius="md" style={styles.iconWrap}>
-                    <C.Icon name={shape.icon} size="xxl" color="APP_PRIMARY" />
+                <C.View background="layer_02" radius="radius_08" border={true} style={styles.card}>
+                  <C.View background="layer_accent_01" radius="radius_04" style={styles.iconWrap}>
+                    <C.Icon name={shape.icon} size="xxl" color="interactive" />
                   </C.View>
                   <C.View style={styles.cardText}>
-                    <C.Text size="lg" weight="semibold">{shape.label}</C.Text>
+                    <C.Text typeSet="heading02" weight="semibold">{shape.label}</C.Text>
                     <C.Text color="text_secondary">{shape.tagline}</C.Text>
                   </C.View>
-                  <C.Icon name="chevron-forward" size="lg" color="TEXT_MUTED" />
-                </C.Card>
+                  <C.Icon name="chevron-forward" size="lg" color="text_secondary" />
+                </C.View>
               </Pressable>
             </Link>
           );

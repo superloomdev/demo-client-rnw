@@ -65,7 +65,7 @@ export default function TasksList () {
   const shuffleAccent = function () {
     const next = (accentIndex + 1) % ACCENTS.length;
     setAccentIndex(next);
-    ctl.updateTheme({ color: { primary: ACCENTS[next] }, font: Lib.Schemes.tasks.font });
+    ctl.updateBrand('tasks');
   };
 
   // Render the tasks screen with input, accent shuffle, list, and back link
@@ -74,15 +74,15 @@ export default function TasksList () {
 
       <C.View style={styles.addRow}>
         <C.TextInput value={draft} onChangeText={setDraft} placeholder="Add a task..." style={styles.input} onSubmitEditing={addTask} returnKeyType="done" />
-        <C.ButtonPrimary title="Add" icon="add" onPress={addTask} />
+        <C.Button kind="primary" onPress={addTask}><C.Text color="text_on_color">Add</C.Text></C.Button>
       </C.View>
 
-      <C.variant.ButtonPrimaryTypeA title="Shuffle accent (live retheme)" icon="color-palette-outline" onPress={shuffleAccent} fullWidth />
+      <C.variant.ButtonPrimaryOutlined onPress={shuffleAccent} fullWidth><C.Text color="interactive">Shuffle accent (live retheme)</C.Text></C.variant.ButtonPrimaryOutlined>
 
       {loading ? (
         <ActivityIndicator style={styles.loader} />
       ) : (
-        <C.Card style={styles.list}>
+        <C.View background="layer_02" radius="radius_08" border={true} style={styles.list}>
           {tasks.map(function (task, idx) {
             // Render one row per task with toggle, title, and delete action
             return (
@@ -91,24 +91,24 @@ export default function TasksList () {
                   // Toggle the task's done state when the checkbox is pressed
                   toggle(task.id);
                 }} style={styles.check}>
-                  <C.Icon name={task.done ? 'checkbox' : 'square-outline'} size="lg" color={task.done ? 'APP_PRIMARY' : 'TEXT_MUTED'} />
+                  <C.Icon name={task.done ? 'checkbox' : 'square-outline'} size="lg" color={task.done ? 'interactive' : 'text_secondary'} />
                 </Pressable>
-                <C.Text style={[styles.rowTitle, task.done ? styles.done : null]} color={task.done ? 'text_muted' : 'text_primary'}>{task.title}</C.Text>
+                <C.Text style={[styles.rowTitle, task.done ? styles.done : null]} color={task.done ? 'text_secondary' : 'text_primary'}>{task.title}</C.Text>
                 <Pressable onPress={function () {
                   // Remove the task when the trash icon is pressed
                   remove(task.id);
                 }} hitSlop={8}>
-                  <C.Icon name="trash-outline" size="md" color="STATUS_DANGER" />
+                  <C.Icon name="trash-outline" size="md" color="support_error" />
                 </Pressable>
               </C.View>
             );
           })}
           {Lib.Utils.isEmptyArray(tasks) ? <C.Text color="text_secondary">No tasks yet - add one above.</C.Text> : null}
-        </C.Card>
+        </C.View>
       )}
 
       <Link href="/" asChild>
-        <Pressable style={styles.home}><C.Text color="app_primary" weight="medium">Back to launcher</C.Text></Pressable>
+        <Pressable style={styles.home}><C.Text color="interactive" weight="medium">Back to launcher</C.Text></Pressable>
       </Link>
 
     </ScrollView>

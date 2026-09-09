@@ -1,42 +1,46 @@
 // Info: Theme context - the runtime-theming hub for the host app.
 //
-// This file is reference code. It demonstrates the
-// module/app split: the extension module (helper-themer-ext-react) owns the
-// generic React plumbing (context, provider, hooks, live update). This file
-// owns the app-specific logic that runs inside the extension's transform seam:
+// This file wraps the themer-ext-react extension with app-specific logic:
 //
-//   1. Convert the shape variant to themer layers (base + variant).
-//   2. Bridge the themer's flat token map to { Color, Dimension, Font }.
-//   3. Validate font families against the font core registry (async re-derive).
-//   4. Build the themed component library (combineComponent).
+//   1. Select a Carbon scheme (white, g10, g90, g100) as the base.
+//   2. Optionally overlay a brand layer (tasks, notes) on top.
+//   3. Build the standard component system through build-system.js.
 //
-// The public surface is unchanged from the previous standalone version:
-//   ThemeProvider, useThemeController, useTheme, useStyles, useComponents,
-//   ThemeContext. No screen changes are needed.
+// The public surface: ThemeProvider, useThemeController, useTheme,
+// useStyles, useComponents, ThemeContext.
 //
 // Loader pattern: SINGLETON. The extension factory is called once in the
 // common loader (Lib.ThemerReact). This file wraps the extension's interface
 // with app-specific logic and returns the wrapper. Consumers use
 // Lib.ThemeContext.* rather than requiring this file.
-import themerTemplate from '../../themes/themer-template.js';
-import themerBridge from '../../themes/themer-bridge.js';
-import { assemble, platform as derivePlatform } from '../../themes/assemble.js';
+import { buildSystem, THEME_PLATFORM } from '../../themes/build-system.js';
+import { BRAND_LAYERS } from '../../themes/brand-layers.js';
+import ButtonPrimaryTypeA from '../../components/variant/buttonPrimaryTypeA.js';
+import RawBox from '../../components/freeform/rawBox.js';
+
+
+// Local variant and freeform components registered on every system build
+const LOCAL_VARIANTS = { ButtonPrimaryTypeA: ButtonPrimaryTypeA };
+const LOCAL_FREEFORMS = { RawBox: RawBox };
 
 
 // Injected dependencies + module state, set by the loader (module-scope).
 let Lib;              // Lib container (requires React, Themer, ThemerReact, Themes, Fonts)
 let React;            // injected React (required)
 let Ext;              // themer-ext-react instance (required)
-let baseScheme;       // complete fallback scheme (Lib.Schemes.neutral)
+let profile;          // Carbon profile from Lib.Themes.profile
+let whiteTokens;      // white scheme tokens (static template)
 
 
 /////////////////////////// Module-Loader START ////////////////////////////////
 
 /********************************************************************
-Singleton loader. Injects React + Themer extension + base scheme via Lib,
-exposes the extension's context, and returns the provider/hooks wrapper.
+Singleton loader. Injects React + Themer extension + Carbon profile via
+Lib, exposes the extension's context, and returns the provider/hooks
+wrapper.
 
-@param {Object} shared_libs - Lib container; requires React, ThemerReact, Themes, Fonts
+@param {Object} shared_libs - Lib container; requires React, ThemerReact,
+                              Themes, Fonts
 
 @return {Object} - { ThemeProvider, useThemeController, useTheme, useStyles,
                      useComponents, ThemeContext }
@@ -58,8 +62,12 @@ export default function loader (shared_libs) {
     throw new TypeError('theme-context: Lib.ThemerReact is required (inject the themer-ext-react extension via the loader).');
   }
 
-  // The complete base scheme comes from the theme registry
-  baseScheme = (Lib.Schemes && Lib.Schemes.neutral) || {};
+  // The Carbon profile provides the scheme tokens
+  if (!Lib.Themes || !Lib.Themes.profile) {
+    throw new TypeError('theme-context: Lib.Themes.profile is required (inject the Carbon profile via the loader).');
+  }
+  profile = Lib.Themes.profile;
+  whiteTokens = profile.schemes.white.tokens;
 
   // Expose the extension's context for advanced consumers
   Extension.ThemeContext = Ext.ThemeContext;
@@ -86,18 +94,15 @@ const Extension = { // Public theming interface accessible by the host
 
   /********************************************************************
   ThemeProvider - wraps the extension's ThemeProvider with app-specific
-  logic. Converts the shape variant to themer layers, passes them through
-  the extension's transform seam (bridging, font validation, component
-  building), and provides the result to the subtree.
-
-  The extension holds the layers in React state; updateTheme (exposed via
-  useThemeController) converts a new variant to layers and calls the
-  extension's update_layers to trigger a live re-derive.
+  logic. Selects a Carbon scheme as the base, optionally overlays a brand
+  layer, and builds the standard component system through the transform
+  seam.
 
   @param {Object} props          - React props
-  @param {Object} props.scheme   - complete token set replacing the neutral
-                                   base (optional; defaults to neutral)
-  @param {Object} props.variant  - the shape's partial override values (optional)
+  @param {string} props.scheme   - scheme name: white, g10, g90, g100
+                                   (optional; defaults to white)
+  @param {string} props.brand    - brand name: tasks, notes, or none
+                                   (optional; defaults to none)
   @param {Node}   props.children - subtree to provide the theme to
 
   @return {Object} - React element
@@ -109,22 +114,39 @@ const Extension = { // Public theming interface accessible by the host
     // re-derive when an async font load completes.
     const updateLayersRef = React.useRef(null);
 
-    // A scheme is a complete token set and replaces the base outright; the
-    // neutral scheme is the fallback when the host names none.
-    const scheme = props.scheme || baseScheme;
+    // Resolve the scheme name (default: white)
+    const schemeName = props.scheme || 'white';
+    const schemeTokens = profile.schemes[schemeName]
+      ? profile.schemes[schemeName].tokens
+      : whiteTokens;
 
-    // Convert the scheme + shape variant to themer layers: scheme first,
-    // then variant overrides. This replaces the old Styler.extend() merge.
-    const baseLayer = themerBridge.schemeToLayer(scheme, 'base');
-    const variantLayer = themerBridge.schemeToLayer(props.variant || {}, 'variant');
-    const layers = [baseLayer, variantLayer];
+    // The template is the white scheme tokens (static). The actual scheme
+    // tokens go in the base layer so the template never changes.
+    const template = { tokens: whiteTokens };
+
+    // Construct layers: base layer (scheme tokens) + optional brand layer
+    const layers = [{ name: 'base', tokens: schemeTokens }];
+    const brandName = props.brand;
+    if (brandName && BRAND_LAYERS[brandName]) {
+      layers.push(BRAND_LAYERS[brandName]);
+    }
 
     // Transform seam: runs inside the extension's useMemo. Delegates to
-    // the shared assemble function so the bridging, font validation, and
-    // component building logic lives in one place.
+    // buildSystem so font validation and component building live in one place.
     const transform = React.useCallback(function (built, currentLayers) {
-      // Return the assembled theme via the shared transform seam
-      return assemble(Lib, built, currentLayers, updateLayersRef);
+      // Build the standard component system
+      const result = buildSystem(
+        Lib, built, currentLayers, updateLayersRef,
+        LOCAL_VARIANTS, LOCAL_FREEFORMS, 'base'
+      );
+      // Return the component system and theme for the context.
+      // Include the current base layer so updateBrand can preserve the scheme.
+      const baseLayer = currentLayers && currentLayers[0];
+      return {
+        Component: result.system.Component,
+        CommonStyle: result.system.Style,
+        currentBaseLayer: baseLayer
+      };
     }, []);
 
     // Hidden child that captures the extension's update_layers into the ref.
@@ -139,9 +161,9 @@ const Extension = { // Public theming interface accessible by the host
 
     // Render the extension's ThemeProvider with the app-specific transform
     return React.createElement(Ext.ThemeProvider, {
-      template: themerTemplate,
+      template: template,
       layers: layers,
-      platform: derivePlatform(Lib),
+      platform: THEME_PLATFORM,
       transform: transform
     }, [
       React.createElement(RefCapture, { key: '__ref_capture' }),
@@ -155,10 +177,9 @@ const Extension = { // Public theming interface accessible by the host
 
   /********************************************************************
   Hook: the full controller - { Lib, theme, Component, CommonStyle,
-  updateTheme, updateScheme }. Wraps the extension's context with the
-  app-shaped API. updateTheme(nextVariant) overlays a partial variant on the
-  neutral base; updateScheme(nextScheme) replaces the base outright. Both
-  call the extension's update_layers for a live re-derive.
+  updateScheme, updateBrand }. Wraps the extension's context with the
+  app-shaped API. updateScheme(name) replaces the base scheme;
+  updateBrand(layer) replaces only the brand layer.
 
   @return {Object|null} - context value, or null when outside a provider
   *********************************************************************/
@@ -176,26 +197,31 @@ const Extension = { // Public theming interface accessible by the host
       theme: ctx.theme,
       Component: ctx.Component,
       CommonStyle: ctx.CommonStyle,
-      updateTheme: function (nextVariant) {
-        // Convert the variant to layers and trigger a live re-derive
-        const baseLayer = themerBridge.schemeToLayer(baseScheme, 'base');
-        const variantLayer = themerBridge.schemeToLayer(nextVariant, 'variant');
-        ctx.update_layers([baseLayer, variantLayer]);
+      updateScheme: function (name) {
+        // Replace the base scheme. The template stays the same (white tokens);
+        // only the layers change. A scheme is a complete token set.
+        const schemeTokens = profile.schemes[name]
+          ? profile.schemes[name].tokens
+          : whiteTokens;
+        ctx.update_layers([{ name: 'base', tokens: schemeTokens }]);
       },
-      updateScheme: function (nextScheme) {
-        // Replace the base outright and re-derive with no variant on top.
-        // A scheme is a complete token set; a variant is a partial overlay.
-        // The extension holds the layers in React state, so the swap survives
-        // re-renders without any module-scope state of its own.
-        const schemeLayer = themerBridge.schemeToLayer(nextScheme, 'base');
-        ctx.update_layers([schemeLayer]);
+      updateBrand: function (layer) {
+        // Replace only the brand layer. The current scheme is preserved by
+        // reading the current base layer from the transform's context output.
+        const currentBase = ctx.currentBaseLayer
+          || { name: 'base', tokens: whiteTokens };
+        if (layer && BRAND_LAYERS[layer]) {
+          ctx.update_layers([currentBase, BRAND_LAYERS[layer]]);
+        } else {
+          ctx.update_layers([currentBase]);
+        }
       }
     };
   },
 
 
   /********************************************************************
-  Hook: the assembled theme - { Color, Dimension, Font }.
+  Hook: the assembled theme (flat token map).
 
   @return {Object|null} - the theme, or null when outside a provider
   *********************************************************************/
@@ -223,7 +249,8 @@ const Extension = { // Public theming interface accessible by the host
   /********************************************************************
   Hook: the themed component library (atoms / molecules / variants).
 
-  @return {Object|null} - the Component registry, or null when outside a provider
+  @return {Object|null} - the Component registry, or null when outside a
+                          provider
   *********************************************************************/
   useComponents: function () {
     // Read the extension controller from context

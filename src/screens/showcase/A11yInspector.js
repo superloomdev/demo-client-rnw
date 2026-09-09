@@ -211,18 +211,18 @@ export default function A11yInspector () {
         })}
       </View>
 
-      <C.Card style={styles.stage}>
-        <C.Text size="xs" color="text_muted">Live render</C.Text>
+      <C.View background="layer_01" radius="radius_08" style={styles.stage}>
+        <C.Text size="xs" color="text_secondary">Live render</C.Text>
         <SafeSample name={selected}>
           {buildElement(selected, reg.Component)}
         </SafeSample>
-      </C.Card>
+      </C.View>
 
-      <C.Card style={styles.props}>
+      <C.View background="layer_01" radius="radius_08" style={styles.props}>
         <C.Text size="sm" weight="semibold">Emitted accessibility props ({a11yKeys.length})</C.Text>
-        {a11y.error ? <C.Text size="xs" color="STATUS_DANGER">{a11y.error}</C.Text> : null}
+        {a11y.error ? <C.Text size="xs" color="text_error">{a11y.error}</C.Text> : null}
         {Lib.Utils.isEmptyArray(a11yKeys) && !a11y.error ? (
-          <C.Text size="xs" color="text_muted">No aria-* or accessibility* props emitted.</C.Text>
+          <C.Text size="xs" color="text_secondary">No aria-* or accessibility* props emitted.</C.Text>
         ) : null}
         {a11yKeys.map(function (k) {
           // Resolve the prop value and format it for display
@@ -236,10 +236,10 @@ export default function A11yInspector () {
             </View>
           );
         })}
-      </C.Card>
+      </C.View>
 
       <Link href="/showcase" asChild>
-        <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
+        <Pressable style={styles.back}><C.Text color="interactive" weight="medium">Back to showcase</C.Text></Pressable>
       </Link>
 
     </ScrollView>

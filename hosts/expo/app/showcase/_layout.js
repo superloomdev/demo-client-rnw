@@ -13,8 +13,8 @@ function ThemedStack () {
     <Stack
       screenOptions={{
         title: 'Carbon Components',
-        headerStyle: { backgroundColor: theme.Color.APP_PRIMARY },
-        headerTintColor: theme.Color.TEXT_ON_PRIMARY,
+        headerStyle: { backgroundColor: theme['color.interactive'] },
+        headerTintColor: theme['color.text_on_color'],
         headerTitleStyle: { fontWeight: '600' }
       }}
     />
@@ -26,7 +26,7 @@ export default function ShowcaseLayout () {
   const Lib = useLib();
   const { ThemeProvider } = Lib.ThemeContext;
   return (
-    <ThemeProvider scheme={Lib.Schemes.tasks}>
+    <ThemeProvider scheme="white" brand="tasks">
       <ThemedStack />
     </ThemeProvider>
   );

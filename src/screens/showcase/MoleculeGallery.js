@@ -404,7 +404,7 @@ const MULTI_STATE = {
     ] } }
   ],
   BottomSafeAreaColorOverride: [
-    { label: 'default', props: { color: 'app_primary', children: 'Content above safe area' } }
+    { label: 'default', props: { color: 'interactive', children: 'Content above safe area' } }
   ],
   BottomToolbar: [
     { label: 'default', props: { items: [
@@ -954,7 +954,7 @@ export default function MoleculeGallery () {
       })}
 
       <Link href="/showcase" asChild>
-        <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
+        <Pressable style={styles.back}><C.Text color="interactive" weight="medium">Back to showcase</C.Text></Pressable>
       </Link>
 
     </ScrollView>

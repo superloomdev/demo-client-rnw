@@ -8,30 +8,30 @@ import { test, expect } from '@playwright/test';
 
 
 const TASKS_ACCENT_RGB = 'rgb(79, 70, 229)';
-const CARBON_ACCENT_RGB = 'rgb(15, 98, 254)';
+const CARBON_WHITE_ACCENT_RGB = 'rgb(15, 98, 254)';
 
 
 test.describe('showcase real-click interaction', function () {
 
-  test('should swap to the Carbon accent when the Carbon scheme option is clicked', async function ({ page }) {
+  test('should swap to the Carbon White accent when the White scheme option is clicked', async function ({ page }) {
     await page.goto('/showcase');
     const swatch = page.getByTestId('scheme-accent-swatch');
     await expect(swatch).toBeVisible({ timeout: 10000 });
     await expect(swatch).toHaveCSS('background-color', TASKS_ACCENT_RGB);
 
     // Real click, not dispatchEvent
-    await page.getByTestId('scheme-option-carbon').click();
-    await expect(swatch).toHaveCSS('background-color', CARBON_ACCENT_RGB);
+    await page.getByTestId('scheme-option-white').click();
+    await expect(swatch).toHaveCSS('background-color', CARBON_WHITE_ACCENT_RGB);
   });
 
-  test('should swap back to the Tasks accent when the Tasks scheme option is clicked', async function ({ page }) {
+  test('should swap back to the Tasks accent when the Tasks brand option is clicked', async function ({ page }) {
     await page.goto('/showcase');
     const swatch = page.getByTestId('scheme-accent-swatch');
     await expect(swatch).toBeVisible({ timeout: 10000 });
 
-    // Swap to Carbon first
-    await page.getByTestId('scheme-option-carbon').click();
-    await expect(swatch).toHaveCSS('background-color', CARBON_ACCENT_RGB);
+    // Swap to White first
+    await page.getByTestId('scheme-option-white').click();
+    await expect(swatch).toHaveCSS('background-color', CARBON_WHITE_ACCENT_RGB);
 
     // Swap back to Tasks with a real click
     await page.getByTestId('scheme-option-tasks').click();

@@ -23,7 +23,7 @@ function StateCell ({ label, children, C, stageWidth }) {
   // Render the label above an error-isolated stage for the child content
   return (
     <View style={[cellStyles.cell, stageWidth ? { minWidth: stageWidth } : null]}>
-      <C.Text size="xs" color="text_muted" style={cellStyles.labelStyle}>{label}</C.Text>
+      <C.Text size="xs" color="text_secondary" style={cellStyles.labelStyle}>{label}</C.Text>
       <View style={[cellStyles.stage, stageWidth ? { width: '100%' } : null]}>
         <SafeSample name={label}>{children}</SafeSample>
       </View>

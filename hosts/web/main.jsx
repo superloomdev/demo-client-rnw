@@ -42,26 +42,11 @@ const ROUTES = {
 
 
 // Themed wrapper for shape screens (tasks, notes, showcase)
-function ThemedScreen ({ Screen, variant, scheme }) {
+function ThemedScreen ({ Screen, brand, scheme }) {
   const Lib = useLib();
   const { ThemeProvider } = Lib.ThemeContext;
-  if (scheme && Lib.Schemes[scheme]) {
-    return (
-      <ThemeProvider scheme={Lib.Schemes[scheme]} variant={variant ? Lib.Schemes[variant] : null}>
-        <Screen />
-      </ThemeProvider>
-    );
-  }
-  if (variant && Lib.Schemes[variant]) {
-    return (
-      <ThemeProvider variant={Lib.Schemes[variant]}>
-        <Screen />
-      </ThemeProvider>
-    );
-  }
-  // Base theme for the launcher (no variant = base scheme)
   return (
-    <ThemeProvider>
+    <ThemeProvider scheme={scheme || 'white'} brand={brand}>
       <Screen />
     </ThemeProvider>
   );
@@ -85,23 +70,23 @@ function Router () {
 
   const Screen = ROUTES[path] || Launcher;
 
-  // Apply shape-specific theming
-  let variant = null;
+  // Apply shape-specific theming. Every screen uses themed components, so
+  // every route needs a ThemeProvider. The launcher uses the white scheme
+  // with no brand overlay.
+  let brand = null;
+  let scheme = 'white';
   if (path === '/tasks') {
-    variant = 'tasks';
+    brand = 'tasks';
   } else if (path === '/notes') {
-    variant = 'notes';
+    brand = 'notes';
   } else if (path.indexOf('/showcase') === 0) {
-    variant = 'tasks';
+    scheme = 'white';
+    brand = 'tasks';
   }
-
-  // The showcase starts under the tasks scheme; the in-page selector can
-  // switch to Carbon via updateScheme (which replaces the base, not layers over it).
-  const scheme = path.indexOf('/showcase') === 0 ? 'tasks' : null;
 
   return (
     <SafeAreaProvider>
-      <ThemedScreen Screen={Screen} variant={variant} scheme={scheme} />
+      <ThemedScreen Screen={Screen} brand={brand} scheme={scheme} />
     </SafeAreaProvider>
   );
 }

@@ -1,18 +1,21 @@
-// Info: ButtonPrimaryTypeA (STRUCTURED EXCEPTION). An outlined/ghost variant of the
-// canonical ButtonPrimary: transparent surface, primary border + primary label,
-// subtle primary tint on hover/press. It DEVIATES in composition but still consumes
+// Info: ButtonPrimaryTypeA (STRUCTURED EXCEPTION). An outlined/ghost variant of
+// the primary button: transparent surface, interactive border + interactive label,
+// subtle accent tint on hover/press. It DEVIATES in composition but still consumes
 // the token system, so it stays in sync with theme changes. Registered in the
 // variant registry (Component.variant) - discoverable, not a loose one-off.
+//
+// Variant factories receive the same injection set as canonical components:
+// (Lib, CONFIG, ERRORS, Parts, Registry, Style).
 import React from 'react';
 import { Pressable } from 'react-native';
 
 
-export default function (Component, CommonStyle, theme, Lib) { // eslint-disable-line no-unused-vars
+export default function (Lib, CONFIG, ERRORS, Parts, Registry, Style) {
 
   // Return the ButtonPrimaryTypeA component factory
   return function ButtonPrimaryTypeA (props) {
 
-    // Extract button props and strip RTL flag from the rest
+    // Extract button props
     const { title, icon, onPress, disabled, fullWidth, isRtlActive, ...rest } = props; // eslint-disable-line no-unused-vars
 
     // Track hover state for web interactions
@@ -20,10 +23,11 @@ export default function (Component, CommonStyle, theme, Lib) { // eslint-disable
 
     // Assemble the outlined container style from tokens
     const containerBase = [
-      CommonStyle['br_md'],
-      CommonStyle['p_h_lg'],
-      CommonStyle['p_v_md'],
-      CommonStyle['border_primary'],
+      Style.utilities['br_radius_04'],
+      Style.utilities['p_h_spacing_05'],
+      Style.utilities['p_v_spacing_04'],
+      Style.utilities['border_w_width_01'],
+      Style.utilities['border_color_interactive'],
       { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
       fullWidth ? { alignSelf: 'stretch' } : null
     ];
@@ -32,8 +36,8 @@ export default function (Component, CommonStyle, theme, Lib) { // eslint-disable
     const bg = function (pressed) {
       // Subtle tint when pressed or hovered, otherwise transparent surface
       return (pressed || hovered)
-        ? CommonStyle['background_app_primary_subtle']
-        : CommonStyle['background_surface'];
+        ? Style.utilities['background_layer_accent_01']
+        : Style.utilities['background_background'];
     };
 
     // Render the Pressable with outlined styling and icon/label children
@@ -58,12 +62,12 @@ export default function (Component, CommonStyle, theme, Lib) { // eslint-disable
         }
       }, rest),
       icon
-        ? React.createElement(Component.Icon, {
-          name: icon, size: 'md', color: 'APP_PRIMARY', style: CommonStyle['m_e_sm']
+        ? React.createElement(Registry.Icon, {
+          name: icon, size: 'md', color: 'interactive', style: Style.utilities['m_e_spacing_03']
         })
         : null,
-      React.createElement(Component.Text, {
-        color: 'app_primary', weight: 'semibold', size: 'md'
+      React.createElement(Registry.Text, {
+        color: 'interactive', weight: 'semibold', typeSet: 'body01'
       }, title)
     );
 

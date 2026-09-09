@@ -1,6 +1,7 @@
 // Info: Test-tier composition root. Builds the full Lib container with stub
-// adapters, assembles a themed component set, and builds the Carbon registry.
-// The test tier is a host - it uses the real loader, never rebuilds the container.
+// adapters, assembles a themed component set, and builds the standard
+// component registry. The test tier is a host - it uses the real loader,
+// never rebuilds the container.
 //
 // Compatibility: Node.js 24+, react-test-renderer.
 import appLoader from '../app-core/loader.js';
@@ -8,19 +9,19 @@ import navigationAdapter from './adapters/navigation.js';
 import iconsAdapter from './adapters/icons.js';
 import fontsAdapter from './adapters/fonts.js';
 import deviceAdapter from './adapters/device.js';
-import themerTemplate from '../themes/themer-template.js';
-import themerBridge from '../themes/themer-bridge.js';
-import { assemble } from '../themes/assemble.js';
+import { buildSystem } from '../themes/build-system.js';
+import buttonPrimaryTypeA from '../components/variant/buttonPrimaryTypeA.js';
+import rawBox from '../components/freeform/rawBox.js';
 import React from 'react';
-import TestRenderer from 'react-test-renderer';
+import TestRenderer, { act } from 'react-test-renderer';
 
 
 /********************************************************************
 Test loader. Builds the Lib container through the real app-core loader
-with stub adapters, then assembles the Carbon registry for testing.
+with stub adapters, then builds the standard component system for testing.
 
-@return {Object} - { Lib, Config, theme, Component, CommonStyle,
-                     CarbonComponent, CarbonStyle, React, TestRenderer }
+@return {Object} - { Lib, theme, Component, CommonStyle,
+                     CarbonComponent, CarbonStyle, React, TestRenderer, act }
 *********************************************************************/
 export default function loader () {
 
@@ -33,57 +34,35 @@ export default function loader () {
     Fonts: fontsAdapter
   });
 
-  // Build the assembled theme from the base scheme via the themer
-  const baseLayer = themerBridge.schemeToLayer(Lib.Schemes.neutral, 'base');
-  const built = Lib.Themer.buildTheme(themerTemplate, [baseLayer], 'native');
-  const assembled = assemble(Lib, built, [baseLayer], null);
-  const theme = assembled.theme;
+  // Build the theme from the Carbon white scheme via the themer
+  const profile = Lib.Themes.profile;
+  const whiteTokens = profile.schemes.white.tokens;
+  const template = { tokens: whiteTokens };
+  const baseLayer = { name: 'base', tokens: whiteTokens };
+  const built = Lib.Themer.buildTheme(template, [baseLayer], 'native');
 
-  // Build the full Carbon registry (same pattern as useCarbonRegistry)
-  const BREAKPOINTS = Object.freeze({
-    base: 0,
-    sm: 480,
-    md: 768,
-    lg: 1024,
-    xl: 1280
-  });
-  const contract = Object.assign({}, theme, { Breakpoint: BREAKPOINTS });
-
-  // Build a Carbon system with the full shared_libs set, then register the
-  // whole roster - the suite walks every namespace, same as the showcase.
-  //
-  // STRICT_TOKENS is on so reading an undeclared utility key throws instead of
-  // returning undefined. That turns the whole-roster smoke suite into a guard
-  // against a dead token name anywhere in the library: without it a component
-  // referencing a token that does not exist renders silently unstyled, which
-  // is exactly how the Button shipped with no background.
+  // Build the standard component system through build-system.js.
+  // buildSystem registers the full package roster plus local variants/freeforms.
   const Device = deviceAdapter(Lib, {});
-  const carbonSystem = Lib.CarbonComponents.createSystem({
-    Utils: Lib.Utils,
-    Debug: Lib.Debug,
-    React: Lib.React,
-    Device: Device,
-    Icons: Lib.Icons,
-    Font: Lib.Font
-  }, { STRICT_TOKENS: true }, contract, 'base');
-
-  const carbonRoster = Lib.CarbonComponents.roster;
-
-  carbonSystem.addComponents(carbonRoster.COMPONENTS);
-  carbonSystem.addVariants(carbonRoster.VARIANTS);
-  carbonSystem.addFreeforms(carbonRoster.FREEFORMS);
-  carbonSystem.addProviders(carbonRoster.PROVIDERS);
+  Lib.Device = Device;
+  const result = buildSystem(
+    Lib, built, [baseLayer], null,
+    { ButtonPrimaryTypeA: buttonPrimaryTypeA },
+    { RawBox: rawBox },
+    'base'
+  );
+  const theme = result.theme;
+  const system = result.system;
 
   // Return runtime objects
   return {
     Lib: Lib,
     theme: theme,
-    Component: assembled.Component,
-    CommonStyle: assembled.CommonStyle,
-    CarbonComponent: carbonSystem.Component,
-    CarbonStyle: carbonSystem.Style,
+    Component: system.Component,
+    CommonStyle: system.Style.utilities,
     React: React,
-    TestRenderer: TestRenderer
+    TestRenderer: TestRenderer,
+    act: act
   };
 
 }

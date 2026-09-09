@@ -1,8 +1,8 @@
 // Info: L1 - Loader contract tests. Verifies the test-tier loader produces
 // a Lib container with the expected shape (Utils, Debug, Client, Themer,
-// ThemerReact, Font, Fonts, Themes, Icons, Navigation, ThemeContext), a
-// complete theme with Color/Dimension/Font, and a Component registry with
-// the app's atom and molecule set.
+// ThemerReact, Font, Fonts, Themes, Components, Device, Icons, Navigation,
+// ThemeContext), a flat Carbon v11 token map, and a Component registry built
+// from the published rnw-components package.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import loader from './loader.js';
@@ -10,7 +10,7 @@ import loader from './loader.js';
 const { Lib, theme, Component, CommonStyle } = loader();
 
 // Lib container structure
-test('Lib has Utils, Debug, Client, React, Themer, ThemerReact, Font, Fonts, Themes, ThemeContext', function () {
+test('Lib has Utils, Debug, Client, React, Themer, ThemerReact, Font, Fonts, Themes, Components, Device, ThemeContext', function () {
   assert.equal(typeof Lib.Utils, 'object');
   assert.equal(typeof Lib.Debug, 'object');
   assert.equal(typeof Lib.Client, 'object');
@@ -19,7 +19,9 @@ test('Lib has Utils, Debug, Client, React, Themer, ThemerReact, Font, Fonts, The
   assert.equal(typeof Lib.ThemerReact, 'object');
   assert.equal(typeof Lib.Font, 'object');
   assert.equal(typeof Lib.Fonts, 'object');
-  assert.equal(typeof Lib.Schemes, 'object');
+  assert.equal(typeof Lib.Themes, 'object');
+  assert.equal(typeof Lib.Components, 'object');
+  assert.equal(typeof Lib.Device, 'object');
   assert.equal(typeof Lib.ThemeContext, 'object');
 });
 
@@ -46,53 +48,58 @@ test('Lib.Fonts.isReady returns true (stub adapter)', function () {
   assert.equal(Lib.Fonts.isReady(), true);
 });
 
-// Theme structure
-test('theme has Color, Dimension, Font', function () {
-  assert.equal(typeof theme.Color, 'object');
-  assert.equal(typeof theme.Dimension, 'object');
-  assert.equal(typeof theme.Font, 'object');
+test('Lib.Themes has Carbon profile with white, g10, g90, g100 schemes', function () {
+  assert.ok(Lib.Themes.profile);
+  assert.ok(Lib.Themes.profile.schemes.white);
+  assert.ok(Lib.Themes.profile.schemes.g10);
+  assert.ok(Lib.Themes.profile.schemes.g90);
+  assert.ok(Lib.Themes.profile.schemes.g100);
 });
 
-test('theme.Color.APP_PRIMARY is #4f46e5', function () {
-  assert.equal(theme.Color.APP_PRIMARY, '#4f46e5');
+test('Lib.Themes has brand layers for tasks and notes', function () {
+  assert.ok(Lib.Themes.brands.tasks);
+  assert.ok(Lib.Themes.brands.notes);
+  assert.equal(Lib.Themes.brands.tasks.tokens['color.interactive'], '#4f46e5');
+  assert.equal(Lib.Themes.brands.notes.tokens['color.interactive'], '#0d9488');
 });
 
-test('theme.Color.TEXT_ON_PRIMARY is #ffffff (derived from indigo)', function () {
-  assert.equal(theme.Color.TEXT_ON_PRIMARY, '#ffffff');
+// Theme structure (flat Carbon v11 token map)
+test('theme is a flat token map with dotted keys', function () {
+  assert.equal(typeof theme, 'object');
+  assert.ok(theme['color.background']);
+  assert.ok(theme['color.text_primary']);
+  assert.ok(theme['color.interactive']);
+  assert.ok(theme['shape.radius_04']);
 });
 
-test('theme.Dimension.fontSize.md is 16', function () {
-  assert.equal(theme.Dimension.fontSize.md, 16);
+test('theme color.interactive is Carbon Blue 60 (#0f62fe) under white scheme', function () {
+  assert.equal(theme['color.interactive'], '#0f62fe');
 });
 
-test('theme.Dimension.fontSize.xs is 11', function () {
-  assert.equal(theme.Dimension.fontSize.xs, 11);
+test('theme color.background is #ffffff under white scheme', function () {
+  assert.equal(theme['color.background'], '#ffffff');
 });
 
-test('theme.Dimension.space.md is 12 (miniUnit 4 * multiplier 3)', function () {
-  assert.equal(theme.Dimension.space.md, 12);
+test('theme color.text_primary is #161616 under white scheme', function () {
+  assert.equal(theme['color.text_primary'], '#161616');
 });
 
-test('theme.Dimension.radius.lg is 12', function () {
-  assert.equal(theme.Dimension.radius.lg, 12);
+test('theme shape.radius_04 is 4 under white scheme', function () {
+  assert.equal(theme['shape.radius_04'], 4);
 });
 
-test('theme.Font.family.primary is System', function () {
-  assert.equal(theme.Font.family.primary, 'System');
-});
-
-test('theme.Font.weight.bold is 700', function () {
-  assert.equal(theme.Font.weight.bold, '700');
+test('theme font.family.sans falls back to System (IBM Plex Sans not registered)', function () {
+  assert.equal(theme['font.family.sans'], 'System');
 });
 
 // Component registry
-test('Component has View, Text, Icon, TextInput, Card, ButtonPrimary', function () {
+test('Component has View, Text, Icon, TextInput, Button, Tile', function () {
   assert.equal(typeof Component.View, 'function');
   assert.equal(typeof Component.Text, 'function');
   assert.equal(typeof Component.Icon, 'function');
   assert.equal(typeof Component.TextInput, 'function');
-  assert.equal(typeof Component.Card, 'function');
-  assert.equal(typeof Component.ButtonPrimary, 'function');
+  assert.equal(typeof Component.Button, 'function');
+  assert.equal(typeof Component.Tile, 'function');
 });
 
 test('Component.variant has ButtonPrimaryTypeA', function () {
@@ -103,15 +110,15 @@ test('Component.freeform has RawBox', function () {
   assert.equal(typeof Component.freeform.RawBox, 'function');
 });
 
-// CommonStyle
-test('CommonStyle has font_size_md with fontSize 16', function () {
-  assert.equal(CommonStyle.font_size_md.fontSize, 16);
+// CommonStyle (utility stylesheet)
+test('CommonStyle has type_body01 with fontSize', function () {
+  assert.ok(CommonStyle['type_body01'].fontSize);
 });
 
-test('CommonStyle has background_app_primary with correct color', function () {
-  assert.equal(CommonStyle.background_app_primary.backgroundColor, '#4f46e5');
+test('CommonStyle has background_interactive with backgroundColor', function () {
+  assert.ok(CommonStyle['background_interactive'].backgroundColor);
 });
 
-test('CommonStyle has br_md with borderRadius 8', function () {
-  assert.equal(CommonStyle.br_md.borderRadius, 8);
+test('CommonStyle has br_radius_04 with borderRadius 4', function () {
+  assert.equal(CommonStyle['br_radius_04'].borderRadius, 4);
 });

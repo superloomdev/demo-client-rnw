@@ -1,18 +1,18 @@
-// Info: One-stop showcase registry hook. Builds the themed Carbon registry
-// (via useCarbonRegistry) and buckets the live Object.keys(Component) roster
-// into Carbon tiers using the source-derived tier metadata. Returns the
+// Info: One-stop showcase registry hook. Builds the themed registry
+// (via useRegistry) and buckets the live Object.keys(Component) roster
+// into tiers using the source-derived tier metadata. Returns the
 // Component registry plus per-tier counts so the index and galleries never
 // reference a hardcoded roster.
 import { useMemo } from 'react';
 
-import useCarbonRegistry from './useCarbonRegistry.js';
+import useRegistry from './useRegistry.js';
 import tiers from './tiers.js';
 
 
 export default function useShowcaseRegistry () {
 
   // Build the themed Carbon registry from the live theme
-  const built = useCarbonRegistry();
+  const built = useRegistry();
 
   // Return the memoized showcase registry so it recomputes only when built changes
   return useMemo(function () {

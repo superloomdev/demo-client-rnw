@@ -1,14 +1,16 @@
 // Info: RawBox (UNSTRUCTURED EXCEPTION / escape hatch). This component intentionally
-// does NOT receive CommonStyle or the theme and does NOT read any token. It takes a
+// does NOT receive Style or the theme and does NOT read any token. It takes a
 // raw style and renders it. Use ONLY for surfaces that must abandon the design
 // system entirely (chat bubbles, game HUDs, marketing heroes). It lives in the
 // fenced `freeform/` namespace so its use is a conscious, reviewable decision and
 // so a future lint rule can flag imports from here. It will NOT retheme at runtime.
+//
+// Freeform factories receive Lib only.
 import React from 'react';
 import { View } from 'react-native';
 
 
-export default function () {
+export default function (Lib) { // eslint-disable-line no-unused-vars
 
   // Return the RawBox escape-hatch component (no tokens, no theme)
   return function RawBox (props) {

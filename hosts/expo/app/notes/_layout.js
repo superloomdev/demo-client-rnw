@@ -12,8 +12,8 @@ function ThemedStack () {
     <Stack
       screenOptions={{
         title: 'Notes',
-        headerStyle: { backgroundColor: theme.Color.APP_PRIMARY },
-        headerTintColor: theme.Color.TEXT_ON_PRIMARY,
+        headerStyle: { backgroundColor: theme['color.interactive'] },
+        headerTintColor: theme['color.text_on_color'],
         headerTitleStyle: { fontWeight: '600' }
       }}
     />
@@ -25,7 +25,7 @@ export default function NotesLayout () {
   const Lib = useLib();
   const { ThemeProvider } = Lib.ThemeContext;
   return (
-    <ThemeProvider variant={Lib.Schemes.notes}>
+    <ThemeProvider scheme="white" brand="notes">
       <ThemedStack />
     </ThemeProvider>
   );

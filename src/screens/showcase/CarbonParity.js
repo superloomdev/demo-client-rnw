@@ -28,12 +28,12 @@ function currentPlatformKey () {
 function PlatformBadge ({ C, label, level, current }) {
 
   // Resolve the badge color based on the support level
-  const colorKey = level === 'full' ? 'status_success' : (level === 'partial' ? 'status_warning' : 'status_danger');
+  const colorKey = level === 'full' ? 'support_success' : (level === 'partial' ? 'support_warning' : 'text_error');
 
   // Render the platform badge with tone reflecting support level and current platform
   return (
     <View style={[styles.badge, current ? styles.badgeCurrent : null]}>
-      <C.View background={colorKey + '_subtle'} radius="sm" style={styles.badgeInner}>
+      <C.View background="layer_01" radius="radius_04" style={styles.badgeInner}>
         <C.Text size="xs" color={colorKey}>{label}{current ? ' · you' : ''}</C.Text>
       </C.View>
     </View>
@@ -89,14 +89,14 @@ export default function CarbonParity () {
       <C.Text size="lg" weight="semibold">Carbon Parity</C.Text>
       <C.Text color="text_secondary">Roster + platform capability. You are viewing on: <C.Text weight="semibold">{Platform.OS}</C.Text></C.Text>
 
-      <C.Card style={styles.legend}>
-        <C.Text size="xs" color="text_muted">{rows.length} components in the live registry</C.Text>
+      <C.View background="layer_01" radius="radius_08" style={styles.legend}>
+        <C.Text size="xs" color="text_secondary">{rows.length} components in the live registry</C.Text>
         <View style={styles.legendRow}>
           <PlatformBadge C={C} label="Web" level="full" current={current === 'web'} />
           <PlatformBadge C={C} label="iOS" level="full" current={current === 'ios'} />
           <PlatformBadge C={C} label="Android" level="full" current={current === 'android'} />
         </View>
-      </C.Card>
+      </C.View>
 
       <View style={styles.table}>
         {rows.map(function (row) {
@@ -115,7 +115,7 @@ export default function CarbonParity () {
       </View>
 
       <Link href="/showcase" asChild>
-        <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
+        <Pressable style={styles.back}><C.Text color="interactive" weight="medium">Back to showcase</C.Text></Pressable>
       </Link>
 
     </ScrollView>

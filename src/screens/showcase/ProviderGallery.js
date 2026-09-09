@@ -122,7 +122,7 @@ export default function ProviderGallery () {
               <SafeSample name={k}>
                 <Provider>
                   <View style={styles.providerDemo}>
-                    <C.Text size="xs" color="text_muted">{info.blurb || 'Context provider'}</C.Text>
+                    <C.Text size="xs" color="text_secondary">{info.blurb || 'Context provider'}</C.Text>
                     <C.Text size="sm">Content inside {k}</C.Text>
                   </View>
                 </Provider>
@@ -133,7 +133,7 @@ export default function ProviderGallery () {
       })}
 
       <Link href="/showcase" asChild>
-        <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
+        <Pressable style={styles.back}><C.Text color="interactive" weight="medium">Back to showcase</C.Text></Pressable>
       </Link>
 
     </ScrollView>

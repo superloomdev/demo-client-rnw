@@ -57,14 +57,14 @@ export default function NotesList () {
     <ScrollView contentContainerStyle={styles.content}>
 
       <C.freeform.RawBox style={styles.banner}>
-        <C.Text size="sm" weight="semibold" style={styles.bannerText}>freeform.RawBox - opts out of the design system on purpose</C.Text>
+        <C.Text typeSet="caption02" weight="semibold" style={styles.bannerText}>freeform.RawBox - opts out of the design system on purpose</C.Text>
       </C.freeform.RawBox>
 
-      <C.Card style={styles.composer}>
+      <C.View background="layer_02" radius="radius_08" border={true} style={styles.composer}>
         <C.TextInput value={title} onChangeText={setTitle} placeholder="Note title" />
         <C.TextInput value={body} onChangeText={setBody} placeholder="Write something..." multiline style={styles.bodyInput} />
-        <C.ButtonPrimary title="Save note" icon="save-outline" onPress={addNote} fullWidth />
-      </C.Card>
+        <C.Button kind="primary" onPress={addNote} fullWidth><C.Text color="text_on_color">Save note</C.Text></C.Button>
+      </C.View>
 
       {loading ? (
         <ActivityIndicator style={styles.loader} />
@@ -72,25 +72,25 @@ export default function NotesList () {
         notes.map(function (note) {
           // Render one card per note with title, body, and delete action
           return (
-            <C.Card key={note.id} style={styles.note}>
+            <C.View key={note.id} background="layer_02" radius="radius_08" border={true} style={styles.note}>
               <C.View style={styles.noteHead}>
-                <C.Text size="lg" weight="semibold" style={styles.noteTitle}>{note.title}</C.Text>
+                <C.Text typeSet="heading02" weight="semibold" style={styles.noteTitle}>{note.title}</C.Text>
                 <Pressable onPress={function () {
                   // Remove the note when the trash icon is pressed
                   remove(note.id);
                 }} hitSlop={8}>
-                  <C.Icon name="trash-outline" size="md" color="STATUS_DANGER" />
+                  <C.Icon name="trash-outline" size="md" color="support_error" />
                 </Pressable>
               </C.View>
               {note.body ? <C.Text color="text_secondary">{note.body}</C.Text> : null}
-              <C.Text size="xs" color="text_muted">Updated {note.updatedAt}</C.Text>
-            </C.Card>
+              <C.Text typeSet="caption01" color="text_secondary">Updated {note.updatedAt}</C.Text>
+            </C.View>
           );
         })
       )}
 
       <Link href="/" asChild>
-        <Pressable style={styles.home}><C.Text color="app_primary" weight="medium">Back to launcher</C.Text></Pressable>
+        <Pressable style={styles.home}><C.Text color="interactive" weight="medium">Back to launcher</C.Text></Pressable>
       </Link>
 
     </ScrollView>

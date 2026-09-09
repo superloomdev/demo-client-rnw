@@ -51,12 +51,20 @@ test.describe('showcase visual baselines', function () {
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'atoms.png'), fullPage: true });
   });
 
-  test('should capture the index after a Carbon scheme swap', async function ({ page }) {
+  test('should capture the index after a Carbon White scheme swap', async function ({ page }) {
     await page.goto('/showcase');
     await expect(page.getByText('Carbon Components')).toBeVisible({ timeout: 10000 });
-    await page.getByTestId('scheme-option-carbon').click();
+    await page.getByTestId('scheme-option-white').click();
     await page.waitForTimeout(1000);
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'index-carbon-scheme.png'), fullPage: true });
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'index-white-scheme.png'), fullPage: true });
+  });
+
+  test('should capture the Tasks brand visual baseline', async function ({ page }) {
+    await page.goto('/showcase');
+    await expect(page.getByText('Carbon Components')).toBeVisible({ timeout: 10000 });
+    // The showcase starts under the tasks brand; capture it as the baseline
+    await page.waitForTimeout(1000);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'index-tasks-brand.png'), fullPage: true });
   });
 
   for (const name of CURATED_MOLECULES) {

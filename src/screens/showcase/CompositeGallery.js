@@ -244,7 +244,7 @@ export default function CompositeGallery () {
       })}
 
       <Link href="/showcase" asChild>
-        <Pressable style={styles.back}><C.Text color="app_primary" weight="medium">Back to showcase</C.Text></Pressable>
+        <Pressable style={styles.back}><C.Text color="interactive" weight="medium">Back to showcase</C.Text></Pressable>
       </Link>
 
     </ScrollView>

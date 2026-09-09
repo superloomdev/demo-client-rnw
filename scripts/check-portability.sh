@@ -46,11 +46,11 @@ while IFS= read -r line; do
   STATUS=1
 done < <(grep -rn "props\.shared_libs" "$SRC_DIR" --exclude-dir=node_modules 2>/dev/null || true)
 
-# 7. A file under src/ other than src/themes/assemble.js contains platform: 'native'
+# 7. A file under src/ other than src/themes/build-system.js contains platform: 'native'
 while IFS= read -r line; do
   OFFENDERS="${OFFENDERS}${line}"$'\n'
   STATUS=1
-done < <(grep -rn "platform: 'native'" "$SRC_DIR" --exclude-dir=node_modules --exclude="assemble.js" 2>/dev/null || true)
+done < <(grep -rn "platform: 'native'" "$SRC_DIR" --exclude-dir=node_modules --exclude="build-system.js" 2>/dev/null || true)
 
 if [ "$STATUS" -ne 0 ]; then
   echo "portability: FAIL"
