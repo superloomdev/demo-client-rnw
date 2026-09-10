@@ -3,7 +3,7 @@
 // families with a single-attempt loadFamily guard, then builds the standard
 // component system through the published rnw-components package.
 //
-// The transform carried over from the old assemble.js:
+// The transform:
 // 1. Validate font.family.* roles against Lib.Font.isRegistered
 // 2. Fall back to System for unregistered families
 // 3. Trigger async loading via Lib.Fonts.loadFamily (once per family)

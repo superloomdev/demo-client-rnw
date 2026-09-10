@@ -124,13 +124,12 @@ export default function loader (adapters) {
   //   Lib.FontAdapter  - the platform font loader (from the Fonts adapter)
   //   Lib.FontManifest - host-owned font asset sources (from the Fonts adapter)
   //   Lib.Fonts        - font manifest (families + loadFonts async gate)
-  //   Lib.Schemes      - Carbon profile scheme-data map ({ white, g10, g90, g100 })
+  //   Lib.Themes       - reference theme profile and brand layers
   //   Lib.ThemeContext - React theming hub (ThemeProvider + hooks); needs Fonts + Themer
 
   Lib.Font = jsClientHelperFont(Lib, {
     DEFAULT_FAMILY: 'System'
   });
-  Lib.Schemes = carbonV11Profile.schemes;
 
 
   // ==================== SDK ======================================= //
