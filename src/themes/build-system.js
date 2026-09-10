@@ -48,9 +48,16 @@ the app's variant and freeform components.
 *********************************************************************/
 export function buildSystem (Lib, built, currentLayers, updateLayersRef, variant, freeform, breakpoint) {
 
+  // Capture the entry timestamp for performance instrumentation. The
+  // timing is recorded on globalThis.__themePerf just before return so
+  // the perf project can measure build cost per theme change.
+  const t0 = (typeof globalThis !== 'undefined' && globalThis.performance)
+    ? globalThis.performance.now()
+    : 0;
+
   // Derive missing per-kind disabled state tokens from the generic disabled
   // token. The published Button component reads background_button_primary_disabled
-  // and similar state keys; the Carbon profile provides only color.button_disabled.
+  // and similar state keys; some profiles provide only color.button_disabled.
   // Without these derived tokens, STRICT_TOKENS throws on disabled buttons.
   const genericDisabled = built.tokens['color.button_disabled'];
   if (genericDisabled) {
@@ -63,7 +70,7 @@ export function buildSystem (Lib, built, currentLayers, updateLayersRef, variant
   }
 
   // Derive shape.pill from shape.radius_max. The published Image and
-  // other components read br_pill; the Carbon profile provides radius_max
+  // other components read br_pill; some profiles provide radius_max
   // (9999) but not pill.
   if (!built.tokens['shape.pill'] && built.tokens['shape.radius_max']) {
     built.tokens['shape.pill'] = built.tokens['shape.radius_max'];
@@ -137,6 +144,23 @@ export function buildSystem (Lib, built, currentLayers, updateLayersRef, variant
   }
   if (freeform) {
     system.addFreeforms(freeform);
+  }
+
+  // Record build timing and count on globalThis for the perf test suite.
+  // Both guards make this safe in pure Node test environments.
+  if (typeof globalThis !== 'undefined') {
+    if (!globalThis.__themePerf) {
+      globalThis.__themePerf = [];
+    }
+    globalThis.__themePerf.push({
+      ms: (typeof globalThis !== 'undefined' && globalThis.performance)
+        ? (globalThis.performance.now() - t0)
+        : 0,
+      layers: currentLayers.map(function (l) {
+        return l.name;
+      })
+    });
+    globalThis.__systemBuilds = (globalThis.__systemBuilds || 0) + 1;
   }
 
   // Return the system and the built theme tokens
