@@ -14,7 +14,7 @@ test.describe('Navigation E2E', function () {
     await expect(page.getByText('Nimbus')).toBeVisible({ timeout: 10000 });
     await expect(page.getByText('Tasks')).toBeVisible();
     await expect(page.getByText('Notes')).toBeVisible();
-    await expect(page.getByText('Carbon Components')).toBeVisible();
+    await expect(page.getByText('Components', { exact: true })).toBeVisible();
 
     expect(errors).toEqual([]);
   });
@@ -31,9 +31,9 @@ test.describe('Navigation E2E', function () {
     await expect(page).toHaveURL('/notes');
   });
 
-  test('click Carbon Components shape - navigates to /showcase', async function ({ page }) {
+  test('click Components shape - navigates to /showcase', async function ({ page }) {
     await page.goto('/');
-    await page.getByText('Carbon Components').click();
+    await page.getByText('Components', { exact: true }).click();
     await expect(page).toHaveURL('/showcase');
   });
 
@@ -52,7 +52,7 @@ test.describe('Navigation E2E', function () {
   test('direct URL navigation to /showcase', async function ({ page }) {
     await page.goto('/showcase');
     await expect(page).toHaveURL('/showcase');
-    await expect(page.getByText('Carbon Components')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Components', { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test('direct URL navigation to /showcase/atoms', async function ({ page }) {

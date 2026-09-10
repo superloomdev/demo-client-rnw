@@ -26,7 +26,9 @@ const REDIRECTS = [
   '@superloomdev/js-client-helper-themer-ext-react',
   '@superloomdev/js-client-helper-font',
   '@superloomdev/rnw-components',
-  '@superloomdev/js-client-helper-themer-template-carbon'
+  '@superloomdev/js-client-helper-themer-template-carbon',
+  '@superloomdev/js-client-helper-themer-template-material',
+  '@superloomdev/js-client-helper-themer-template-base'
 ];
 
 const redirectURLs = {};

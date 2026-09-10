@@ -40,7 +40,7 @@ test.describe('showcase visual baselines', function () {
 
   test('should capture the showcase index', async function ({ page }) {
     await page.goto('/showcase');
-    await expect(page.getByText('Carbon Components')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Components', { exact: true })).toBeVisible({ timeout: 10000 });
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'index.png'), fullPage: true });
   });
 
@@ -53,7 +53,7 @@ test.describe('showcase visual baselines', function () {
 
   test('should capture the index after a Carbon White scheme swap', async function ({ page }) {
     await page.goto('/showcase');
-    await expect(page.getByText('Carbon Components')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Components', { exact: true })).toBeVisible({ timeout: 10000 });
     await page.getByTestId('scheme-option-white').click();
     await page.waitForTimeout(1000);
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'index-white-scheme.png'), fullPage: true });
@@ -61,7 +61,7 @@ test.describe('showcase visual baselines', function () {
 
   test('should capture the Tasks brand visual baseline', async function ({ page }) {
     await page.goto('/showcase');
-    await expect(page.getByText('Carbon Components')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Components', { exact: true })).toBeVisible({ timeout: 10000 });
     // The showcase starts under the tasks brand; capture it as the baseline
     await page.waitForTimeout(1000);
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'index-tasks-brand.png'), fullPage: true });

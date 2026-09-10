@@ -25,7 +25,7 @@ function ThemedStack () {
 export default function MainLayout () {
   const { ThemeProvider } = useLib().ThemeContext;
   return (
-    <ThemeProvider>
+    <ThemeProvider profile="base">
       <ThemedStack />
     </ThemeProvider>
   );

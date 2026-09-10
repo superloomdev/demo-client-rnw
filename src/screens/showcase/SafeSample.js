@@ -1,4 +1,4 @@
-// Info: Per-component error boundary for the showcase galleries. Many Carbon
+// Info: Per-component error boundary for the showcase galleries. Many component
 // components require specific props or children to render (Tabs needs Tab
 // children, DataTable needs columns/rows, etc.), so rendering every registry
 // entry with minimal props will throw for some. This boundary isolates each

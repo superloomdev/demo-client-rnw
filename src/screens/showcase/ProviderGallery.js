@@ -1,4 +1,4 @@
-// Info: Provider gallery. The Carbon package ships context-only providers at
+// Info: Provider gallery. The component package ships context-only providers at
 // Component.provider (no tokens, no visual output). This screen iterates the
 // live provider keys and renders each in a full-width row with a functional
 // demonstration of what the provider does, not just "wrapped by X".

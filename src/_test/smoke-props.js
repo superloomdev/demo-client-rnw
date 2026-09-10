@@ -1,6 +1,6 @@
-// Info: Test-tier minimum render props for Carbon components. Used by
-// test-carbon-registry.js to smoke-render every component in the built
-// Carbon registry without crashing. Each entry provides the minimal prop
+// Info: Test-tier minimum render props for components. Used by
+// test-registry.js to smoke-render every component in the built
+// registry without crashing. Each entry provides the minimal prop
 // set that lets a component render a non-empty output.
 //
 // This is a test-tier fixture, NOT a showcase fixture. The showcase

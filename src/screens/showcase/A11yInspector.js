@@ -1,4 +1,4 @@
-// Info: A11y inspector. Renders a selected Carbon component live and inspects
+// Info: A11y inspector. Renders a selected component live and inspects
 // the accessibility props it emits to the host tree (aria-* and accessibility*
 // keys) using react-test-renderer. The selectable set is filtered against the
 // live registry, so a component that ships in the package but is not listed

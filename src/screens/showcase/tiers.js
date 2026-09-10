@@ -1,7 +1,7 @@
-// Info: Tier metadata for the Carbon component registry. The roster itself is
+// Info: Tier metadata for the component registry. The roster itself is
 // always read live from Object.keys(Component) by the galleries; these arrays
-// only bucket each live key into its Carbon tier (atom / molecule / composite)
-// so the showcase can group components the way the Carbon design system does.
+// only bucket each live key into its tier (atom / molecule / composite)
+// so the showcase can group components by tier.
 //
 // Source-derived, not hand-maintained: every name below corresponds to a file
 // in the published package's component/<tier>/ directory, which is the tier's

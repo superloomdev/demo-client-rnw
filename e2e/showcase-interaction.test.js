@@ -34,7 +34,7 @@ test.describe('showcase real-click interaction', function () {
     await expect(swatch).toHaveCSS('background-color', CARBON_WHITE_ACCENT_RGB);
 
     // Swap back to Tasks with a real click
-    await page.getByTestId('scheme-option-tasks').click();
+    await page.getByTestId('brand-option-tasks').click();
     await expect(swatch).toHaveCSS('background-color', TASKS_ACCENT_RGB);
   });
 
@@ -53,7 +53,7 @@ test.describe('showcase real-click interaction', function () {
     // Click the "Back to showcase" link
     await page.getByText('Back to showcase').click();
     await expect(page).toHaveURL('/showcase');
-    await expect(page.getByText('Carbon Components')).toBeVisible();
+    await expect(page.getByText('Components', { exact: true })).toBeVisible();
   });
 
 });

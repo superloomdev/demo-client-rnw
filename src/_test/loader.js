@@ -21,7 +21,7 @@ Test loader. Builds the Lib container through the real app-core loader
 with stub adapters, then builds the standard component system for testing.
 
 @return {Object} - { Lib, theme, Component, CommonStyle,
-                     CarbonComponent, CarbonStyle, React, TestRenderer, act }
+                     React, TestRenderer, act }
 *********************************************************************/
 export default function loader () {
 
@@ -34,11 +34,17 @@ export default function loader () {
     Fonts: fontsAdapter
   });
 
-  // Build the theme from the Carbon white scheme via the themer
-  const profile = Lib.Themes.profile;
-  const whiteTokens = profile.schemes.white.tokens;
-  const template = { tokens: whiteTokens };
-  const baseLayer = { name: 'base', tokens: whiteTokens };
+  // Build the theme from the Carbon white scheme via the themer.
+  // The Carbon profile inherits ramp and palette from the base profile.
+  const baseScheme = Lib.Themes.profiles.base.schemes.light;
+  const profile = Lib.Themes.profiles.carbon;
+  const whiteScheme = profile.schemes.white;
+  const template = {
+    ...whiteScheme,
+    ...(baseScheme.ramp ? { ramp: baseScheme.ramp } : {}),
+    ...(baseScheme.palette ? { palette: baseScheme.palette } : {})
+  };
+  const baseLayer = { name: 'base', tokens: whiteScheme.tokens, scales: whiteScheme.scales, polarity: whiteScheme.polarity };
   const built = Lib.Themer.buildTheme(template, [baseLayer], 'native');
 
   // Build the standard component system through build-system.js.

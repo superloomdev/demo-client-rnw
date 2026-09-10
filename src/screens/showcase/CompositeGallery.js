@@ -205,7 +205,7 @@ export default function CompositeGallery () {
     return null;
   }
 
-  // R = full Carbon registry components (for showcased items)
+  // R = full component registry (for showcased items)
   // C = demo ThemeContext components (for layout text only: C.Text, C.View)
   const R = reg.Component;
   const keys = reg.buckets.composite;

@@ -4,12 +4,12 @@ import { test, expect } from '@playwright/test';
 
 // A11yInspector is excluded from the web host (requires react-test-renderer)
 const SHOWCASE_PAGES = [
-  { path: '/showcase', title: 'Carbon Components' },
+  { path: '/showcase', title: 'Components' },
   { path: '/showcase/atoms', title: 'Atoms' },
   { path: '/showcase/molecules', title: 'Molecules' },
   { path: '/showcase/composites', title: 'Composites' },
   { path: '/showcase/providers', title: 'Providers' },
-  { path: '/showcase/parity', title: 'Carbon Parity' }
+  { path: '/showcase/parity', title: 'Parity' }
 ];
 
 test.describe('Showcase E2E', function () {
@@ -21,7 +21,7 @@ test.describe('Showcase E2E', function () {
     });
 
     await page.goto('/showcase');
-    await expect(page.getByText('Carbon Components')).toBeVisible();
+    await expect(page.getByText('Components', { exact: true })).toBeVisible();
     // The summary card shows "N components" with a live count
     await expect(page.getByText(/(\d+) components/)).toBeVisible({ timeout: 10000 });
 
@@ -36,7 +36,12 @@ test.describe('Showcase E2E', function () {
       });
 
       await page.goto(p.path);
-      await expect(page.getByText(p.title)).toBeVisible({ timeout: 10000 });
+      // Use exact match for /showcase (conflicts with "N components"), loose for others
+      if (p.path === '/showcase') {
+        await expect(page.getByText(p.title, { exact: true })).toBeVisible({ timeout: 10000 });
+      } else {
+        await expect(page.getByText(p.title)).toBeVisible({ timeout: 10000 });
+      }
 
       expect(errors).toEqual([]);
     });
@@ -70,16 +75,22 @@ test.describe('Showcase E2E', function () {
 });
 
 
-// ========================= SCHEME SELECTOR ================================= //
+// ========================= PROFILE SELECTOR ================================= //
 
-test('showcase has a scheme selector with White, Tasks, and Notes options', async function ({ page }) {
+test('showcase has a profile selector with Carbon and Material options', async function ({ page }) {
+  await page.goto('/showcase');
+  await expect(page.getByText('Profile')).toBeVisible({ timeout: 10000 });
+  await expect(page.getByTestId('profile-option-carbon')).toBeVisible();
+  await expect(page.getByTestId('profile-option-material')).toBeVisible();
+});
+
+test('showcase has scheme and brand selectors', async function ({ page }) {
   await page.goto('/showcase');
   await expect(page.getByText('Scheme')).toBeVisible({ timeout: 10000 });
-  // The scheme selector buttons are inside the Scheme card
-  const schemeCard = page.locator('text=Scheme').locator('..');
-  await expect(schemeCard.getByText('White', { exact: true })).toBeVisible();
-  await expect(schemeCard.getByText('Tasks', { exact: true })).toBeVisible();
-  await expect(schemeCard.getByText('Notes', { exact: true })).toBeVisible();
+  await expect(page.getByText('Brand')).toBeVisible();
+  await expect(page.getByTestId('scheme-option-white')).toBeVisible();
+  await expect(page.getByTestId('brand-option-tasks')).toBeVisible();
+  await expect(page.getByTestId('brand-option-notes')).toBeVisible();
 });
 
 // Carbon Blue 60 (#0f62fe) and the tasks indigo (#4f46e5) as rgb(), which is
@@ -121,6 +132,67 @@ test('scheme selector swaps back to the tasks accent', async function ({ page })
 
   // Swapping back proves updateBrand replaces the brand rather than
   // accumulating layers, which would leave the Carbon accent in place
-  await page.getByTestId('scheme-option-tasks').click();
+  await page.getByTestId('brand-option-tasks').click();
   await expect(swatch).toHaveCSS('background-color', TASKS_ACCENT_RGB);
+});
+
+// ========================= MATERIAL PROFILE ================================= //
+
+test('switching to Material profile changes available schemes', async function ({ page }) {
+  const errors = [];
+  page.on('pageerror', function (e) {
+    errors.push(e.message);
+  });
+
+  await page.goto('/showcase');
+  await expect(page.getByTestId('profile-option-material')).toBeVisible({ timeout: 10000 });
+
+  // Click Material profile
+  await page.getByTestId('profile-option-material').click();
+
+  // Material has Light and Dark schemes (not White, g10, g90, g100)
+  await expect(page.getByTestId('scheme-option-light')).toBeVisible({ timeout: 10000 });
+  await expect(page.getByTestId('scheme-option-dark')).toBeVisible();
+
+  expect(errors).toEqual([]);
+});
+
+test('Material profile renders without crash', async function ({ page }) {
+  const errors = [];
+  page.on('pageerror', function (e) {
+    errors.push(e.message);
+  });
+
+  await page.goto('/showcase');
+  await page.getByTestId('profile-option-material').click();
+  await expect(page.getByTestId('scheme-option-light')).toBeVisible({ timeout: 10000 });
+
+  // The swatch should still be visible and have a valid color
+  const swatch = page.getByTestId('scheme-accent-swatch');
+  await expect(swatch).toBeVisible();
+  const bgColor = await swatch.evaluate(function (el) {
+    return window.getComputedStyle(el).backgroundColor;
+  });
+  expect(bgColor).toMatch(/rgb\(/);
+
+  expect(errors).toEqual([]);
+});
+
+test('switching back to Carbon profile restores Carbon schemes', async function ({ page }) {
+  const errors = [];
+  page.on('pageerror', function (e) {
+    errors.push(e.message);
+  });
+
+  await page.goto('/showcase');
+
+  // Switch to Material
+  await page.getByTestId('profile-option-material').click();
+  await expect(page.getByTestId('scheme-option-light')).toBeVisible({ timeout: 10000 });
+
+  // Switch back to Carbon
+  await page.getByTestId('profile-option-carbon').click();
+  await expect(page.getByTestId('scheme-option-white')).toBeVisible({ timeout: 10000 });
+
+  expect(errors).toEqual([]);
 });

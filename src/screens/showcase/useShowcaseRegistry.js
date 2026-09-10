@@ -11,13 +11,13 @@ import tiers from './tiers.js';
 
 export default function useShowcaseRegistry () {
 
-  // Build the themed Carbon registry from the live theme
+  // Build the themed component registry from the live theme
   const built = useRegistry();
 
   // Return the memoized showcase registry so it recomputes only when built changes
   return useMemo(function () {
 
-    // Return null while the Carbon registry is still being built
+    // Return null while the component registry is still being built
     if (!built) {
       // Return null so callers know the showcase registry is not ready
       return null;

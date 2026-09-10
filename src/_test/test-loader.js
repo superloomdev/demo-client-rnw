@@ -1,7 +1,7 @@
 // Info: L1 - Loader contract tests. Verifies the test-tier loader produces
 // a Lib container with the expected shape (Utils, Debug, Client, Themer,
 // ThemerReact, Font, Fonts, Themes, Components, Device, Icons, Navigation,
-// ThemeContext), a flat Carbon v11 token map, and a Component registry built
+// ThemeContext), a flat token map, and a Component registry built
 // from the published rnw-components package.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -49,11 +49,23 @@ test('Lib.Fonts.isReady returns true (stub adapter)', function () {
 });
 
 test('Lib.Themes has Carbon profile with white, g10, g90, g100 schemes', function () {
-  assert.ok(Lib.Themes.profile);
-  assert.ok(Lib.Themes.profile.schemes.white);
-  assert.ok(Lib.Themes.profile.schemes.g10);
-  assert.ok(Lib.Themes.profile.schemes.g90);
-  assert.ok(Lib.Themes.profile.schemes.g100);
+  assert.ok(Lib.Themes.profiles.carbon);
+  assert.ok(Lib.Themes.profiles.carbon.schemes.white);
+  assert.ok(Lib.Themes.profiles.carbon.schemes.g10);
+  assert.ok(Lib.Themes.profiles.carbon.schemes.g90);
+  assert.ok(Lib.Themes.profiles.carbon.schemes.g100);
+});
+
+test('Lib.Themes has Material profile with light and dark schemes', function () {
+  assert.ok(Lib.Themes.profiles.material);
+  assert.ok(Lib.Themes.profiles.material.schemes.light);
+  assert.ok(Lib.Themes.profiles.material.schemes.dark);
+});
+
+test('Lib.Themes has base profile with light and dark schemes', function () {
+  assert.ok(Lib.Themes.profiles.base);
+  assert.ok(Lib.Themes.profiles.base.schemes.light);
+  assert.ok(Lib.Themes.profiles.base.schemes.dark);
 });
 
 test('Lib.Themes has brand layers for tasks and notes', function () {
@@ -63,7 +75,7 @@ test('Lib.Themes has brand layers for tasks and notes', function () {
   assert.equal(Lib.Themes.brands.notes.tokens['color.interactive'], '#0d9488');
 });
 
-// Theme structure (flat Carbon v11 token map)
+// Theme structure (flat token map)
 test('theme is a flat token map with dotted keys', function () {
   assert.equal(typeof theme, 'object');
   assert.ok(theme['color.background']);

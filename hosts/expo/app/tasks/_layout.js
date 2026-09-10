@@ -27,7 +27,7 @@ export default function TasksLayout () {
   const Lib = useLib();
   const { ThemeProvider } = Lib.ThemeContext;
   return (
-    <ThemeProvider scheme="white" brand="tasks">
+    <ThemeProvider profile="carbon" scheme="white" brand="tasks">
       <ThemedStack />
     </ThemeProvider>
   );

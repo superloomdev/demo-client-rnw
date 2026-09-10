@@ -41,12 +41,14 @@ const ROUTES = {
 };
 
 
-// Themed wrapper for shape screens (tasks, notes, showcase)
-function ThemedScreen ({ Screen, brand, scheme }) {
+// Themed wrapper for shape screens. Each app gets its own profile and brand.
+// The launcher uses the neutral base profile. Tasks uses Carbon. Notes uses
+// Material. The showcase uses Carbon by default and lets the user switch.
+function ThemedScreen ({ Screen, profile, scheme, brand }) {
   const Lib = useLib();
   const { ThemeProvider } = Lib.ThemeContext;
   return (
-    <ThemeProvider scheme={scheme || 'white'} brand={brand}>
+    <ThemeProvider profile={profile} scheme={scheme} brand={brand}>
       <Screen />
     </ThemeProvider>
   );
@@ -71,22 +73,29 @@ function Router () {
   const Screen = ROUTES[path] || Launcher;
 
   // Apply shape-specific theming. Every screen uses themed components, so
-  // every route needs a ThemeProvider. The launcher uses the white scheme
-  // with no brand overlay.
+  // every route needs a ThemeProvider. The launcher uses the neutral base
+  // profile. Tasks uses Carbon with the tasks brand. Notes uses Material
+  // with the notes brand. The showcase uses Carbon by default.
+  let profile = 'base';
+  let scheme = null;
   let brand = null;
-  let scheme = 'white';
   if (path === '/tasks') {
+    profile = 'carbon';
+    scheme = 'white';
     brand = 'tasks';
   } else if (path === '/notes') {
+    profile = 'material';
+    scheme = 'light';
     brand = 'notes';
   } else if (path.indexOf('/showcase') === 0) {
+    profile = 'carbon';
     scheme = 'white';
     brand = 'tasks';
   }
 
   return (
     <SafeAreaProvider>
-      <ThemedScreen Screen={Screen} brand={brand} scheme={scheme} />
+      <ThemedScreen Screen={Screen} profile={profile} scheme={scheme} brand={brand} />
     </SafeAreaProvider>
   );
 }

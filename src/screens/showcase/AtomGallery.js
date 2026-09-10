@@ -12,7 +12,7 @@ import { ShowcaseRow, StateCell } from './ShowcaseRow.js';
 const noop = function () {};
 
 
-// Stateful toggle row (R = Carbon registry components)
+// Stateful toggle row (R = component registry)
 function ToggleRow ({ C, R }) {
   // Track the interactive toggle's on/off state
   const [on, setOn] = useState(false);
@@ -153,7 +153,7 @@ export default function AtomGallery () {
     return null;
   }
 
-  // R = full Carbon registry components (for showcased items)
+  // R = full component registry (for showcased items)
   // C = demo ThemeContext components (for layout text only: C.Text, C.View)
   const R = reg.Component;
 

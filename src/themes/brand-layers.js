@@ -1,6 +1,6 @@
 // Info: Brand layer definitions for the demo application. Two sparse layers
-// (tasks, notes) that overlay the Carbon white scheme to produce the app's
-// brand accents. See plan 0150 D16 for the exact token contents.
+// (tasks, notes) that overlay any profile's scheme to produce the app's
+// brand accents.
 //
 // A layer is a partial overlay merged on top of the base scheme by the
 // Themer engine. Switching schemes replaces the base; switching brands

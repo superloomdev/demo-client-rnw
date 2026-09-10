@@ -16,6 +16,8 @@ import jsClientHelperFont from '@superloomdev/js-client-helper-font';
 import { createSystem } from '@superloomdev/rnw-components';
 import { COMPONENTS, VARIANTS, FREEFORMS, PROVIDERS } from '@superloomdev/rnw-components/all';
 import carbonV11Profile from '@superloomdev/js-client-helper-themer-template-carbon';
+import materialProfile from '@superloomdev/js-client-helper-themer-template-material';
+import baseProfile from '@superloomdev/js-client-helper-themer-template-base';
 import { BRAND_LAYERS } from '../themes/brand-layers.js';
 import fonts from '../fonts/fonts.js';
 import themeContext from './contexts/theme-context.js';
@@ -97,7 +99,7 @@ export default function loader (adapters) {
 
 
   // ==================== THEMER ==================================== //
-  // Carbon-vocabulary token engine with ramp rules, type sets, shadows,
+  // Token engine with ramp rules, type sets, shadows,
   // platform emit, and contrast correction. Resolves templates against
   // layered overrides (base + variant) and emits platform-ready values.
   //   Lib.React  - the centralized React lib
@@ -179,9 +181,18 @@ export default function loader (adapters) {
     }
   };
 
-  // Brand layers for the demo (tasks, notes). See D16.
+  // Theme profiles for the demo. Three profiles are available:
+  //   - base:    neutral Superloom base template (light/dark) for the launcher
+  //   - carbon:  Carbon v11 reference (white, g10, g90, g100)
+  //   - material: Material 3 reference (light, dark, contrast variants)
+  // Brand layers (tasks, notes) overlay on top of any profile's scheme.
   Lib.Themes = {
-    profile: carbonV11Profile,
+    profiles: {
+      base: baseProfile,
+      carbon: carbonV11Profile,
+      material: materialProfile
+    },
+    defaultProfile: 'carbon',
     brands: BRAND_LAYERS
   };
 

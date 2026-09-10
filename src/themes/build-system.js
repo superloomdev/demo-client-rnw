@@ -39,14 +39,15 @@ the app's variant and freeform components.
 @param {Object} built            - the themer's buildTheme result
 @param {Object} built.tokens     - the flat token map
 @param {Array}  currentLayers    - the current layer array (for re-derive)
-@param {Object} updateLayersRef  - React ref to the extension's update_layers
+@param {Function} rederive       - callback to trigger a re-derive when an
+                                   async font load completes
 @param {Object} variant          - variant components to register
 @param {Object} freeform         - freeform components to register
 @param {string} breakpoint       - the active breakpoint name
 
 @return {Object} - { system, theme }
 *********************************************************************/
-export function buildSystem (Lib, built, currentLayers, updateLayersRef, variant, freeform, breakpoint) {
+export function buildSystem (Lib, built, currentLayers, rederive, variant, freeform, breakpoint) {
 
   // Capture the entry timestamp for performance instrumentation. The
   // timing is recorded on globalThis.__themePerf just before return so
@@ -107,9 +108,10 @@ export function buildSystem (Lib, built, currentLayers, updateLayersRef, variant
           Lib.Fonts.loadFamily(familyName).then(function (result) {
             if (result.success && Lib.Font.isRegistered(familyName)) {
 
-              // Re-derive by calling update_layers with a fresh copy
-              if (updateLayersRef && updateLayersRef.current) {
-                updateLayersRef.current(currentLayers.slice());
+              // Re-derive by calling the rederive callback, which increments
+              // the wrapper's rederive epoch and produces a new layers ref.
+              if (rederive) {
+                rederive();
               }
 
             }

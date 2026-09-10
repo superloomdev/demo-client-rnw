@@ -1,4 +1,4 @@
-// Info: Showcase index - the landing screen for the Carbon Components shape.
+// Info: Showcase index - the landing screen for the components showcase.
 // Lists one section per tier with a live count pulled from the built registry
 // (Object.keys(Component)), and a link into each gallery. Counts are never
 // hardcoded: they reflect the package as shipped, so a roster change in the
@@ -37,65 +37,116 @@ function IndexCard ({ C, label, count, blurb, href, icon }) {
 }
 
 
-// The schemes and brands the selector offers, in display order. Schemes are
-// Carbon base token sets; brands are accent overlays. Each names a string
-// passed to ctl.updateScheme or ctl.updateBrand.
-const SELECTABLE_SCHEMES = [
-  { key: 'white', label: 'White', blurb: 'Carbon White theme, light background', type: 'scheme' },
-  { key: 'g10', label: 'Gray 10', blurb: 'Carbon g10, subtle gray background', type: 'scheme' },
-  { key: 'g90', label: 'Gray 90', blurb: 'Carbon g90, dark background', type: 'scheme' },
-  { key: 'g100', label: 'Gray 100', blurb: 'Carbon g100, deep dark background', type: 'scheme' },
-  { key: 'tasks', label: 'Tasks', blurb: 'Indigo accent, rounded corners', type: 'brand' },
-  { key: 'notes', label: 'Notes', blurb: 'Teal accent, larger type ratio', type: 'brand' }
+// The profiles the selector offers. Each profile is a complete design
+// system with its own set of schemes.
+const SELECTABLE_PROFILES = [
+  { key: 'carbon', label: 'Carbon', blurb: 'Carbon Design v11 reference' },
+  { key: 'material', label: 'Material', blurb: 'Material Design 3 reference' }
+];
+
+// The schemes available per profile, in display order.
+const SCHEMES_BY_PROFILE = {
+  carbon: [
+    { key: 'white', label: 'White', blurb: 'Carbon White, light background' },
+    { key: 'g10', label: 'Gray 10', blurb: 'Carbon g10, subtle gray' },
+    { key: 'g90', label: 'Gray 90', blurb: 'Carbon g90, dark' },
+    { key: 'g100', label: 'Gray 100', blurb: 'Carbon g100, deep dark' }
+  ],
+  material: [
+    { key: 'light', label: 'Light', blurb: 'Material 3 light' },
+    { key: 'dark', label: 'Dark', blurb: 'Material 3 dark' }
+  ]
+};
+
+// Brand overlays available on any profile.
+const SELECTABLE_BRANDS = [
+  { key: 'tasks', label: 'Tasks', blurb: 'Indigo accent, rounded corners' },
+  { key: 'notes', label: 'Notes', blurb: 'Teal accent, larger type ratio' }
 ];
 
 
-// Scheme selector - swaps the whole base token set at runtime. A scheme is a
-// complete token set, so this calls updateScheme (replace) rather than
-// updateTheme (partial overlay). The accent swatch renders color.interactive from
-// the live theme, so it is the visible proof the swap reached the tokens.
-function SchemeSelector ({ C }) {
+// Theme selector - swaps the design system profile and scheme at runtime.
+// A profile is a complete design system (Carbon, Material). A scheme is a
+// complete token set within a profile. A brand is an accent overlay.
+// The accent swatch renders color.interactive from the live theme, so it
+// is the visible proof the swap reached the tokens.
+function ThemeSelector ({ C }) {
 
-  // Resolve the theme controller and the lib for scheme access
+  // Resolve the theme controller and the lib for theme access
   const Lib = useLib();
   const ctl = Lib.ThemeContext.useThemeController();
   const theme = Lib.ThemeContext.useTheme();
-  const [selected, setSelected] = React.useState(SELECTABLE_SCHEMES[0].key);
+  // Read the current selection from the controller (single source of truth)
+  // so a remount of ThemeSelector does not reset to hardcoded defaults.
+  const activeProfile = ctl ? ctl.profileName : SELECTABLE_PROFILES[0].key;
+  const activeScheme = ctl ? (ctl.schemeName || (SCHEMES_BY_PROFILE[activeProfile] || SCHEMES_BY_PROFILE[SELECTABLE_PROFILES[0].key])[0].key) : SCHEMES_BY_PROFILE[SELECTABLE_PROFILES[0].key][0].key;
+  const activeBrand = ctl ? ctl.brandName : null;
 
-  // Replace the base scheme or brand and record which button is active
-  const switchTo = function (key) {
-    const item = SELECTABLE_SCHEMES.find(function (s) {
-      return s.key === key;
-    });
-    setSelected(key);
-    if (item && item.type === 'scheme' && ctl && ctl.updateScheme) {
+  // Switch the entire profile (design system)
+  const switchProfile = function (key) {
+    if (ctl && ctl.updateProfile) {
+      ctl.updateProfile(key);
+    }
+  };
+
+  // Switch the scheme within the current profile
+  const switchScheme = function (key) {
+    if (ctl && ctl.updateScheme) {
       ctl.updateScheme(key);
-    } else if (item && item.type === 'brand' && ctl && ctl.updateBrand) {
+    }
+  };
+
+  // Switch the brand overlay
+  const switchBrand = function (key) {
+    if (ctl && ctl.updateBrand) {
       ctl.updateBrand(key);
     }
   };
 
-  // Render one toggle per scheme plus a swatch showing the live accent.
+  // Render profile toggles, scheme toggles, brand toggles, and a swatch.
   // Colors and radii come from the theme, never from literals, so the
   // selector re-skins itself along with everything else on the page.
+  const currentSchemes = SCHEMES_BY_PROFILE[activeProfile] || [];
+
   return (
     <C.View background="layer_02" radius="radius_08" border={true} style={styles.schemeCard}>
+      <C.Text typeSet="caption02" color="text_secondary">Profile</C.Text>
+      <C.View style={styles.schemeRow}>
+        {SELECTABLE_PROFILES.map(function (profile) {
+          const active = activeProfile === profile.key;
+          return (
+            <Pressable
+              key={profile.key}
+              testID={'profile-option-' + profile.key}
+              onPress={function () {
+                switchProfile(profile.key);
+              }}
+              style={[
+                styles.schemeBtn,
+                {
+                  backgroundColor: active ? theme['color.layer_accent_01'] : 'transparent',
+                  borderRadius: theme['shape.radius_04']
+                }
+              ]}
+            >
+              <C.Text typeSet="caption02" weight={active ? 'bold' : 'regular'}>
+                {profile.label}
+              </C.Text>
+            </Pressable>
+          );
+        })}
+      </C.View>
+
       <C.Text typeSet="caption02" color="text_secondary">Scheme</C.Text>
       <C.View style={styles.schemeRow}>
-        {SELECTABLE_SCHEMES.map(function (scheme) {
-
-          // Hoist the active flag so it is read once, not per-JSX-child
-          const active = selected === scheme.key;
-
-          // Move the visual properties onto the Pressable itself so the hit
-          // target is the visible element, not a wrapper that RNW can detach
-          // from under the pointer on hover re-render
+        {currentSchemes.map(function (scheme) {
+          const active = activeScheme === scheme.key;
           return (
             <Pressable
               key={scheme.key}
               testID={'scheme-option-' + scheme.key}
               onPress={function () {
-                switchTo(scheme.key);
+                switchScheme(scheme.key);
               }}
               style={[
                 styles.schemeBtn,
@@ -112,6 +163,34 @@ function SchemeSelector ({ C }) {
           );
         })}
       </C.View>
+
+      <C.Text typeSet="caption02" color="text_secondary">Brand</C.Text>
+      <C.View style={styles.schemeRow}>
+        {SELECTABLE_BRANDS.map(function (brand) {
+          const active = activeBrand === brand.key;
+          return (
+            <Pressable
+              key={brand.key}
+              testID={'brand-option-' + brand.key}
+              onPress={function () {
+                switchBrand(brand.key);
+              }}
+              style={[
+                styles.schemeBtn,
+                {
+                  backgroundColor: active ? theme['color.layer_accent_01'] : 'transparent',
+                  borderRadius: theme['shape.radius_04']
+                }
+              ]}
+            >
+              <C.Text typeSet="caption02" weight={active ? 'bold' : 'regular'}>
+                {brand.label}
+              </C.Text>
+            </Pressable>
+          );
+        })}
+      </C.View>
+
       <C.View style={styles.swatchRow}>
         <C.View
           testID="scheme-accent-swatch"
@@ -120,8 +199,8 @@ function SchemeSelector ({ C }) {
           style={styles.swatch}
         />
         <C.Text typeSet="caption01" color="text_secondary">
-          {SELECTABLE_SCHEMES.find(function (s) {
-            return s.key === selected;
+          {SELECTABLE_PROFILES.find(function (p) {
+            return p.key === activeProfile;
           }).blurb}
         </C.Text>
       </C.View>
@@ -152,7 +231,7 @@ export default function ShowcaseIndex () {
   return (
     <ScrollView contentContainerStyle={styles.content}>
 
-      <C.Text typeSet="heading04" weight="bold">Carbon Components</C.Text>
+      <C.Text typeSet="heading04" weight="bold">Components</C.Text>
       <C.Text color="text_secondary">Every component from @superloomdev/rnw-components, live.</C.Text>
 
       <C.View background="layer_02" radius="radius_08" border={true} style={styles.summary}>
@@ -166,14 +245,14 @@ export default function ShowcaseIndex () {
         ) : null}
       </C.View>
 
-      <SchemeSelector C={C} />
+      <ThemeSelector C={C} />
 
       <IndexCard C={C} label="Atoms" count={counts.atoms} blurb="One element, one concern" href="/showcase/atoms" icon="cube-outline" />
       <IndexCard C={C} label="Molecules" count={counts.molecules} blurb="Atoms composed" href="/showcase/molecules" icon="build-outline" />
       <IndexCard C={C} label="Composites" count={counts.composites} blurb="Multi-part, coordinated" href="/showcase/composites" icon="grid-outline" />
       <IndexCard C={C} label="Providers" count={counts.providers} blurb="Context-only, no UI" href="/showcase/providers" icon="layers-outline" />
       <IndexCard C={C} label="A11y Inspector" count={null} blurb="aria-* props each component emits" href="/showcase/a11y" icon="accessibility-outline" />
-      <IndexCard C={C} label="Carbon Parity" count={null} blurb="Roster + platform capability" href="/showcase/parity" icon="checkmark-done-outline" />
+      <IndexCard C={C} label="Parity" count={null} blurb="Roster + platform capability" href="/showcase/parity" icon="checkmark-done-outline" />
 
       <Link href="/" asChild>
         <Pressable style={styles.home}><C.Text color="interactive" weight="medium">Back to launcher</C.Text></Pressable>

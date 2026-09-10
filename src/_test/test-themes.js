@@ -11,7 +11,7 @@ const { Lib } = loader();
 
 // ========================= CARBON PROFILE ================================= //
 
-const profile = Lib.Themes.profile;
+const profile = Lib.Themes.profiles.carbon;
 
 test('Carbon profile has id carbon-v11 and contract_version 2', function () {
   assert.equal(profile.id, 'carbon-v11');
@@ -51,6 +51,113 @@ test('Carbon g100 scheme background is #161616', function () {
 
 test('Carbon g100 scheme text_primary is #f4f4f4', function () {
   assert.equal(profile.schemes.g100.tokens['color.text_primary'], '#f4f4f4');
+});
+
+
+// ========================= MATERIAL PROFILE ================================ //
+
+const materialProfile = Lib.Themes.profiles.material;
+
+test('Material profile has id material-v0_192 and contract_version 2', function () {
+  assert.equal(materialProfile.id, 'material-v0_192');
+  assert.equal(materialProfile.contract_version, 2);
+});
+
+test('Material profile has light and dark schemes', function () {
+  assert.ok(materialProfile.schemes.light);
+  assert.ok(materialProfile.schemes.dark);
+});
+
+test('Material light scheme has 379 tokens', function () {
+  assert.equal(Object.keys(materialProfile.schemes.light.tokens).length, 379);
+});
+
+test('Material dark scheme has 379 tokens', function () {
+  assert.equal(Object.keys(materialProfile.schemes.dark.tokens).length, 379);
+});
+
+test('buildTheme with Material light scheme produces 379 tokens', function () {
+  const lightScheme = materialProfile.schemes.light;
+  const baseScheme = Lib.Themes.profiles.base.schemes.light;
+  const template = {
+    ...lightScheme,
+    ...(lightScheme.ramp || baseScheme.ramp ? { ramp: lightScheme.ramp || baseScheme.ramp } : {}),
+    ...(lightScheme.palette || baseScheme.palette ? { palette: lightScheme.palette || baseScheme.palette } : {})
+  };
+  const baseLayer = { name: 'base', tokens: lightScheme.tokens, scales: lightScheme.scales, polarity: lightScheme.polarity };
+  const built = Lib.Themer.buildTheme(template, [baseLayer], 'native');
+  assert.equal(Object.keys(built.tokens).length, 379);
+});
+
+test('buildTheme with Material light scheme produces no violations', function () {
+  const lightScheme = materialProfile.schemes.light;
+  const baseScheme = Lib.Themes.profiles.base.schemes.light;
+  const template = {
+    ...lightScheme,
+    ...(lightScheme.ramp || baseScheme.ramp ? { ramp: lightScheme.ramp || baseScheme.ramp } : {}),
+    ...(lightScheme.palette || baseScheme.palette ? { palette: lightScheme.palette || baseScheme.palette } : {})
+  };
+  const baseLayer = { name: 'base', tokens: lightScheme.tokens, scales: lightScheme.scales, polarity: lightScheme.polarity };
+  const built = Lib.Themer.buildTheme(template, [baseLayer], 'native');
+  assert.deepEqual(built.violations || [], []);
+});
+
+test('buildSystem with Material light scheme produces a valid system', function () {
+  const lightScheme = materialProfile.schemes.light;
+  const baseScheme = Lib.Themes.profiles.base.schemes.light;
+  const template = {
+    ...lightScheme,
+    ...(lightScheme.ramp || baseScheme.ramp ? { ramp: lightScheme.ramp || baseScheme.ramp } : {}),
+    ...(lightScheme.palette || baseScheme.palette ? { palette: lightScheme.palette || baseScheme.palette } : {})
+  };
+  const baseLayer = { name: 'base', tokens: lightScheme.tokens, scales: lightScheme.scales, polarity: lightScheme.polarity };
+  const built = Lib.Themer.buildTheme(template, [baseLayer], 'native');
+  const result = buildSystem(Lib, built, [baseLayer], null, null, null, 'base');
+  assert.ok(result.system);
+  assert.ok(result.system.Component);
+  assert.ok(result.system.Style);
+  assert.ok(result.theme);
+});
+
+test('Material light scheme resolves color.layer_accent_01 to a hex value', function () {
+  const lightScheme = materialProfile.schemes.light;
+  const baseScheme = Lib.Themes.profiles.base.schemes.light;
+  const template = {
+    ...lightScheme,
+    ...(lightScheme.ramp || baseScheme.ramp ? { ramp: lightScheme.ramp || baseScheme.ramp } : {}),
+    ...(lightScheme.palette || baseScheme.palette ? { palette: lightScheme.palette || baseScheme.palette } : {})
+  };
+  const baseLayer = { name: 'base', tokens: lightScheme.tokens, scales: lightScheme.scales, polarity: lightScheme.polarity };
+  const built = Lib.Themer.buildTheme(template, [baseLayer], 'native');
+  assert.ok(built.tokens['color.layer_accent_01'], 'color.layer_accent_01 should be defined');
+  assert.match(String(built.tokens['color.layer_accent_01']), /^#/, 'should be a hex color');
+});
+
+
+// ========================= BASE PROFILE ==================================== //
+
+const baseProfile = Lib.Themes.profiles.base;
+
+test('Base profile has id superloom-base and contract_version 2', function () {
+  assert.equal(baseProfile.id, 'superloom-base');
+  assert.equal(baseProfile.contract_version, 2);
+});
+
+test('Base profile has light and dark schemes', function () {
+  assert.ok(baseProfile.schemes.light);
+  assert.ok(baseProfile.schemes.dark);
+});
+
+test('buildTheme with base light scheme produces 379 tokens', function () {
+  const lightScheme = baseProfile.schemes.light;
+  const template = {
+    ...lightScheme,
+    ...(lightScheme.ramp ? { ramp: lightScheme.ramp } : {}),
+    ...(lightScheme.palette ? { palette: lightScheme.palette } : {})
+  };
+  const baseLayer = { name: 'base', tokens: lightScheme.tokens, scales: lightScheme.scales, polarity: lightScheme.polarity };
+  const built = Lib.Themer.buildTheme(template, [baseLayer], 'native');
+  assert.equal(Object.keys(built.tokens).length, 379);
 });
 
 
@@ -252,7 +359,7 @@ test('should attempt a font load once per family across multiple buildSystem cal
   // Override the theme's font family to our test family
   built.tokens['font.family.sans'] = familyName;
   for (let i = 0; i < 5; i++) {
-    buildSystem(stubLib, built, [baseLayer], { current: function () {} }, null, null, 'base');
+    buildSystem(stubLib, built, [baseLayer], function () {}, null, null, 'base');
   }
   assert.equal(loadCount, 1);
 });
@@ -260,10 +367,8 @@ test('should attempt a font load once per family across multiple buildSystem cal
 test('should not re-derive when the family stays unregistered', function () {
   const familyName = 'TestNoRederive-' + Math.random().toString(36).slice(2);
   let deriveCount = 0;
-  const updateLayersRef = {
-    current: function () {
-      deriveCount++;
-    }
+  const rederive = function () {
+    deriveCount++;
   };
   const stubLib = Object.assign({}, Lib, {
     Font: {
@@ -286,7 +391,7 @@ test('should not re-derive when the family stays unregistered', function () {
   const baseLayer = { name: 'base', tokens: whiteTokens };
   const built = Lib.Themer.buildTheme(template, [baseLayer], 'native');
   built.tokens['font.family.sans'] = familyName;
-  buildSystem(stubLib, built, [baseLayer], updateLayersRef, null, null, 'base');
+  buildSystem(stubLib, built, [baseLayer], rederive, null, null, 'base');
   // Wait for the promise to settle
   return new Promise(function (resolve) {
     setTimeout(function () {
@@ -300,10 +405,8 @@ test('should re-derive once when the family registers after load', function () {
   const familyName = 'TestRederiveOnce-' + Math.random().toString(36).slice(2);
   let deriveCount = 0;
   let registered = false;
-  const updateLayersRef = {
-    current: function () {
-      deriveCount++;
-    }
+  const rederive = function () {
+    deriveCount++;
   };
   const stubLib = Object.assign({}, Lib, {
     Font: {
@@ -327,7 +430,7 @@ test('should re-derive once when the family registers after load', function () {
   const baseLayer = { name: 'base', tokens: whiteTokens };
   const built = Lib.Themer.buildTheme(template, [baseLayer], 'native');
   built.tokens['font.family.sans'] = familyName;
-  buildSystem(stubLib, built, [baseLayer], updateLayersRef, null, null, 'base');
+  buildSystem(stubLib, built, [baseLayer], rederive, null, null, 'base');
   // Wait for the promise to settle
   return new Promise(function (resolve) {
     setTimeout(function () {

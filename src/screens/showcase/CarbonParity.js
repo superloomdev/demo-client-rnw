@@ -1,4 +1,4 @@
-// Info: Carbon parity screen. Lists the live roster (Object.keys(Component))
+// Info: Components parity screen. Lists the live roster (Object.keys(Component))
 // with each component's platform capability and highlights the platform you are
 // currently viewing on (Platform.OS). The roster is registry-driven; the
 // per-component capability comes from the source-derived platforms metadata,
@@ -86,7 +86,7 @@ export default function CarbonParity () {
   return (
     <ScrollView contentContainerStyle={styles.content}>
 
-      <C.Text size="lg" weight="semibold">Carbon Parity</C.Text>
+      <C.Text size="lg" weight="semibold">Components Parity</C.Text>
       <C.Text color="text_secondary">Roster + platform capability. You are viewing on: <C.Text weight="semibold">{Platform.OS}</C.Text></C.Text>
 
       <C.View background="layer_01" radius="radius_08" style={styles.legend}>

@@ -22,8 +22,8 @@ export default function loader (Lib, Config) {
     },
     showcase: {
       key: 'showcase',
-      label: 'Carbon Components',
-      tagline: 'Every Carbon component, live',
+      label: 'Components',
+      tagline: 'Every component, live',
       icon: 'grid-outline',
       route: '/showcase'
     }

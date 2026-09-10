@@ -45,7 +45,7 @@ function Boot () {
   // Base ThemeProvider from the DI container styles the launcher
   const { ThemeProvider } = Lib.ThemeContext;
   return (
-    <ThemeProvider>
+    <ThemeProvider profile="base">
       <Stack screenOptions={{ headerShown: false }} />
     </ThemeProvider>
   );

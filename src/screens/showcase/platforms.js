@@ -1,4 +1,4 @@
-// Info: Platform-capability metadata for the Carbon roster. The roster itself
+// Info: Platform-capability metadata for the component roster. The roster itself
 // is read live from Object.keys(Component) by the parity screen; this map only
 // carries the per-component platform capability for components that are NOT
 // universal ("both"). Any live key not listed here is treated as "both" (the

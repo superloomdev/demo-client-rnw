@@ -1,5 +1,5 @@
 // Info: L1 - Atom component render tests. Verifies each atom in the standard
-// component registry renders correctly with Carbon v11 token props
+// component registry renders correctly with token props
 // (background, radius, typeSet, color, weight) and produces the expected
 // DOM structure.
 import { test } from 'node:test';
