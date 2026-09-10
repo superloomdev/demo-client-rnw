@@ -214,3 +214,38 @@ invalidates every downstream artifact. iOS runs on every push, not
 dispatch-only, because the cost is zero on a public repo. The APK artifact is
 retained for 7 days so it can be downloaded and installed on a physical device
 without a simulator.
+
+---
+
+## Theme selection ownership
+
+The demo wrapper (`src/app-core/contexts/theme-context.js`) owns profile,
+scheme, brand, and rederive epoch as React state. The themer extension
+(`@superloomdev/js-client-helper-themer-ext-react`) is prop-driven: it
+re-derives when the `template` or `layers` reference changes. The wrapper
+passes the current template and layers as props to the extension's
+ThemeProvider. A key prop forces a clean remount on selection change,
+guaranteeing a single derivation per action. The `update_layers` API
+remains available in the extension context for external consumers but is
+not used as the demo's state transport.
+
+Vocabulary:
+- **Profile** - a versioned set of reference templates (e.g. Carbon v11,
+  Material 3, Superloom base). Switching profiles changes the template.
+- **Scheme** - a complete token set within a profile (e.g. Carbon white,
+  g10, g90, g100). Switching schemes replaces the base layer.
+- **Brand** - a partial overlay layer applied on top of the current scheme
+  (e.g. tasks, notes). Switching brands adds or removes the overlay layer.
+
+---
+
+## Performance gate
+
+A separate Playwright `perf` project runs six theme-switch scenarios at 4x
+CDP CPU throttlement with one warmup and five measured iterations each.
+Each scenario asserts exact build counts and p95 wall/build times against
+a budget file (`e2e/perf/budgets.json`). The budget rule is
+`max(50, ceil(p95 * 1.5 / 10) * 10)` ms for both wall and build fields.
+To re-derive budgets after an intentional change, delete `budgets.json`,
+run `npm run test:perf`, and commit the new file with the reason. The perf
+project is gated in both `ci.yml` and `verify.sh` (9/9 gates).
