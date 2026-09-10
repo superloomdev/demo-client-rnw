@@ -1,32 +1,32 @@
 {
   "mount": {
     "builds": 2,
-    "wallMs": 50,
-    "buildMs": 180
+    "wallMs": 1110,
+    "buildMs": 490
   },
   "scheme": {
     "builds": 2,
-    "wallMs": 430,
-    "buildMs": 120
+    "wallMs": 1620,
+    "buildMs": 610
   },
   "brand": {
     "builds": 2,
-    "wallMs": 420,
-    "buildMs": 120
+    "wallMs": 1200,
+    "buildMs": 400
   },
   "profileToMaterial": {
     "builds": 2,
-    "wallMs": 440,
-    "buildMs": 130
+    "wallMs": 1580,
+    "buildMs": 470
   },
   "profileToCarbon": {
     "builds": 2,
-    "wallMs": 500,
-    "buildMs": 130
+    "wallMs": 4500,
+    "buildMs": 910
   },
   "navigation": {
     "builds": 2,
-    "wallMs": 3820,
-    "buildMs": 180
+    "wallMs": 6640,
+    "buildMs": 370
   }
 }
