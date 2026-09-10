@@ -90,6 +90,13 @@ gate_e2e () {
 }
 
 
+# ------------------------------- Gate: perf -------------------------------- #
+
+gate_perf () {
+  npx playwright test --project=perf
+}
+
+
 # ------------------------------- Run gates -------------------------------- #
 
 run_gate 'portability fence' gate_portability
@@ -102,6 +109,7 @@ if [ "$FAST" = "0" ]; then
   run_gate 'vite web build' gate_web_build
   run_gate 'expo web export' gate_expo_web
   run_gate 'playwright e2e' gate_e2e
+  run_gate 'playwright perf' gate_perf
 else
   printf '\n\033[33mSKIPPED\033[0m builds and e2e (--fast)\n'
 fi

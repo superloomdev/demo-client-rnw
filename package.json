@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test:e2e": "npx playwright test",
+    "test:perf": "npx playwright test --project=perf",
     "verify": "bash scripts/verify.sh",
     "verify:fast": "bash scripts/verify.sh --fast"
   },

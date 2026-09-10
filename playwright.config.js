@@ -1,6 +1,8 @@
 // Info: Playwright E2E configuration. Builds the web host and serves the
 // production bundle via vite preview, then runs browser interaction tests
-// against all app shapes.
+// against all app shapes. The perf project is separate: it runs serially
+// with CPU throttling to collect deterministic build-count and timing
+// measurements against a budget.
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
@@ -17,6 +19,16 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: ['e2e/perf/**'],
+      use: { ...devices['Desktop Chrome'] }
+    },
+    {
+      name: 'perf',
+      testDir: './e2e/perf',
+      testMatch: /.*\.perf\.js$/,
+      fullyParallel: false,
+      workers: 1,
+      retries: 0,
       use: { ...devices['Desktop Chrome'] }
     }
   ],

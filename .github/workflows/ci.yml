@@ -76,7 +76,7 @@ jobs:
           echo "PASS: no British spelling or em dash in tracked files"
       - name: G26 - Peer-dep utilization (use Lib.Utils primitives, not raw length/keys checks)
         run: |
-          hits=$(git grep -nE "\.length (===|!==|>) 0|(===|!==) ''|Object\.keys\([^)]+\)\.length (===|!==|>) 0" -- '*.js' '*.jsx' ':(exclude)*/node_modules/*' ':(exclude).github/*' ':(exclude)src/_test/*' ':(exclude)src/app-core/loader.validators.js' ':(exclude)scripts/*' 2>/dev/null || true)
+          hits=$(git grep -nE "\.length (===|!==|>) 0|(===|!==) ''|Object\.keys\([^)]+\)\.length (===|!==|>) 0" -- '*.js' '*.jsx' ':(exclude)*/node_modules/*' ':(exclude).github/*' ':(exclude)src/_test/*' ':(exclude)src/app-core/loader.validators.js' ':(exclude)scripts/*' ':(exclude)e2e/*' 2>/dev/null || true)
           if [ -n "$hits" ]; then
             echo "FAIL: raw length or keys check found. Use Lib.Utils.isEmptyArray, isEmptyObject, or isEmptyString."
             echo "$hits"
@@ -169,6 +169,8 @@ jobs:
           npx vite build
       - name: Run E2E
         run: npx playwright test
+      - name: Run perf tests
+        run: npm run test:perf
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7

@@ -1,0 +1,32 @@
+{
+  "mount": {
+    "builds": 2,
+    "wallMs": 50,
+    "buildMs": 180
+  },
+  "scheme": {
+    "builds": 2,
+    "wallMs": 430,
+    "buildMs": 120
+  },
+  "brand": {
+    "builds": 2,
+    "wallMs": 420,
+    "buildMs": 120
+  },
+  "profileToMaterial": {
+    "builds": 2,
+    "wallMs": 440,
+    "buildMs": 130
+  },
+  "profileToCarbon": {
+    "builds": 2,
+    "wallMs": 500,
+    "buildMs": 130
+  },
+  "navigation": {
+    "builds": 2,
+    "wallMs": 3820,
+    "buildMs": 180
+  }
+}
