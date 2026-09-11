@@ -360,7 +360,7 @@ const MULTI_STATE = {
   // User
   UserAvatar: [
     { label: 'initials', props: { initials: 'SJ' } },
-    { label: 'large', props: { initials: 'AB', size: 'lg' } }
+    { label: 'large', props: { initials: 'AB', size: 48 } }
   ],
 
   // Error
