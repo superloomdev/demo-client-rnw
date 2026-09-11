@@ -1,41 +1,17 @@
-import { useMemo } from 'react';
+// Info: Showcase registry hook. Consumes the component system built by
+// the theme context's transform (one build per effective theme action)
+// and returns the Component and Style references from the context.
+// Does NOT create its own component-system build.
 import { useLib } from '../../app-core/contexts/lib-context.js';
 
 export default function useRegistry () {
   const Lib = useLib();
-  const { useTheme } = Lib.ThemeContext;
-  const theme = useTheme();
-
-  return useMemo(function () {
-    if (!theme) {
-      return null;
-    }
-
-    const system = Lib.Components.createSystem({
-      Utils: Lib.Utils,
-      Debug: Lib.Debug,
-      React: Lib.React,
-      Device: Lib.Device,
-      Icons: Lib.Icons,
-      Font: Lib.Font,
-      Themer: Lib.Themer
-    }, { STRICT_TOKENS: true }, { tokens: theme }, 'base');
-
-    const roster = Lib.Components.roster;
-    system.addComponents(roster.COMPONENTS);
-    system.addVariants(roster.VARIANTS);
-    system.addFreeforms(roster.FREEFORMS);
-    system.addProviders(roster.PROVIDERS);
-
-    const check = system.checkRegistry();
-    if (!check.complete) {
-      throw new Error('Incomplete registry: ' + JSON.stringify(check.missing));
-    }
-
-    if (typeof globalThis !== 'undefined') {
-      globalThis.__systemBuilds = (globalThis.__systemBuilds || 0) + 1;
-    }
-
-    return { Component: system.Component, Style: system.Style };
-  }, [Lib, theme]);
+  const controller = Lib.ThemeContext.useThemeController();
+  if (!controller) {
+    return null;
+  }
+  return {
+    Component: controller.Component,
+    Style: controller.CommonStyle
+  };
 }

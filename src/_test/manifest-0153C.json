@@ -1,0 +1,58 @@
+{
+  "plan": "0153",
+  "part": "C",
+  "assertions": [
+    {
+      "id": "C-mount-one-build",
+      "file": "src/_test/test-provider.js",
+      "test": "provider renders with default profile and produces exactly one build",
+      "behavior": "mounting ThemeProvider produces exactly one component-system build",
+      "disabled_result": "0 builds (transform skipped)",
+      "failing_result": "2 builds (key remount + showcase build)",
+      "restored_result": "1 build"
+    },
+    {
+      "id": "C-rerender-zero-builds",
+      "file": "src/_test/test-provider.js",
+      "test": "unrelated parent rerender produces zero additional builds",
+      "behavior": "unrelated parent rerender does not trigger a rebuild",
+      "disabled_result": "0 builds on rerender",
+      "failing_result": "2 builds on rerender (key remount)",
+      "restored_result": "0 builds on rerender"
+    },
+    {
+      "id": "C-effective-one-build",
+      "file": "src/_test/test-provider.js",
+      "test": "effective selection produces exactly one build; same selection zero",
+      "behavior": "effective scheme change produces one build; no-op produces zero",
+      "disabled_result": "0 builds on effective change",
+      "failing_result": "2 builds on effective change",
+      "restored_result": "1 build on effective change, 0 on no-op"
+    },
+    {
+      "id": "C-stable-refs",
+      "file": "src/_test/test-provider.js",
+      "test": "controller functions are referentially stable across rerenders",
+      "behavior": "updateProfile/Scheme/Brand references are stable across rerenders",
+      "disabled_result": "new function references on every render",
+      "failing_result": "new function references (inline functions in hook)",
+      "restored_result": "stable useCallback references"
+    },
+    {
+      "id": "C-e2e-stability-one-build",
+      "file": "e2e/showcase-stability.test.js",
+      "test": "should build the system once when mounting the showcase index",
+      "behavior": "showcase mount produces one build (transform only)",
+      "failing_result": "2 builds (transform + showcase)",
+      "restored_result": "1 build"
+    },
+    {
+      "id": "C-perf-one-build",
+      "file": "e2e/perf/budgets.json",
+      "test": "mount showcase builds=1",
+      "behavior": "perf budget expects one build per action",
+      "failing_result": "2 builds (old budget)",
+      "restored_result": "1 build"
+    }
+  ]
+}

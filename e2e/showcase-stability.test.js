@@ -1,10 +1,10 @@
 // Info: F4 - Theme stability tests. The regression lock for the re-derive
 // loop. A runaway build count is invisible to a functional assertion but is
 // the loudest possible signal that the theme is spinning. The count is
-// exposed on globalThis.__systemBuilds by both build-system.js (the
-// transform build) and useRegistry.js (the showcase build), so each
-// intentional theme change produces 2 builds: one from the transform
-// and one from the showcase registry.
+// exposed on globalThis.__systemBuilds by build-system.js (the transform
+// build). useRegistry consumes the built system from the context and does
+// not create its own build, so each intentional theme change produces 1
+// build.
 import { test, expect } from '@playwright/test';
 
 
@@ -20,41 +20,41 @@ async function getBuildCount (page) {
 
 test.describe('showcase theme stability', function () {
 
-  test('should build the system twice when mounting the showcase index', async function ({ page }) {
+  test('should build the system once when mounting the showcase index', async function ({ page }) {
     await page.goto('/showcase');
     await expect(page.getByText('Components', { exact: true })).toBeVisible({ timeout: 10000 });
     const count = await getBuildCount(page);
-    // 2 builds: transform (build-system.js) + showcase (useRegistry.js)
-    expect(count).toBe(2);
+    // 1 build: transform (build-system.js)
+    expect(count).toBe(1);
   });
 
-  test('should build the system twice when mounting the atoms page', async function ({ page }) {
+  test('should build the system once when mounting the atoms page', async function ({ page }) {
     await page.goto('/showcase/atoms');
     await expect(page.getByText('Atoms')).toBeVisible({ timeout: 10000 });
     const count = await getBuildCount(page);
-    expect(count).toBe(2);
+    expect(count).toBe(1);
   });
 
-  test('should build the system at most four times when mounting the molecules page', async function ({ page }) {
+  test('should build the system at most twice when mounting the molecules page', async function ({ page }) {
     await page.goto('/showcase/molecules');
     await expect(page.getByText('Molecules')).toBeVisible({ timeout: 10000 });
     const count = await getBuildCount(page);
     // The molecules page renders 181 components; a single font-load re-derive
-    // is acceptable (adding 2 more builds), but a count above 4 indicates a
+    // is acceptable (adding 1 more build), but a count above 2 indicates a
     // runaway loop.
-    expect(count).toBeLessThanOrEqual(4);
-    expect(count).toBeGreaterThanOrEqual(2);
+    expect(count).toBeLessThanOrEqual(2);
+    expect(count).toBeGreaterThanOrEqual(1);
   });
 
-  test('should rebuild exactly twice after a single scheme swap', async function ({ page }) {
+  test('should rebuild exactly once after a single scheme swap', async function ({ page }) {
     await page.goto('/showcase');
     await expect(page.getByText('Components', { exact: true })).toBeVisible({ timeout: 10000 });
     const before = await getBuildCount(page);
     // Click g10 (not white, which is the initial scheme) to ensure a state change
     await page.getByTestId('scheme-option-g10').click();
     const after = await getBuildCount(page);
-    // 2 builds: transform + showcase
-    expect(after - before).toBe(2);
+    // 1 build: transform
+    expect(after - before).toBe(1);
   });
 
   test('should not rebuild while idle', async function ({ page }) {
@@ -67,7 +67,7 @@ test.describe('showcase theme stability', function () {
     expect(after).toBe(before);
   });
 
-  test('should rebuild exactly twice after a profile switch to Material', async function ({ page }) {
+  test('should rebuild exactly once after a profile switch to Material', async function ({ page }) {
     await page.goto('/showcase');
     await expect(page.getByText('Components', { exact: true })).toBeVisible({ timeout: 10000 });
     const before = await getBuildCount(page);
@@ -75,11 +75,11 @@ test.describe('showcase theme stability', function () {
     await page.getByTestId('profile-option-material').click();
     await expect(page.getByTestId('scheme-option-light')).toBeVisible({ timeout: 10000 });
     const after = await getBuildCount(page);
-    // 2 builds: transform + showcase
-    expect(after - before).toBe(2);
+    // 1 build: transform
+    expect(after - before).toBe(1);
   });
 
-  test('should rebuild exactly twice after switching back to Carbon from Material', async function ({ page }) {
+  test('should rebuild exactly once after switching back to Carbon from Material', async function ({ page }) {
     await page.goto('/showcase');
     await expect(page.getByText('Components', { exact: true })).toBeVisible({ timeout: 10000 });
     // Switch to Material first
@@ -90,11 +90,11 @@ test.describe('showcase theme stability', function () {
     await page.getByTestId('profile-option-carbon').click();
     await expect(page.getByTestId('scheme-option-white')).toBeVisible({ timeout: 10000 });
     const after = await getBuildCount(page);
-    // 2 builds: transform + showcase
-    expect(after - before).toBe(2);
+    // 1 build: transform
+    expect(after - before).toBe(1);
   });
 
-  test('should rebuild exactly twice after a brand switch', async function ({ page }) {
+  test('should rebuild exactly once after a brand switch', async function ({ page }) {
     await page.goto('/showcase');
     await expect(page.getByText('Components', { exact: true })).toBeVisible({ timeout: 10000 });
     // The showcase mounts under the tasks brand; switch to notes first
@@ -103,8 +103,8 @@ test.describe('showcase theme stability', function () {
     // Switch brand back to tasks - this only changes layers, not the template
     await page.getByTestId('brand-option-tasks').click();
     const after = await getBuildCount(page);
-    // 2 builds: transform + showcase
-    expect(after - before).toBe(2);
+    // 1 build: transform
+    expect(after - before).toBe(1);
   });
 
 });

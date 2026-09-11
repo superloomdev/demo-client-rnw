@@ -31,7 +31,6 @@ let React;            // injected React (required)
 let Ext;              // themer-ext-react instance (required)
 let profiles;        // { base, carbon, material } from Lib.Themes.profiles
 let defaultProfileName; // the default profile key
-let ProfileStateContext; // React context for profile/scheme/brand state setters
 
 
 /////////////////////////// Module-Loader START ////////////////////////////////
@@ -70,12 +69,6 @@ export default function loader (shared_libs) {
   }
   profiles = Lib.Themes.profiles;
   defaultProfileName = Lib.Themes.defaultProfile || 'carbon';
-
-  // Create a context to pass profile/scheme/brand state setters from the
-  // wrapper ThemeProvider down to the useThemeController hook. The hook
-  // calls these setters to change the wrapper's state, which produces new
-  // template/layers references that the extension picks up.
-  ProfileStateContext = React.createContext(null);
 
   // Expose the extension's context for advanced consumers
   Extension.ThemeContext = Ext.ThemeContext;
@@ -198,56 +191,71 @@ const Extension = { // Public theming interface accessible by the host
       return [baseLayer];
     }, [profileName, schemeName, brandName, rederiveEpoch]);
 
+    // The profile state setters are provided through stable callbacks so
+    // the useThemeController hook can call them to switch profiles/schemes/
+    // brands. Memoized so the controller functions are referentially stable
+    // across unrelated parent re-renders.
+    const updateProfile = React.useCallback(function (name) {
+      // Switch the entire profile (design system). The wrapper's state
+      // is the single source of truth; changing profileName produces a
+      // new template and layers reference, which the extension picks up.
+      setProfileName(name);
+      // Reset scheme and brand so the new profile starts clean
+      setSchemeName(null);
+      setBrandName(null);
+    }, []);
+
+    const updateScheme = React.useCallback(function (name) {
+      // Replace the base scheme within the current profile. The
+      // template stays the same; only the layers change via state.
+      // The brand is cleared so the new scheme is shown without an
+      // overlay, matching the selector's visual intent.
+      setSchemeName(name);
+      setBrandName(null);
+    }, []);
+
+    const updateBrand = React.useCallback(function (layer) {
+      // Replace only the brand layer. The current scheme is preserved
+      // because schemeName state is unchanged.
+      setBrandName(layer || null);
+    }, []);
+
     // Transform seam: runs inside the extension's useMemo. Delegates to
     // buildSystem so font validation and component building live in one place.
+    // Also passes the profile/scheme/brand state and stable update callbacks
+    // through the context so useThemeController can access them without a
+    // separate context.
     const transform = React.useCallback(function (built, currentLayers) {
       // Build the standard component system
       const result = buildSystem(
         Lib, built, currentLayers, rederive,
         LOCAL_VARIANTS, LOCAL_FREEFORMS, 'base'
       );
-      // Return the component system and theme for the context.
+      // Return the component system, theme, and selection state for the context.
       return {
         Component: result.system.Component,
-        CommonStyle: result.system.Style
-      };
-    }, [rederive]);
-
-    // The profile state setters are provided through a separate context so
-    // the useThemeController hook can call them to switch profiles/schemes/
-    // brands. Memoized so the context value is stable across unrelated
-    // parent re-renders; only changes when selection state changes.
-    const profileStateValue = React.useMemo(function () {
-      return {
+        CommonStyle: result.system.Style,
         profileName: profileName,
         schemeName: schemeName,
         brandName: brandName,
-        setProfileName: setProfileName,
-        setSchemeName: setSchemeName,
-        setBrandName: setBrandName
+        updateProfile: updateProfile,
+        updateScheme: updateScheme,
+        updateBrand: updateBrand
       };
-    }, [profileName, schemeName, brandName, setProfileName, setSchemeName, setBrandName]);
+    }, [rederive, profileName, schemeName, brandName, updateProfile, updateScheme, updateBrand]);
 
     // Render the extension's ThemeProvider with the app-specific transform.
     // The wrapper owns profile/scheme/brand state and derives template
     // and layers from it. The extension re-derives when either reference
-    // changes. No imperative update_layers calls needed.
-    //
-    // The ProfileStateContext.Provider is placed INSIDE the extension's
-    // ThemeProvider so that the Ext.ThemeProvider is a direct child of
-    // the wrapper and always re-renders when the wrapper's state changes.
-    // A key prop forces a clean remount when the selection changes, which
-    // guarantees the extension's useMemo re-runs with the new layers.
-    // This is correct because the extension's only internal state is the
-    // override (which should be null in controlled mode) and the remount
-    // ensures a single derivation per selection change.
+    // changes. No key prop is needed: the extension is prop-driven and
+    // re-derives when template or layers change. No imperative
+    // update_layers calls needed.
     return React.createElement(Ext.ThemeProvider, {
-      key: profileName + '/' + schemeName + '/' + brandName + '/' + rederiveEpoch,
       template: template,
       layers: layers,
       platform: THEME_PLATFORM,
       transform: transform
-    }, React.createElement(ProfileStateContext.Provider, { value: profileStateValue }, props.children));
+    }, props.children);
 
   },
 
@@ -267,51 +275,26 @@ const Extension = { // Public theming interface accessible by the host
   useThemeController: function () {
     // Read the extension controller from context
     const ctx = Ext.useThemeController();
-    // Read the profile state setters from the wrapper context
-    const profileState = React.useContext(ProfileStateContext);
+    // Read the profile/scheme/brand state from the wrapper's hooks
+    // (the wrapper passes these through the extension's context)
     if (!ctx) {
       // Return null when used outside a provider
       return null;
     }
 
-    // Return the app-shaped controller wrapping the extension context
+    // Return the app-shaped controller wrapping the extension context.
+    // The update functions are stable callbacks defined in the provider.
     return {
       Lib: Lib,
       theme: ctx.theme,
       Component: ctx.Component,
       CommonStyle: ctx.CommonStyle,
-      profileName: profileState ? profileState.profileName : defaultProfileName,
-      schemeName: profileState ? profileState.schemeName : null,
-      brandName: profileState ? profileState.brandName : null,
-      updateProfile: function (name) {
-        // Switch the entire profile (design system). The wrapper's state
-        // is the single source of truth; changing profileName produces a
-        // new template and layers reference, which the extension picks up.
-        if (profiles[name] && profileState) {
-          profileState.setProfileName(name);
-          // Reset scheme and brand so the new profile starts clean
-          profileState.setSchemeName(null);
-          profileState.setBrandName(null);
-        }
-      },
-      updateScheme: function (name) {
-        // Replace the base scheme within the current profile. The
-        // template stays the same; only the layers change via state.
-        // The brand is cleared so the new scheme is shown without an
-        // overlay, matching the selector's visual intent.
-        const currentProfileName = profileState ? profileState.profileName : defaultProfileName;
-        if (profiles[currentProfileName] && profiles[currentProfileName].schemes[name] && profileState) {
-          profileState.setSchemeName(name);
-          profileState.setBrandName(null);
-        }
-      },
-      updateBrand: function (layer) {
-        // Replace only the brand layer. The current scheme is preserved
-        // because schemeName state is unchanged.
-        if (profileState) {
-          profileState.setBrandName(layer || null);
-        }
-      }
+      profileName: ctx.profileName || defaultProfileName,
+      schemeName: ctx.schemeName || null,
+      brandName: ctx.brandName || null,
+      updateProfile: ctx.updateProfile || function () {},
+      updateScheme: ctx.updateScheme || function () {},
+      updateBrand: ctx.updateBrand || function () {}
     };
   },
 

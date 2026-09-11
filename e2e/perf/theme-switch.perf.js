@@ -79,7 +79,7 @@ test.describe('theme-switch performance', function () {
       const result = await collectResult(page, async function (p) {
         await p.goto('/showcase');
         await p.getByText('Components', { exact: true }).waitFor({ timeout: 10000 });
-        await waitForBuilds(p, 2);
+        await waitForBuilds(p, 1);
       });
       results.push(result);
     }
@@ -115,19 +115,19 @@ test.describe('theme-switch performance', function () {
     // Warmup
     await resetCounters(page);
     await page.getByTestId('scheme-option-g100').click();
-    await waitForBuilds(page, 2);
+    await waitForBuilds(page, 1);
     await page.waitForTimeout(1000);
 
     const results = [];
     for (let i = 0; i < ITERATIONS; i++) {
       // Reset to white scheme
       await page.getByTestId('scheme-option-white').click();
-      await waitForBuilds(page, 2);
+      await waitForBuilds(page, 1);
       await page.waitForTimeout(500);
       await resetCounters(page);
       const result = await collectResult(page, async function (p) {
         await p.getByTestId('scheme-option-g100').click();
-        await waitForBuilds(p, 2);
+        await waitForBuilds(p, 1);
       });
       results.push(result);
     }
@@ -163,19 +163,19 @@ test.describe('theme-switch performance', function () {
     // Warmup
     await resetCounters(page);
     await page.getByTestId('brand-option-notes').click();
-    await waitForBuilds(page, 2);
+    await waitForBuilds(page, 1);
     await page.waitForTimeout(1000);
 
     const results = [];
     for (let i = 0; i < ITERATIONS; i++) {
       // Reset to tasks brand
       await page.getByTestId('brand-option-tasks').click();
-      await waitForBuilds(page, 2);
+      await waitForBuilds(page, 1);
       await page.waitForTimeout(500);
       await resetCounters(page);
       const result = await collectResult(page, async function (p) {
         await p.getByTestId('brand-option-notes').click();
-        await waitForBuilds(p, 2);
+        await waitForBuilds(p, 1);
       });
       results.push(result);
     }
@@ -212,7 +212,7 @@ test.describe('theme-switch performance', function () {
     await resetCounters(page);
     await page.getByTestId('profile-option-material').click();
     await page.getByTestId('scheme-option-light').waitFor({ timeout: 10000 });
-    await waitForBuilds(page, 2);
+    await waitForBuilds(page, 1);
     await page.waitForTimeout(1000);
 
     const results = [];
@@ -220,13 +220,13 @@ test.describe('theme-switch performance', function () {
       // Reset to carbon profile
       await page.getByTestId('profile-option-carbon').click();
       await page.getByTestId('scheme-option-white').waitFor({ timeout: 10000 });
-      await waitForBuilds(page, 2);
+      await waitForBuilds(page, 1);
       await page.waitForTimeout(500);
       await resetCounters(page);
       const result = await collectResult(page, async function (p) {
         await p.getByTestId('profile-option-material').click();
         await p.getByTestId('scheme-option-light').waitFor({ timeout: 10000 });
-        await waitForBuilds(p, 2);
+        await waitForBuilds(p, 1);
       });
       results.push(result);
     }
@@ -267,7 +267,7 @@ test.describe('theme-switch performance', function () {
     await resetCounters(page);
     await page.getByTestId('profile-option-carbon').click();
     await page.getByTestId('scheme-option-white').waitFor({ timeout: 10000 });
-    await waitForBuilds(page, 2);
+    await waitForBuilds(page, 1);
     await page.waitForTimeout(1000);
     // Switch back to material for next iteration
     await page.getByTestId('profile-option-material').click();
@@ -279,13 +279,13 @@ test.describe('theme-switch performance', function () {
       // Ensure we are on material
       await page.getByTestId('profile-option-material').click();
       await page.getByTestId('scheme-option-light').waitFor({ timeout: 10000 });
-      await waitForBuilds(page, 2);
+      await waitForBuilds(page, 1);
       await page.waitForTimeout(500);
       await resetCounters(page);
       const result = await collectResult(page, async function (p) {
         await p.getByTestId('profile-option-carbon').click();
         await p.getByTestId('scheme-option-white').waitFor({ timeout: 10000 });
-        await waitForBuilds(p, 2);
+        await waitForBuilds(p, 1);
       });
       results.push(result);
     }
@@ -332,11 +332,11 @@ test.describe('theme-switch performance', function () {
       const startWall = Date.now();
       await page.goto('/showcase/atoms');
       await page.getByText('Atoms').waitFor({ timeout: 10000 });
-      await waitForBuilds(page, 2);
+      await waitForBuilds(page, 1);
       // Navigate back to showcase (fresh page context resets counters)
       await page.goto('/showcase');
       await page.getByText('Components', { exact: true }).waitFor({ timeout: 10000 });
-      await waitForBuilds(page, 2);
+      await waitForBuilds(page, 1);
       await page.waitForTimeout(1000);
       const endWall = Date.now();
       const counters = await getCounters(page);
@@ -348,9 +348,9 @@ test.describe('theme-switch performance', function () {
     }
 
     // Each page navigation creates a fresh ThemeProvider mount, producing
-    // 2 builds (transform + showcase). The final /showcase mount leaves 2
-    // builds in the counter. This is the expected behavior: navigation
-    // between showcase pages triggers a mount, not a re-derive loop.
+    // 1 build (transform). The final /showcase mount leaves 1 build in
+    // the counter. This is the expected behavior: navigation between
+    // showcase pages triggers a mount, not a re-derive loop.
     const builds = results[0].builds;
     const wallP95 = p95(results.map(function (r) {
       return r.wallMs;
