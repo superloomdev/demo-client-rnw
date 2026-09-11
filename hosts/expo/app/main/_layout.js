@@ -1,5 +1,5 @@
 // Info: Main app (launcher) layout. Wraps the super-app shell in a ThemeProvider
-// with no variant - the launcher uses the neutral host base theme. ThemeProvider
+// with no variant - the launcher uses Material light with no brand. ThemeProvider
 // and the theming hooks come from the DI container (Lib.ThemeContext).
 import { Stack } from 'expo-router';
 import { useLib } from '../../../../src/app-core/contexts/lib-context.js';
@@ -25,7 +25,7 @@ function ThemedStack () {
 export default function MainLayout () {
   const { ThemeProvider } = useLib().ThemeContext;
   return (
-    <ThemeProvider profile="base">
+    <ThemeProvider profile="material" scheme="light">
       <ThemedStack />
     </ThemeProvider>
   );

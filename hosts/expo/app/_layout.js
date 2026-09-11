@@ -1,6 +1,6 @@
 // Info: Root layout - the app boot. Builds the Lib container (LibProvider), the
 // safe-area context, gates render on font loading (Lib.Fonts), and wraps the app
-// in a BASE ThemeProvider (used by the launcher). Each app shape under
+// in a Material light ThemeProvider (used by the launcher). Each app shape under
 // app/[shape]/ nests its own ThemeProvider, so this base theme only styles the
 // super-app launcher. The headerless Stack lets each shape own its header.
 //
@@ -42,10 +42,10 @@ function Boot () {
     return null;
   }
 
-  // Base ThemeProvider from the DI container styles the launcher
+  // Material light ThemeProvider from the DI container styles the launcher
   const { ThemeProvider } = Lib.ThemeContext;
   return (
-    <ThemeProvider profile="base">
+    <ThemeProvider profile="material" scheme="light">
       <Stack screenOptions={{ headerShown: false }} />
     </ThemeProvider>
   );

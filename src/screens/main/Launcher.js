@@ -14,6 +14,7 @@ export default function Launcher () {
   const Lib = useLib();
   const { Link, Redirect } = Lib.Navigation;
   const C = Lib.ThemeContext.useComponents();
+  const theme = Lib.ThemeContext.useTheme();
 
   // Determine which app shape to show based on the super-app decision
   const decision = Lib.SuperApp.determineApp();
@@ -29,7 +30,7 @@ export default function Launcher () {
 
   // Render the launcher grid with one card per shape
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: theme['color.background'] }]}>
       <ScrollView contentContainerStyle={styles.content}>
 
         <C.Text typeSet="heading04" weight="bold">Nimbus</C.Text>
@@ -65,8 +66,8 @@ export default function Launcher () {
 
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#F8F9FB' },
-  content: { padding: 24, gap: 12, maxWidth: 560, width: '100%', alignSelf: 'center' },
+  safe: { flex: 1 },
+  content: { padding: 16, gap: 12, maxWidth: 560, width: '100%', alignSelf: 'center' },
   subtitle: { marginBottom: 12 },
   cardWrap: { width: '100%' },
   card: { flexDirection: 'row', alignItems: 'center', gap: 16, padding: 16 },

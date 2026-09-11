@@ -6,8 +6,6 @@ import { ScrollView, Pressable, ActivityIndicator, StyleSheet } from 'react-nati
 
 import { useLib } from '../../app-core/contexts/lib-context.js';
 
-const ACCENTS = ['#4F46E5', '#7C3AED', '#DB2777', '#EA580C', '#0EA5E9'];
-
 
 export default function TasksList () {
 
@@ -17,11 +15,10 @@ export default function TasksList () {
   const C = Lib.ThemeContext.useComponents();
   const ctl = Lib.ThemeContext.useThemeController();
 
-  // Hold the tasks list, loading flag, draft input, and accent color index in local state
+  // Hold the tasks list, loading flag, and draft input in local state
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [draft, setDraft] = useState('');
-  const [accentIndex, setAccentIndex] = useState(0);
 
   // Reload tasks from the SDK, toggling the loading flag around the fetch
   const reload = useCallback(function () {
@@ -61,12 +58,13 @@ export default function TasksList () {
     Lib.Sdk.tasks.remove(id).then(reload);
   };
 
-  // Cycle through accent colors and apply a live retheme
+  // Apply the tasks brand layer as a live retheme
   const shuffleAccent = function () {
-    const next = (accentIndex + 1) % ACCENTS.length;
-    setAccentIndex(next);
     ctl.updateBrand('tasks');
   };
+
+  // Resolve the divider color from the theme token
+  const dividerColor = ctl && ctl.theme ? ctl.theme['color.border_subtle_01'] : null;
 
   // Render the tasks screen with input, accent shuffle, list, and back link
   return (
@@ -86,7 +84,7 @@ export default function TasksList () {
           {tasks.map(function (task, idx) {
             // Render one row per task with toggle, title, and delete action
             return (
-              <C.View key={task.id} style={[styles.row, idx > 0 ? styles.rowDivider : null]}>
+              <C.View key={task.id} style={[styles.row, idx > 0 ? { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: dividerColor } : null]}>
                 <Pressable onPress={function () {
                   // Toggle the task's done state when the checkbox is pressed
                   toggle(task.id);
@@ -124,7 +122,6 @@ const styles = StyleSheet.create({
   loader: { marginTop: 24 },
   list: { gap: 0, padding: 0 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 },
-  rowDivider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: '#E5E7EB' },
   rowTitle: { flex: 1 },
   done: { textDecorationLine: 'line-through' },
   check: {},

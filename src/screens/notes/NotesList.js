@@ -1,5 +1,5 @@
 // Info: Notes list screen. Consumes the dummy SDK (Lib.Sdk.notes).
-// Demonstrates freeform RawBox escape hatch.
+// Uses themed components throughout - no escape hatches or color literals.
 import React, { useState, useEffect, useCallback } from 'react';
 import { ScrollView, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
 
@@ -56,9 +56,9 @@ export default function NotesList () {
   return (
     <ScrollView contentContainerStyle={styles.content}>
 
-      <C.freeform.RawBox style={styles.banner}>
-        <C.Text typeSet="caption02" weight="semibold" style={styles.bannerText}>freeform.RawBox - opts out of the design system on purpose</C.Text>
-      </C.freeform.RawBox>
+      <C.View background="layer_accent_01" radius="radius_04" style={styles.banner}>
+        <C.Text typeSet="caption01" weight="semibold" color="text_primary">Notes - saved locally, no backend required</C.Text>
+      </C.View>
 
       <C.View background="layer_02" radius="radius_08" border={true} style={styles.composer}>
         <C.TextInput value={title} onChangeText={setTitle} placeholder="Note title" />
@@ -101,8 +101,7 @@ export default function NotesList () {
 
 const styles = StyleSheet.create({
   content: { padding: 16, gap: 12, maxWidth: 640, width: '100%', alignSelf: 'center' },
-  banner: { backgroundColor: '#111827', borderRadius: 10, padding: 12 },
-  bannerText: { color: '#FBBF24' },
+  banner: { padding: 12 },
   composer: { gap: 10, padding: 16 },
   bodyInput: { minHeight: 80, textAlignVertical: 'top' },
   loader: { marginTop: 24 },
