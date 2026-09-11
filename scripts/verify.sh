@@ -126,12 +126,56 @@ gate_visual () {
     printf '\033[31mFAIL external-failure: docker daemon not running for visual gate\033[0m\n'
     return 1
   fi
+
+  # Build and start the preview server on the host (Docker can't run Vite
+  # due to native binary mismatch). The Docker container connects via
+  # --network host and skips the webServer via PLAYWRIGHT_NO_SERVER=1.
+  printf '  building web app for visual gate...\n'
+  (cd "$REPO_ROOT/hosts/web" && npm run build >/dev/null 2>&1)
+  if [ $? -ne 0 ]; then
+    printf '\033[31mFAIL: web build failed for visual gate\033[0m\n'
+    return 1
+  fi
+
+  printf '  starting preview server...\n'
+  cd "$REPO_ROOT/hosts/web" && npx vite preview --port 4173 >/dev/null 2>&1 &
+  local preview_pid=$!
+  cd "$REPO_ROOT"
+
+  # Wait for the server to be ready
+  local tries=0
+  while [ $tries -lt 30 ]; do
+    if curl -s http://localhost:4173/ >/dev/null 2>&1; then
+      break
+    fi
+    sleep 2
+    tries=$((tries + 1))
+  done
+
+  if [ $tries -ge 30 ]; then
+    printf '\033[31mFAIL: preview server did not start\033[0m\n'
+    kill $preview_pid 2>/dev/null
+    return 1
+  fi
+
+  # Run the visual tests in Docker with the pinned image
+  # Use host.docker.internal on macOS to reach the host's preview server
   docker run --rm \
     -v "$REPO_ROOT:/work" \
     -w /work \
     --network host \
+    -e PLAYWRIGHT_NO_SERVER=1 \
+    -e PLAYWRIGHT_BASE_URL=http://host.docker.internal:4173 \
     "$image" \
-    npx playwright test --project=visual
+    npx playwright test --project=visual 2>&1
+
+  local result=$?
+
+  # Stop the preview server
+  kill $preview_pid 2>/dev/null
+  wait $preview_pid 2>/dev/null
+
+  return $result
 }
 
 

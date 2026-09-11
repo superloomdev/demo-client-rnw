@@ -15,7 +15,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'list',
   use: {
-    baseURL: 'http://localhost:4173',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:4173',
     trace: 'on-first-retry'
   },
   projects: [
@@ -48,7 +48,7 @@ export default defineConfig({
       }
     }
   ],
-  webServer: {
+  webServer: process.env.PLAYWRIGHT_NO_SERVER ? undefined : {
     command: 'npm run build && npx vite preview --port 4173',
     cwd: 'hosts/web',
     url: 'http://localhost:4173',

@@ -81,5 +81,8 @@ export default defineConfig({
     fs: {
       allow: [path.resolve(__dirname), path.resolve(__dirname, '../..')]
     }
+  },
+  preview: {
+    allowedHosts: ['host.docker.internal', 'localhost', '127.0.0.1']
   }
 });
