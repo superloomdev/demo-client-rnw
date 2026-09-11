@@ -6,6 +6,10 @@
 // exception.
 import { test, expect } from '@playwright/test';
 import { attachErrorListeners, ROUTES } from './helpers/page-readiness.js';
+import { computeBuildIdentity } from '../scripts/build-identity.js';
+
+// Compute the expected build identity once for all readiness tests
+const expectedIdentity = computeBuildIdentity();
 
 // Route-specific visible content selectors for readiness checks.
 const ROUTE_CONTENT = {
@@ -52,6 +56,19 @@ for (const route of ROUTES) {
       // Assert no errors
       const errors = getErrors();
       expect(errors).toEqual([]);
+
+      // Assert build identity matches expected
+      const endpointResponse = await page.evaluate(async function () {
+        const res = await fetch('/__identity');
+        const data = await res.json();
+        return data.identity;
+      });
+      expect(endpointResponse).toBe(expectedIdentity);
+
+      const windowIdentity = await page.evaluate(function () {
+        return window.__BUILD_IDENTITY__;
+      });
+      expect(windowIdentity).toBe(expectedIdentity);
     });
 
     test('should have visible primary content after load', async function ({ page }) {

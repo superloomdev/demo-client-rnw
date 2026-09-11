@@ -2,12 +2,35 @@ import { defineConfig, transformWithEsbuild } from 'vite';
 import react from '@vitejs/plugin-react';
 import commonjs from 'vite-plugin-commonjs';
 import path from 'path';
+import { computeBuildIdentity } from '../../scripts/build-identity.js';
 
 const webNodeModules = path.resolve(__dirname, 'node_modules');
 
 // Browser stub for node:module - helper-utils uses createRequire for JSON
 // loading which is not needed in the browser bundle.
 const nodeModuleStub = path.resolve(__dirname, 'node-module-stub.js');
+
+// Compute the build identity for this build
+const buildIdentity = computeBuildIdentity(path.resolve(__dirname, '../..'));
+
+// Vite plugin: serve /__identity as JSON in both dev and preview
+function identityPlugin (identity) {
+  return {
+    name: 'build-identity',
+    configureServer (server) {
+      server.middlewares.use('/__identity', function (req, res) {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ identity: identity }));
+      });
+    },
+    configurePreviewServer (server) {
+      server.middlewares.use('/__identity', function (req, res) {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ identity: identity }));
+      });
+    }
+  };
+}
 
 export default defineConfig({
   plugins: [
@@ -30,8 +53,12 @@ export default defineConfig({
         return null;
       }
     },
-    react()
+    react(),
+    identityPlugin(buildIdentity)
   ],
+  define: {
+    __BUILD_IDENTITY__: JSON.stringify(buildIdentity)
+  },
   resolve: {
     alias: [
       { find: 'react-native', replacement: path.resolve(webNodeModules, 'react-native-web') },

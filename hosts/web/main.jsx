@@ -25,6 +25,11 @@ const navigationAdapter = navigationAdapterMod.default;
 const fontsAdapter = fontsAdapterMod.default;
 const iconsAdapter = iconsAdapterMod.default;
 
+// Expose the build identity for readiness tests to compare against /__identity
+if (typeof __BUILD_IDENTITY__ !== 'undefined') {
+  window.__BUILD_IDENTITY__ = __BUILD_IDENTITY__;
+}
+
 
 // Route table: pathname -> screen component
 // A11yInspector is excluded - it requires react-test-renderer (test-only dep)
