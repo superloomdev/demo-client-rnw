@@ -168,9 +168,11 @@ jobs:
           npm ci
           npx vite build
       - name: Run E2E
-        run: npx playwright test
+        run: npx playwright test --project=chromium
       - name: Run perf tests
         run: npm run test:perf
+      - name: Run visual tests
+        run: npx playwright test --project=visual
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7

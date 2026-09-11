@@ -86,7 +86,7 @@ gate_expo_web () {
 # ------------------------------- Gate: e2e -------------------------------- #
 
 gate_e2e () {
-  npx playwright test
+  npx playwright test --project=chromium
 }
 
 
@@ -94,6 +94,44 @@ gate_e2e () {
 
 gate_perf () {
   npx playwright test --project=perf
+}
+
+
+# ------------------------------ Gate: visual ------------------------------- #
+# The visual gate runs the serial visual project inside the pinned Playwright
+# Docker image so local and CI baselines are the same platform. If Docker is
+# unavailable the gate reports FAIL external-failure: docker required for
+# visual gate. The spec file is created in Part F; until then the project
+# reports no tests found, which is a pass.
+
+gate_visual () {
+  # If no spec files exist yet, the visual project reports no tests found.
+  # This is a pass, not a skip: the gate is wired and listed, and will run
+  # real baselines once Part F adds the spec file.
+  local spec_count
+  spec_count=$(find "$REPO_ROOT/e2e/visual" -type f \( -name '*.test.js' -o -name '*.spec.js' \) 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$spec_count" -eq 0 ]; then
+    printf '\033[33mno tests found\033[0m (visual project wired, spec file pending Part F)\n'
+    return 0
+  fi
+
+  local pw_version
+  pw_version=$(node -e "process.stdout.write(require('./node_modules/@playwright/test/package.json').version)")
+  local image="mcr.microsoft.com/playwright:v${pw_version}-noble"
+  if ! command -v docker >/dev/null 2>&1; then
+    printf '\033[31mFAIL external-failure: docker required for visual gate\033[0m\n'
+    return 1
+  fi
+  if ! docker info >/dev/null 2>&1; then
+    printf '\033[31mFAIL external-failure: docker daemon not running for visual gate\033[0m\n'
+    return 1
+  fi
+  docker run --rm \
+    -v "$REPO_ROOT:/work" \
+    -w /work \
+    --network host \
+    "$image" \
+    npx playwright test --project=visual
 }
 
 
@@ -110,6 +148,7 @@ if [ "$FAST" = "0" ]; then
   run_gate 'expo web export' gate_expo_web
   run_gate 'playwright e2e' gate_e2e
   run_gate 'playwright perf' gate_perf
+  run_gate 'playwright visual' gate_visual
 else
   printf '\n\033[33mSKIPPED\033[0m builds and e2e (--fast)\n'
 fi

@@ -2,7 +2,9 @@
 // production bundle via vite preview, then runs browser interaction tests
 // against all app shapes. The perf project is separate: it runs serially
 // with CPU throttling to collect deterministic build-count and timing
-// measurements against a budget.
+// measurements against a budget. The visual project is serial, Chromium
+// only, with deterministic display settings; its spec file is created in
+// Part F after final visuals are produced.
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
@@ -19,7 +21,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      testIgnore: ['e2e/perf/**'],
+      testIgnore: ['e2e/perf/**', 'e2e/visual/**'],
       use: { ...devices['Desktop Chrome'] }
     },
     {
@@ -30,6 +32,20 @@ export default defineConfig({
       workers: 1,
       retries: 0,
       use: { ...devices['Desktop Chrome'] }
+    },
+    {
+      name: 'visual',
+      testDir: './e2e/visual',
+      fullyParallel: false,
+      workers: 1,
+      retries: 0,
+      use: {
+        ...devices['Desktop Chrome'],
+        colorScheme: 'light',
+        locale: 'en-US',
+        timezoneId: 'UTC',
+        deviceScaleFactor: 1
+      }
     }
   ],
   webServer: {
