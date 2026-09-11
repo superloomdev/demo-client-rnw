@@ -1,7 +1,7 @@
 // Info: Tasks list screen. Consumes the dummy SDK (Lib.Sdk.tasks).
 // Add/toggle/delete tasks; live retheme via updateTheme().
 import React, { useState, useEffect, useCallback } from 'react';
-import { ScrollView, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
+import { ScrollView, Pressable, StyleSheet } from 'react-native';
 
 
 import { useLib } from '../../app-core/contexts/lib-context.js';
@@ -66,19 +66,26 @@ export default function TasksList () {
   // Resolve the divider color from the theme token
   const dividerColor = ctl && ctl.theme ? ctl.theme['color.border_subtle_01'] : null;
 
-  // Render the tasks screen with input, accent shuffle, list, and back link
+  // Render the tasks screen with header, input, list, and back link
   return (
     <ScrollView contentContainerStyle={styles.content}>
+
+      <C.View style={styles.header}>
+        <C.Text size="xl" weight="semibold" color="text_primary">Tasks</C.Text>
+        <C.Text size="sm" color="text_secondary">Track things you need to do.</C.Text>
+      </C.View>
 
       <C.View style={styles.addRow}>
         <C.TextInput value={draft} onChangeText={setDraft} placeholder="Add a task..." style={styles.input} onSubmitEditing={addTask} returnKeyType="done" />
         <C.Button kind="primary" onPress={addTask}><C.Text color="text_on_color">Add</C.Text></C.Button>
       </C.View>
 
-      <C.variant.ButtonPrimaryOutlined onPress={shuffleAccent} fullWidth><C.Text color="interactive">Shuffle accent (live retheme)</C.Text></C.variant.ButtonPrimaryOutlined>
+      <C.variant.ButtonPrimaryOutlined onPress={shuffleAccent} fullWidth><C.Text color="interactive">Shuffle accent</C.Text></C.variant.ButtonPrimaryOutlined>
 
       {loading ? (
-        <ActivityIndicator style={styles.loader} />
+        <C.View style={styles.loader}>
+          <C.Text color="text_secondary">Loading...</C.Text>
+        </C.View>
       ) : (
         <C.View background="layer_02" radius="radius_08" border={true} style={styles.list}>
           {tasks.map(function (task, idx) {
@@ -88,7 +95,7 @@ export default function TasksList () {
                 <Pressable onPress={function () {
                   // Toggle the task's done state when the checkbox is pressed
                   toggle(task.id);
-                }} style={styles.check}>
+                }} hitSlop={8} style={styles.check}>
                   <C.Icon name={task.done ? 'checkbox' : 'square-outline'} size="lg" color={task.done ? 'interactive' : 'text_secondary'} />
                 </Pressable>
                 <C.Text style={[styles.rowTitle, task.done ? styles.done : null]} color={task.done ? 'text_secondary' : 'text_primary'}>{task.title}</C.Text>
@@ -101,7 +108,7 @@ export default function TasksList () {
               </C.View>
             );
           })}
-          {Lib.Utils.isEmptyArray(tasks) ? <C.Text color="text_secondary">No tasks yet - add one above.</C.Text> : null}
+          {Lib.Utils.isEmptyArray(tasks) ? <C.View style={styles.empty}><C.Text color="text_secondary">No tasks yet. Add one above.</C.Text></C.View> : null}
         </C.View>
       )}
 
@@ -116,14 +123,16 @@ export default function TasksList () {
 
 
 const styles = StyleSheet.create({
-  content: { padding: 16, gap: 12, maxWidth: 640, width: '100%', alignSelf: 'center' },
+  content: { padding: 16, gap: 16, maxWidth: 640, width: '100%', alignSelf: 'center' },
+  header: { gap: 4 },
   addRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   input: { flex: 1 },
-  loader: { marginTop: 24 },
+  loader: { alignItems: 'center', paddingVertical: 24 },
   list: { gap: 0, padding: 0 },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 14, paddingHorizontal: 16 },
   rowTitle: { flex: 1 },
   done: { textDecorationLine: 'line-through' },
-  check: {},
-  home: { alignItems: 'center', paddingVertical: 12 }
+  check: { padding: 4 },
+  empty: { paddingVertical: 24, alignItems: 'center' },
+  home: { alignItems: 'center', paddingVertical: 16 }
 });

@@ -153,6 +153,63 @@ function ContainedListRow ({ C, R }) {
 }
 
 
+function AccordionItemRow ({ C, R }) {
+  // Track the interactive accordion item's expanded state
+  const [expanded, setExpanded] = useState(false);
+  // Toggle the expanded state when the interactive accordion header is pressed
+  const toggle = useCallback(function () {
+    setExpanded(function (v) {
+      // Flip the previous expanded value
+      return !v;
+    });
+  }, []);
+  // Render the accordion row with interactive, collapsed, and expanded states
+  return (
+    <ShowcaseRow name="AccordionItem" C={C}>
+      <StateCell label="interactive" C={C} stageWidth={240}>
+        <R.AccordionItem title="Click to toggle" expanded={expanded} onToggle={toggle}>
+          <C.Text>Expanded content appears here.</C.Text>
+        </R.AccordionItem>
+      </StateCell>
+      <StateCell label="collapsed" C={C} stageWidth={240}>
+        <R.AccordionItem title="Section 1" expanded={false} onToggle={noop}>
+          <C.Text>Content</C.Text>
+        </R.AccordionItem>
+      </StateCell>
+      <StateCell label="expanded" C={C} stageWidth={240}>
+        <R.AccordionItem title="Section 2" expanded={true} onToggle={noop}>
+          <C.Text>Expanded content</C.Text>
+        </R.AccordionItem>
+      </StateCell>
+    </ShowcaseRow>
+  );
+}
+
+
+function ClickableTileRow ({ C, R }) {
+  // Track the interactive tile's click count
+  const [count, setCount] = useState(0);
+  // Increment the click count when the tile is pressed
+  const onPress = useCallback(function () {
+    setCount(function (c) {
+      // Increment the previous click count
+      return c + 1;
+    });
+  }, []);
+  // Render the clickable tile row with interactive and disabled states
+  return (
+    <ShowcaseRow name="ClickableTile" C={C}>
+      <StateCell label="interactive" C={C} stageWidth={200}>
+        <R.ClickableTile title={count === 0 ? 'Click me' : 'Clicked ' + count + ' time(s)'} onPress={onPress} />
+      </StateCell>
+      <StateCell label="disabled" C={C} stageWidth={200}>
+        <R.ClickableTile title="Disabled" onPress={noop} disabled />
+      </StateCell>
+    </ShowcaseRow>
+  );
+}
+
+
 // ---- Static multi-state molecule rows (keyed by component name) ----
 
 const MULTI_STATE = {
@@ -232,10 +289,7 @@ const MULTI_STATE = {
   Tile: [
     { label: 'default', props: { title: 'Basic tile' } }
   ],
-  ClickableTile: [
-    { label: 'default', props: { title: 'Click me', onPress: noop } },
-    { label: 'disabled', props: { title: 'Disabled', onPress: noop, disabled: true } }
-  ],
+  // ClickableTile has a custom interactive row above
   SelectableTile: [
     { label: 'unselected', props: { title: 'Select me' } },
     { label: 'selected', props: { title: 'Selected', selected: true } }
@@ -276,10 +330,7 @@ const MULTI_STATE = {
   ],
 
   // Accordion
-  AccordionItem: [
-    { label: 'collapsed', props: { title: 'Section 1', children: 'Content' } },
-    { label: 'expanded', props: { title: 'Section 2', children: 'Expanded content', open: true } }
-  ],
+  // AccordionItem has a custom interactive row above
 
   // Progress
   ProgressStep: [
@@ -871,7 +922,9 @@ const CUSTOM_ROWS = {
   Switch: true,
   MenuItem: true,
   IconSwitch: true,
-  ContainedList: true
+  ContainedList: true,
+  AccordionItem: true,
+  ClickableTile: true
 };
 
 
@@ -930,6 +983,8 @@ export default function MoleculeGallery () {
       {R.MenuItem ? <MenuItemRow C={C} R={R} /> : null}
       {R.IconSwitch ? <IconSwitchRow C={C} R={R} /> : null}
       {R.ContainedList ? <ContainedListRow C={C} R={R} /> : null}
+      {R.AccordionItem ? <AccordionItemRow C={C} R={R} /> : null}
+      {R.ClickableTile ? <ClickableTileRow C={C} R={R} /> : null}
 
       {/* All other molecules in alphabetical order */}
       {keys.map(function (k) {

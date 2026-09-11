@@ -19,7 +19,9 @@ const ALIASES = {
   'chevron--down':     'chevronDown',
   'chevron--up':       'chevronUp',
   'chevron--right':    'chevronForward',
-  'info':              'information'
+  'info':              'information',
+  'loading':           'sync',
+  'error':             'alertCircle'
 };
 
 
