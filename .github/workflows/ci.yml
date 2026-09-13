@@ -33,6 +33,9 @@ jobs:
         with:
           node-version: '24'
           registry-url: 'https://npm.pkg.github.com'
+      - name: G27 - Lockfile freshness (pinned tarballs exist in the registry)
+        run: |
+          node scripts/check-lockfile-freshness.js
       - name: Install and test
         working-directory: src/_test
         run: |

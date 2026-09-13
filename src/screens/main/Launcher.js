@@ -51,7 +51,7 @@ export default function Launcher () {
                     <C.Text typeSet="heading02" weight="semibold">{shape.label}</C.Text>
                     <C.Text color="text_secondary">{shape.tagline}</C.Text>
                   </C.View>
-                  <C.Icon name="chevron-forward" size="lg" color="text_secondary" />
+                  <C.Icon name="chevron_right" size="lg" color="text_secondary" />
                 </C.View>
               </Pressable>
             </Link>

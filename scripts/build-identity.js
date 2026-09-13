@@ -1,24 +1,38 @@
-// Info: Build identity computation. SHA-256 of Git HEAD for the demo
-// client repo, combined with SHA-256 of hosts/web/package-lock.json.
+// Info: Build identity computation. SHA-256 of the working tree content
+// (tracked files, hashed through a temporary git index so the real index is
+// untouched), combined with SHA-256 of hosts/web/package-lock.json.
 // Used by Vite define, the /__identity endpoint, and readiness tests.
 import { createHash } from 'node:crypto';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, mkdtempSync, rmSync, unlinkSync } from 'node:fs';
 import { execSync } from 'node:child_process';
-import { resolve } from 'node:path';
+import { resolve, join } from 'node:path';
+import { tmpdir } from 'node:os';
 
 // Compute the build identity for the demo client repo.
-// Returns a hex string: sha256(git-head) + sha256(package-lock.json)
+// Returns a hex string: sha256(git-tree) + sha256(package-lock.json)
 export function computeBuildIdentity (repoRoot) {
   const root = repoRoot || process.cwd();
 
-  // SHA-256 of Git HEAD
-  let gitHeadSha;
+  // SHA-256 of the working tree content. A temp GIT_INDEX_FILE snapshots
+  // tracked content without touching the real index or requiring a commit.
+  let gitTreeSha;
+  const tmpDir = mkdtempSync(join(tmpdir(), 'build-identity-'));
+  const tmpIndex = join(tmpDir, 'index');
   try {
-    const headRef = execSync('git -C ' + root + ' rev-parse HEAD', { encoding: 'utf8' }).trim();
-    gitHeadSha = createHash('sha256').update(headRef).digest('hex');
+    const env = Object.assign({}, process.env, { GIT_INDEX_FILE: tmpIndex });
+    execSync('git -C ' + root + ' add -A .', { env: env });
+    const treeId = execSync('git -C ' + root + ' write-tree', { env: env, encoding: 'utf8' }).trim();
+    gitTreeSha = createHash('sha256').update(treeId).digest('hex');
   } catch {
     // If not in a git repo, use the directory hash
-    gitHeadSha = createHash('sha256').update(root).digest('hex');
+    gitTreeSha = createHash('sha256').update(root).digest('hex');
+  } finally {
+    try {
+      unlinkSync(tmpIndex);
+    } catch {
+      // Temp index may not exist if git add failed
+    }
+    rmSync(tmpDir, { recursive: true, force: true });
   }
 
   // SHA-256 of hosts/web/package-lock.json
@@ -31,5 +45,5 @@ export function computeBuildIdentity (repoRoot) {
     lockSha = createHash('sha256').update('no-lockfile').digest('hex');
   }
 
-  return gitHeadSha.substring(0, 16) + lockSha.substring(0, 16);
+  return gitTreeSha.substring(0, 16) + lockSha.substring(0, 16);
 }

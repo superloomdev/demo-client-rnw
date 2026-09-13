@@ -79,7 +79,7 @@ export default function NotesList () {
                   // Remove the note when the trash icon is pressed
                   remove(note.id);
                 }} hitSlop={8}>
-                  <C.Icon name="trash-outline" size="md" color="support_error" />
+                  <C.Icon name="trash" size="md" color="support_error" />
                 </Pressable>
               </C.View>
               {note.body ? <C.Text color="text_secondary">{note.body}</C.Text> : null}

@@ -282,7 +282,7 @@ const MULTI_STATE = {
     { label: 'default', props: { text: 'Products', onPress: noop } }
   ],
   HeaderGlobalAction: [
-    { label: 'default', props: { icon: 'notifications-outline', onPress: noop } }
+    { label: 'default', props: { icon: 'notification', onPress: noop } }
   ],
 
   // Tiles
@@ -449,9 +449,9 @@ const MULTI_STATE = {
   // ---- Batch 3: Bottom navigation / toolbar ----
   BottomNavigationBar: [
     { label: 'default', props: { items: [
-      { icon: 'home-outline', text: 'Home', onPress: noop },
-      { icon: 'search-outline', text: 'Search', onPress: noop, active: true },
-      { icon: 'person-outline', text: 'Profile', onPress: noop }
+      { icon: 'home', text: 'Home', onPress: noop },
+      { icon: 'search', text: 'Search', onPress: noop, active: true },
+      { icon: 'user', text: 'Profile', onPress: noop }
     ] } }
   ],
   BottomSafeAreaColorOverride: [
@@ -460,12 +460,12 @@ const MULTI_STATE = {
   BottomToolbar: [
     { label: 'default', props: { items: [
       { text: 'New', icon: 'add', onPress: noop },
-      { text: 'Edit', icon: 'create-outline', onPress: noop }
+      { text: 'Edit', icon: 'edit', onPress: noop }
     ] } }
   ],
   BottomToolbarPrimaryAction: [
     { label: 'default', props: { primaryAction: { text: 'Save', onPress: noop }, items: [
-      { text: 'Share', icon: 'share-outline', onPress: noop }
+      { text: 'Share', icon: 'share', onPress: noop }
     ] } }
   ],
 
@@ -633,8 +633,8 @@ const MULTI_STATE = {
     { label: 'disabled', props: { name: 'add', onPress: noop, label: 'Add', disabled: true } }
   ],
   IconTab: [
-    { label: 'default', props: { icon: 'home-outline', onPress: noop } },
-    { label: 'active', props: { icon: 'home-outline', onPress: noop, active: true } }
+    { label: 'default', props: { icon: 'home', onPress: noop } },
+    { label: 'active', props: { icon: 'home', onPress: noop, active: true } }
   ],
 
   // ---- Batch 15: Menu parts ----
@@ -695,7 +695,7 @@ const MULTI_STATE = {
     { label: 'default', props: { title: 'Section', children: 'Header content' } }
   ],
   SideNavIcon: [
-    { label: 'default', props: { name: 'home-outline' } }
+    { label: 'default', props: { name: 'home' } }
   ],
   SideNavItem: [
     { label: 'default', props: { text: 'Item', onPress: noop } },
@@ -829,7 +829,7 @@ const MULTI_STATE = {
     { label: 'default', props: { children: 'Toolbar' } }
   ],
   TableToolbarAction: [
-    { label: 'default', props: { icon: 'download-outline', onPress: noop, label: 'Download' } }
+    { label: 'default', props: { icon: 'download', onPress: noop, label: 'Download' } }
   ],
   TableToolbarContent: [
     { label: 'default', props: { children: 'Toolbar content' } }
@@ -880,9 +880,9 @@ const MULTI_STATE = {
   // ---- Batch 28: TopNavigationBar ----
   TopNavigationBar: [
     { label: 'default', props: { title: 'My App', leftItems: [
-      { icon: 'menu-outline', text: 'Menu', onPress: noop }
+      { icon: 'menu', text: 'Menu', onPress: noop }
     ], rightItems: [
-      { icon: 'search-outline', text: 'Search', onPress: noop }
+      { icon: 'search', text: 'Search', onPress: noop }
     ] } }
   ],
   TopNavigationBarLogin: [
@@ -903,7 +903,7 @@ const MULTI_STATE = {
   ],
   UiPanelItem: [
     { label: 'default', props: { text: 'Item', onPress: noop } },
-    { label: 'with icon', props: { text: 'Item', icon: 'settings-outline', onPress: noop } }
+    { label: 'with icon', props: { text: 'Item', icon: 'settings', onPress: noop } }
   ],
 
   // ---- Batch 31: WebHeader ----
@@ -928,17 +928,33 @@ const CUSTOM_ROWS = {
 };
 
 
+// Components whose children prop is text by contract - the component renders
+// it through its own Text (or needs the raw string). Every other component
+// gets string children wrapped in themed text so leaf text nodes never fall
+// back to the user-agent default font.
+const TEXT_CONTRACT = {
+  Link: true, InlineLink: true, BreadcrumbItem: true, MenuItem: true,
+  HeaderName: true, Filename: true, TruncatedText: true, Text: true,
+  Heading: true, Label: true, FormLabel: true
+};
+
 // Multi-state row from the MULTI_STATE configuration
 function MultiStateMoleculeRow ({ name, Comp, states, C }) {
   // Render one showcase row with a state cell per defined state
   return (
     <ShowcaseRow name={name} C={C}>
       {states.map(function (state) {
+        // Wrap string children in themed text for layout/container components
+        const props = (typeof state.props.children === 'string' && !TEXT_CONTRACT[name])
+          ? Object.assign({}, state.props, {
+            children: <C.Text typeSet="body01">{state.props.children}</C.Text>
+          })
+          : state.props;
         // Render one error-isolated state cell per configured state
         return (
           <StateCell key={state.label} label={state.label} C={C} stageWidth={state.stageWidth}>
             <SafeSample name={name + ' ' + state.label}>
-              <Comp {...state.props} />
+              <Comp {...props} />
             </SafeSample>
           </StateCell>
         );

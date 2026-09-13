@@ -28,7 +28,7 @@ function IndexCard ({ C, label, count, blurb, href, icon }) {
             <C.Text typeSet="heading02" weight="semibold">{label} ({count})</C.Text>
             <C.Text color="text_secondary">{blurb}</C.Text>
           </C.View>
-          <C.Icon name="chevron-forward" size="lg" color="text_secondary" />
+          <C.Icon name="chevron_right" size="lg" color="text_secondary" />
         </C.View>
       </Pressable>
     </Link>
@@ -248,12 +248,12 @@ export default function ShowcaseIndex () {
 
       <ThemeSelector C={C} />
 
-      <IndexCard C={C} label="Atoms" count={counts.atoms} blurb="One element, one concern" href="/showcase/atoms" icon="cube-outline" />
-      <IndexCard C={C} label="Molecules" count={counts.molecules} blurb="Atoms composed" href="/showcase/molecules" icon="build-outline" />
-      <IndexCard C={C} label="Composites" count={counts.composites} blurb="Multi-part, coordinated" href="/showcase/composites" icon="grid-outline" />
-      <IndexCard C={C} label="Providers" count={counts.providers} blurb="Context-only, no UI" href="/showcase/providers" icon="layers-outline" />
-      <IndexCard C={C} label="A11y Inspector" count={null} blurb="aria-* props each component emits" href="/showcase/a11y" icon="accessibility-outline" />
-      <IndexCard C={C} label="Parity" count={null} blurb="Roster + platform capability" href="/showcase/parity" icon="checkmark-done-outline" />
+      <IndexCard C={C} label="Atoms" count={counts.atoms} blurb="One element, one concern" href="/showcase/atoms" icon="cube" />
+      <IndexCard C={C} label="Molecules" count={counts.molecules} blurb="Atoms composed" href="/showcase/molecules" icon="tools" />
+      <IndexCard C={C} label="Composites" count={counts.composites} blurb="Multi-part, coordinated" href="/showcase/composites" icon="grid" />
+      <IndexCard C={C} label="Providers" count={counts.providers} blurb="Context-only, no UI" href="/showcase/providers" icon="layers" />
+      <IndexCard C={C} label="A11y Inspector" count={null} blurb="aria-* props each component emits" href="/showcase/a11y" icon="accessibility" />
+      <IndexCard C={C} label="Parity" count={null} blurb="Roster + platform capability" href="/showcase/parity" icon="task_complete" />
 
       <Link href="/" asChild>
         <Pressable style={styles.home}><C.Text color="interactive" weight="medium">Back to launcher</C.Text></Pressable>

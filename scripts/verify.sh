@@ -51,7 +51,7 @@ gate_portability () {
 # must have the root dev dependencies that both require.
 
 gate_root_install () {
-  npm ci
+  npm ci --silent --cache "$(mktemp -d)"
 }
 
 
@@ -65,27 +65,33 @@ gate_eslint () {
 # ---------------------------- Gate: unit tests ---------------------------- #
 
 gate_unit () {
-  (cd src/_test && npm ci --silent && npm test)
+  (cd src/_test && npm ci --silent --cache "$(mktemp -d)" && npm test)
 }
 
 
 # ---------------------------- Gate: web build ----------------------------- #
 
 gate_web_build () {
-  (cd hosts/web && npm ci --silent && npx vite build)
+  (cd hosts/web && npm ci --silent --cache "$(mktemp -d)" && npx vite build)
 }
 
 
 # ---------------------------- Gate: expo web ------------------------------ #
 
 gate_expo_web () {
-  (cd hosts/expo && npm ci --silent && npx expo export --platform web --output-dir dist)
+  (cd hosts/expo && npm ci --silent --cache "$(mktemp -d)" && npx expo export --platform web --output-dir dist)
 }
 
 
 # ------------------------------- Gate: e2e -------------------------------- #
 
 gate_e2e () {
+  # A stale preview server would serve a build that does not match this
+  # checkout. Refuse to run rather than report against stale content.
+  if [ -n "$(lsof -ti:4173)" ]; then
+    printf '\033[31mFAIL stale preview server on 4173; kill it\033[0m\n'
+    return 1
+  fi
   npx playwright test --project=chromium
 }
 
@@ -171,9 +177,18 @@ gate_visual () {
 
   local result=$?
 
-  # Stop the preview server
-  kill $preview_pid 2>/dev/null
-  wait $preview_pid 2>/dev/null
+  # Stop the preview server - kill every pid holding the port, not just the
+  # wrapper pid, then assert the port is actually free
+  local stale_pids
+  stale_pids=$(lsof -ti:4173 || true)
+  if [ -n "$stale_pids" ]; then
+    kill $stale_pids 2>/dev/null || true
+    wait $preview_pid 2>/dev/null
+  fi
+  if [ -n "$(lsof -ti:4173)" ]; then
+    printf '\033[31mFAIL: port 4173 still in use after visual gate\033[0m\n'
+    return 1
+  fi
 
   return $result
 }

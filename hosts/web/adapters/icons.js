@@ -40,6 +40,9 @@ for (const [semanticName, entry] of Object.entries(manifest.icons)) {
   }
 }
 
+// Names already reported, so each unmapped name errors once per session
+const REPORTED_UNMAPPED = new Set();
+
 // Resolve a semantic name to a Carbon icon component
 function resolveIcon (name) {
   if (!name) {
@@ -64,6 +67,10 @@ function CarbonIcon (props) {
 
   // Fallback: if the icon name is not found, render a placeholder square
   if (!IconComponent) {
+    if (!REPORTED_UNMAPPED.has(name)) {
+      REPORTED_UNMAPPED.add(name);
+      console.error('icons: unmapped semantic icon "' + name + '"');
+    }
     return React.createElement('span', {
       style: {
         width: px,

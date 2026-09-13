@@ -96,14 +96,14 @@ export default function TasksList () {
                   // Toggle the task's done state when the checkbox is pressed
                   toggle(task.id);
                 }} hitSlop={8} style={styles.check}>
-                  <C.Icon name={task.done ? 'checkbox' : 'square-outline'} size="lg" color={task.done ? 'interactive' : 'text_secondary'} />
+                  <C.Icon name={task.done ? 'checkbox' : 'checkbox_unchecked'} size="lg" color={task.done ? 'interactive' : 'text_secondary'} />
                 </Pressable>
                 <C.Text style={[styles.rowTitle, task.done ? styles.done : null]} color={task.done ? 'text_secondary' : 'text_primary'}>{task.title}</C.Text>
                 <Pressable onPress={function () {
                   // Remove the task when the trash icon is pressed
                   remove(task.id);
                 }} hitSlop={8}>
-                  <C.Icon name="trash-outline" size="md" color="support_error" />
+                  <C.Icon name="trash" size="md" color="support_error" />
                 </Pressable>
               </C.View>
             );

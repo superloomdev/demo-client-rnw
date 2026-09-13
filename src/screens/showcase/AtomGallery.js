@@ -4,6 +4,8 @@
 import React, { useState, useCallback } from 'react';
 import { ScrollView, View, Pressable, StyleSheet } from 'react-native';
 
+import iconManifest from '@superloomdev/rnw-components/data/icon-names.json';
+
 import { useLib } from '../../app-core/contexts/lib-context.js';
 import useShowcaseRegistry from './useShowcaseRegistry.js';
 import { ShowcaseRow, StateCell } from './ShowcaseRow.js';
@@ -195,10 +197,19 @@ export default function AtomGallery () {
       {/* Icon */}
       <ShowcaseRow name="Icon" C={C}>
         <StateCell label="default" C={C}><R.Icon name="add" size="md" /></StateCell>
-        <StateCell label="small" C={C}><R.Icon name="chevron-forward" size="sm" /></StateCell>
+        <StateCell label="small" C={C}><R.Icon name="chevron_right" size="sm" /></StateCell>
         <StateCell label="large" C={C}><R.Icon name="close" size="lg" /></StateCell>
-        <StateCell label="primary" C={C}><R.Icon name="heart" size="md" color="interactive" /></StateCell>
-        <StateCell label="danger" C={C}><R.Icon name="alert-circle" size="md" color="text_error" /></StateCell>
+        <StateCell label="primary" C={C}><R.Icon name="favorite" size="md" color="interactive" /></StateCell>
+        <StateCell label="danger" C={C}><R.Icon name="warning_filled" size="md" color="text_error" /></StateCell>
+      </ShowcaseRow>
+
+      {/* Icons - every semantic name in the manifest */}
+      <ShowcaseRow name="Icons" C={C}>
+        {Object.keys(iconManifest.icons).map(function (iconName) {
+          return (
+            <StateCell key={iconName} label={iconName} C={C}><R.Icon name={iconName} size="md" /></StateCell>
+          );
+        })}
       </ShowcaseRow>
 
       {/* Link */}
@@ -325,9 +336,9 @@ export default function AtomGallery () {
 
       {/* IconIndicator */}
       <ShowcaseRow name="IconIndicator" C={C}>
-        <StateCell label="info" C={C}><R.IconIndicator iconName="information-circle" /></StateCell>
-        <StateCell label="alert" C={C}><R.IconIndicator iconName="alert-circle" color="text_error" /></StateCell>
-        <StateCell label="large" C={C}><R.IconIndicator iconName="checkmark-circle" size={32} /></StateCell>
+        <StateCell label="info" C={C}><R.IconIndicator iconName="information_filled" /></StateCell>
+        <StateCell label="alert" C={C}><R.IconIndicator iconName="warning_filled" color="text_error" /></StateCell>
+        <StateCell label="large" C={C}><R.IconIndicator iconName="checkmark_filled" size={32} /></StateCell>
       </ShowcaseRow>
 
       <Link href="/showcase" asChild>

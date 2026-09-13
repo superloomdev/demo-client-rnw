@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "node --import ./harness/register.js --test test-smoke.js test-atoms.js test-molecules.js test-loader.js test-themes.js test-registry.js test-provider.js"
+    "test": "node --import ./harness/register.js --test test-smoke.js test-atoms.js test-molecules.js test-loader.js test-themes.js test-registry.js test-provider.js test-icons.js test-build-identity.js"
   },
   "dependencies": {
     "react": "19.2.3",

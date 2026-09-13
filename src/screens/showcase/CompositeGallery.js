@@ -177,11 +177,18 @@ function MultiStateCompositeRow ({ name, Comp, states, C }) {
   return (
     <ShowcaseRow name={name} C={C}>
       {states.map(function (state) {
+        // Wrap string children in themed text - composite fixtures are
+        // container slots, not text-contract props
+        const props = (typeof state.props.children === 'string')
+          ? Object.assign({}, state.props, {
+            children: <C.Text typeSet="body01">{state.props.children}</C.Text>
+          })
+          : state.props;
         // Render one error-isolated state cell per configured state
         return (
           <StateCell key={state.label} label={state.label} C={C} stageWidth={state.stageWidth}>
             <SafeSample name={name + ' ' + state.label}>
-              <Comp {...state.props} />
+              <Comp {...props} />
             </SafeSample>
           </StateCell>
         );
@@ -214,7 +221,7 @@ export default function CompositeGallery () {
   return (
     <ScrollView contentContainerStyle={styles.content}>
 
-      <C.Text size="lg" weight="semibold">Composites ({keys.length})</C.Text>
+      <R.Text typeSet="heading02" weight="semibold">Composites ({keys.length})</R.Text>
       <C.Text color="text_secondary">Multi-part components with parent-child coordination.</C.Text>
 
       {/* Custom interactive rows */}

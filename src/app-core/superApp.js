@@ -10,21 +10,21 @@ export default function loader (Lib, Config) {
       key: 'tasks',
       label: 'Tasks',
       tagline: 'Plan your day and check it off',
-      icon: 'checkbox-outline',
+      icon: 'checkbox',
       route: '/tasks'
     },
     notes: {
       key: 'notes',
       label: 'Notes',
       tagline: 'Capture thoughts, fast',
-      icon: 'document-text-outline',
+      icon: 'document',
       route: '/notes'
     },
     showcase: {
       key: 'showcase',
       label: 'Components',
       tagline: 'Every component, live',
-      icon: 'grid-outline',
+      icon: 'grid',
       route: '/showcase'
     }
   };
