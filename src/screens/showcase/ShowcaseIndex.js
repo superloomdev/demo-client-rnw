@@ -61,7 +61,8 @@ const SCHEMES_BY_PROFILE = {
 // Brand overlays available on any profile.
 const SELECTABLE_BRANDS = [
   { key: 'tasks', label: 'Tasks', blurb: 'Indigo accent, rounded corners' },
-  { key: 'notes', label: 'Notes', blurb: 'Teal accent, larger type ratio' }
+  { key: 'notes', label: 'Notes', blurb: 'Teal accent, larger type ratio' },
+  { key: 'rounded', label: 'Rounded', blurb: 'Carbon-derived, four-sided borders, radius 8' }
 ];
 
 

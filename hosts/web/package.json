@@ -14,6 +14,7 @@
     "preview": "vite preview --port 4173"
   },
   "dependencies": {
+    "@carbon/icons-react": "^11.88.0",
     "@superloomdev/js-client-helper-font": "^1.0.0",
     "@superloomdev/js-client-helper-themer": "^1.0.0",
     "@superloomdev/js-client-helper-themer-ext-react": "^1.0.0",

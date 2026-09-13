@@ -33,6 +33,19 @@ export const BRAND_LAYERS = {
       'font.family.sans': 'Lora',
       'font.family.serif': 'Lora'
     }
+  },
+  // Rounded: a Carbon-derived brand that experiments with rounded borders.
+  // Two-token layer: feedback.field switches fields to four-sided borders,
+  // shape.radius_00 rounds every square corner (fields, buttons, tiles,
+  // notifications, menus) together. Pill tags stay pills (radius_max).
+  // If a component needs a code change to look right under this layer, the
+  // component hard-coded structure and gets fixed; the layer never grows.
+  rounded: {
+    name: 'rounded',
+    tokens: {
+      'feedback.field': 'outline',
+      'shape.radius_00': 8
+    }
   }
 };
 

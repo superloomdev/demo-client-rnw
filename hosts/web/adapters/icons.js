@@ -1,81 +1,69 @@
-// Info: Web adapter for the Icons slot.
-// Maps the icon contract onto Ionicons SVGs (same icon set as the Expo host,
-// which uses @expo/vector-icons/Ionicons). Icon names follow the Ionicons
-// naming convention: kebab-case with -outline / -sharp variants.
+// Info: Web adapter for the Icons slot (Plan 0156, Part C).
 //
-// The adapter converts kebab-case names to camelCase keys, resolves the SVG
-// data URI from the ionicons package, decodes it, and renders an inline SVG
-// element with the requested size and color. A small alias table maps names
-// that do not have a direct Ionicons equivalent.
+// Maps the semantic icon manifest onto @carbon/icons-react SVGs. The
+// manifest (data/icon-names.json) is the single source of truth for
+// semantic names; this adapter resolves each name to a Carbon icon
+// component and renders it as an inline SVG with currentColor.
+//
+// Key changes from the Ionicons adapter:
+// - Uses @carbon/icons-react (Carbon's icon set) instead of Ionicons
+// - Resolves names through the semantic manifest, not ad-hoc aliases
+// - Renders inline SVG with fill="currentColor" (Carbon icons are fill-based)
+// - Does not force stroke on fill icons or fill on stroke icons
+// - Carbon icons use a 16x16 viewBox by default; size is set via width/height
 
 import React from 'react';
-import * as ionicons from 'ionicons/icons';
+import * as CarbonIcons from '@carbon/icons-react';
+import manifest from '@superloomdev/rnw-components/data/icon-names.json';
 
+// Convert a camelCase name to PascalCase (Carbon icons are PascalCase exports)
+function toPascalCase (name) {
+  if (!name) {
+    return name;
+  }
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
 
-// Names used in the codebase that need aliasing to Ionicons keys
-const ALIASES = {
-  'check':             'checkmark',
-  'overflow':          'ellipsisHorizontal',
-  'chevron--down':     'chevronDown',
-  'chevron--up':       'chevronUp',
-  'chevron--right':    'chevronForward',
-  'info':              'information',
-  'loading':           'sync',
-  'error':             'alertCircle'
-};
+// Build a lookup from semantic name (and aliases) to Carbon icon key
+const NAME_TO_CARBON = {};
 
+for (const [semanticName, entry] of Object.entries(manifest.icons)) {
+  const carbonKey = toPascalCase(entry.carbon);
+  if (carbonKey && CarbonIcons[carbonKey]) {
+    NAME_TO_CARBON[semanticName] = carbonKey;
+  }
+  // Register aliases
+  if (entry.aliases) {
+    for (const alias of entry.aliases) {
+      NAME_TO_CARBON[alias] = carbonKey;
+    }
+  }
+}
 
-// Convert a kebab-case icon name to the camelCase key used by ionicons/icons
-function resolveIconKey (name) {
-
+// Resolve a semantic name to a Carbon icon component
+function resolveIcon (name) {
   if (!name) {
     return null;
   }
-
-  // Check alias table first
-  if (ALIASES[name]) {
-    return ALIASES[name];
-  }
-
-  // kebab-case -> camelCase: add -> add, alert-circle -> alertCircle
-  return name.replace(/-([a-z])/g, function (match, letter) {
-    return letter.toUpperCase();
-  });
-
-}
-
-
-// Extract the raw SVG markup from the ionicons data URI
-function decodeSvg (dataUri) {
-
-  if (!dataUri) {
+  const carbonKey = NAME_TO_CARBON[name];
+  if (!carbonKey) {
     return null;
   }
-
-  // Strip the data URI prefix and decode
-  const prefix = 'data:image/svg+xml;utf8,';
-  if (dataUri.indexOf(prefix) === 0) {
-    return decodeURIComponent(dataUri.substring(prefix.length));
-  }
-
-  return null;
-
+  const IconComponent = CarbonIcons[carbonKey];
+  return IconComponent || null;
 }
 
-
-// Render an Ionicons SVG as an inline React element with size and color.
+// Render a Carbon icon as an inline React element with size and color.
+// Carbon icons are React components that accept size, fill, and width/height.
 // pointerEvents: none lets clicks pass through to the parent Pressable.
-function IonIcon (props) {
-
+function CarbonIcon (props) {
   const { name, size, color, style, ...rest } = props;
-  const px = size || 24;
+  const px = size || 16;
 
-  const key = resolveIconKey(name);
-  const dataUri = key ? ionicons[key] : null;
-  const svgMarkup = decodeSvg(dataUri);
+  const IconComponent = resolveIcon(name);
 
   // Fallback: if the icon name is not found, render a placeholder square
-  if (!svgMarkup) {
+  if (!IconComponent) {
     return React.createElement('span', {
       style: {
         width: px,
@@ -96,43 +84,26 @@ function IonIcon (props) {
     }, '?');
   }
 
-  // Parse the SVG string into a React element.
-  // The ionicons SVGs have a 512x512 viewBox and use stroke for outline icons.
-  // We inject fill/stroke color and set width/height.
-  // dangerouslySetInnerHTML is safe here: the SVG comes from the ionicons npm
-  // package, not user input.
-  return React.createElement('span', {
+  // Carbon icons accept a `size` prop (16, 20, 24, 32) and render an SVG.
+  // We pass fill={color} for color resolution. Carbon icons use
+  // fill="currentColor" by default, so we set the color via the fill prop.
+  // The icon's internal paths use fill, not stroke, so we do not force stroke.
+  return React.createElement(IconComponent, {
+    size: px,
+    fill: color || 'currentColor',
     style: {
-      width: px,
-      height: px,
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
       pointerEvents: 'none',
       ...style
     },
     ...rest
-  }, React.createElement('span', {
-    style: {
-      width: px,
-      height: px,
-      display: 'inline-block',
-      lineHeight: 0,
-      pointerEvents: 'none'
-    },
-    dangerouslySetInnerHTML: {
-      __html: svgMarkup.replace('<svg ', '<svg width="' + px + '" height="' + px + '" style="fill: ' + (color || 'currentColor') + '; stroke: ' + (color || 'currentColor') + '; pointer-events: none;" ')
-    }
-  }));
-
+  });
 }
-
 
 export default function (Lib, config) { // eslint-disable-line no-unused-vars
 
   // Capability-named member; the vendor name stops at this file
   return {
-    Glyph: IonIcon
+    Glyph: CarbonIcon
   };
 
 }
