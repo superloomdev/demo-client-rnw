@@ -1,4 +1,4 @@
-// Info: Build identity tests (Plan 0156). The identity is a working-tree
+// Info: Build identity tests. The identity is a working-tree
 // content hash, not a commit hash: it must change when tracked content
 // changes and must not change when a commit lands with no content change.
 import { test, describe } from 'node:test';

@@ -1,11 +1,16 @@
-// Info: Showcase and app fidelity test (Plan 0156, Part L, R10-R12).
-// Asserts three rendering contracts on the launcher, the two app shapes,
+// Info: Showcase and app fidelity test.
+// Asserts rendering contracts on the launcher, the two app shapes,
 // and the showcase galleries: (a) no leaf text node renders in the user
 // agent default serif, which happens when a raw string is passed to a
 // layout slot instead of a Text element; (b) no icon renders the '?'
 // fallback glyph, which means a semantic name is missing from the icon
 // manifest; (c) every visible button or tab is at least 24x24 and every
-// field-adjacent control is at least textInput.controlSize square.
+// field-adjacent control is at least textInput.controlSize square;
+// (d) every visible button/tab/link has a non-empty accessible name;
+// (e) field composites own the focus frame: the input has no UA outline,
+// exactly one element on the chain from the input's parent up to (excluding)
+// the row root has borderBottomWidth > 0, and that element's borderBottomColor
+// changes between rest and focus.
 import { test, expect } from '@playwright/test';
 import spec from '../hosts/web/node_modules/@superloomdev/rnw-components/data/component-spec.js';
 
@@ -158,6 +163,89 @@ function collectUnnamedControls () {
   return found;
 }
 
+// Visible field rows to check for frame ownership (molecules + atoms)
+const FIELD_ROWS = {
+  '/showcase/molecules': [
+    'PasswordInput', 'ControlledPasswordInput', 'Search',
+    'NumberInput', 'DatePickerInput', 'ExpandableSearch', 'TableToolbarSearch'
+  ],
+  '/showcase/atoms': ['TextInput']
+};
+
+// Get rest state for a field row: outlineStyle, border chain count,
+// and the border element's borderBottomColor.
+function getFrameRestState (rowSelector) {
+  const row = document.querySelector(rowSelector);
+  if (!row) {
+    return { rowMissing: true };
+  }
+  const input = row.querySelector('input');
+  if (!input) {
+    return { inputMissing: true };
+  }
+
+  const restComputed = window.getComputedStyle(input);
+  const restOutline = restComputed.outlineStyle;
+
+  let borderEl = null;
+  let borderCount = 0;
+  let node = input;
+  while (node && node !== row) {
+    const bs = window.getComputedStyle(node);
+    const bw = parseFloat(bs.borderBottomWidth);
+    if (bw > 0) {
+      borderCount++;
+      if (!borderEl) {
+        borderEl = node;
+      }
+    }
+    node = node.parentElement;
+  }
+
+  const restBorderColor = borderEl ? window.getComputedStyle(borderEl).borderBottomColor : null;
+
+  return {
+    restOutline: restOutline,
+    borderCount: borderCount,
+    restBorderColor: restBorderColor
+  };
+}
+
+// Get focused state for a field row: outlineStyle and the border
+// element's borderBottomColor. The input must already be focused.
+function getFrameFocusedState (rowSelector) {
+  const row = document.querySelector(rowSelector);
+  if (!row) {
+    return { rowMissing: true };
+  }
+  const input = row.querySelector('input');
+  if (!input) {
+    return { inputMissing: true };
+  }
+
+  const focusedComputed = window.getComputedStyle(input);
+  const focusedOutline = focusedComputed.outlineStyle;
+
+  let borderEl = null;
+  let node = input;
+  while (node && node !== row) {
+    const bs = window.getComputedStyle(node);
+    const bw = parseFloat(bs.borderBottomWidth);
+    if (bw > 0) {
+      borderEl = node;
+      break;
+    }
+    node = node.parentElement;
+  }
+
+  const focusedBorderColor = borderEl ? window.getComputedStyle(borderEl).borderBottomColor : null;
+
+  return {
+    focusedOutline: focusedOutline,
+    focusedBorderColor: focusedBorderColor
+  };
+}
+
 test.describe('showcase fidelity', function () {
 
   for (const entry of ROUTES) {
@@ -187,6 +275,51 @@ test.describe('showcase fidelity', function () {
       expect(unnamed, 'unnamed controls on ' + entry.route).toEqual([]);
     });
 
+  }
+
+  // (e) field frame ownership on molecules and atoms
+  for (const route of Object.keys(FIELD_ROWS)) {
+    test(route + ' field composites own the focus frame', async function ({ page }) {
+      await page.goto(route, { waitUntil: 'domcontentloaded' });
+      await page.waitForTimeout(1000);
+
+      const allViolations = [];
+      for (const name of FIELD_ROWS[route]) {
+        const selector = '[data-testid="showcase-row-' + name + '"]';
+
+        // Read rest state
+        const rest = await page.evaluate(getFrameRestState, selector);
+        if (rest.rowMissing || rest.inputMissing) {
+          continue;
+        }
+
+        // Focus the input and wait for React to re-render
+        await page.locator(selector + ' input').first().focus();
+        await page.waitForTimeout(200);
+
+        // Read focused state
+        const focused = await page.evaluate(getFrameFocusedState, selector);
+
+        // Blur to restore
+        await page.locator(selector + ' input').first().blur();
+
+        // Collect violations
+        if (rest.restOutline !== 'none') {
+          allViolations.push(name + ': input rest outlineStyle is ' + rest.restOutline + ' (expected none)');
+        }
+        if (focused.focusedOutline !== 'none') {
+          allViolations.push(name + ': input focused outlineStyle is ' + focused.focusedOutline + ' (expected none)');
+        }
+        if (rest.borderCount !== 1) {
+          allViolations.push(name + ': nested frames: ' + rest.borderCount + ' (expected 1)');
+        }
+        if (rest.restBorderColor === focused.focusedBorderColor) {
+          allViolations.push(name + ': frame did not react to focus (borderBottomColor unchanged)');
+        }
+      }
+
+      expect(allViolations, 'frame owner violations on ' + route + ': ' + allViolations.join('; ')).toEqual([]);
+    });
   }
 
 });

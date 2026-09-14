@@ -1,4 +1,4 @@
-// Info: Lockfile freshness gate (Plan 0156, Part L, R9).
+// Info: Lockfile freshness gate
 //
 // Every @superloomdev package is republished at a pinned version, which
 // changes the tarball shasum while the version string stays the same. A

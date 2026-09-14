@@ -1,4 +1,4 @@
-// Info: Web adapter for the Icons slot (Plan 0156, Part C).
+// Info: Web adapter for the Icons slot
 //
 // Maps the semantic icon manifest onto @carbon/icons-react SVGs. The
 // manifest (data/icon-names.json) is the single source of truth for

@@ -85,9 +85,14 @@ for (const route of ROUTES) {
           return false;
         }
         const cs = window.getComputedStyle(el);
+        // Visible focus: outline, box-shadow, or a border color that
+        // differs from the element's own background (frame ownership)
         const hasOutline = cs.outlineStyle !== 'none' || cs.boxShadow !== 'none';
+        const hasBorderFocus = cs.borderBottomWidth !== '0px' &&
+          cs.borderBottomColor !== cs.backgroundColor &&
+          cs.borderBottomColor !== 'rgba(0, 0, 0, 0)';
         const rect = el.getBoundingClientRect();
-        return hasOutline && rect.width > 0 && rect.height > 0;
+        return (hasOutline || hasBorderFocus) && rect.width > 0 && rect.height > 0;
       });
       expect(focusVisible).toBe(true);
     });

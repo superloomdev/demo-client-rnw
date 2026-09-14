@@ -1,4 +1,4 @@
-// Info: Icon manifest coverage test (Plan 0156, Part L, R10).
+// Info: Icon manifest coverage test
 //
 // Every icon-name string literal under src/ must resolve through the
 // semantic icon manifest shipped by @superloomdev/rnw-components. A name

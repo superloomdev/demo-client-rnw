@@ -1,4 +1,4 @@
-// Info: Expo adapter for the Icons slot (Plan 0156, Part C).
+// Info: Expo adapter for the Icons slot
 //
 // Maps the semantic icon manifest onto @expo/vector-icons/Ionicons. The
 // manifest (data/icon-names.json) is the single source of truth for
