@@ -89,7 +89,7 @@ const MULTI_STATE = {
     { label: 'default', props: { triggerLabel: 'Choose an item', items: [], onSelect: noop } }
   ],
   ComboButton: [
-    { label: 'default', props: { children: 'ComboButton' } }
+    { label: 'default', props: { primaryLabel: 'ComboButton', onPrimaryPress: noop, items: [] } }
   ],
   ComposedModal: [
     { label: 'static preview', props: { children: 'Modal content', open: false } }
@@ -122,7 +122,7 @@ const MULTI_STATE = {
     { label: 'default', props: { children: 'Menu' } }
   ],
   MenuButton: [
-    { label: 'default', props: { children: 'MenuButton' } }
+    { label: 'default', props: { label: 'MenuButton', items: [] } }
   ],
   MenuItemRadioGroup: [
     { label: 'default', props: { children: 'RadioGroup' } }

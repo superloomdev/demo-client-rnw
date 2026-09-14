@@ -80,7 +80,7 @@ export default function TasksList () {
         <C.Button kind="primary" onPress={addTask}><C.Text color="text_on_color">Add</C.Text></C.Button>
       </C.View>
 
-      <C.variant.ButtonPrimaryOutlined onPress={shuffleAccent} fullWidth><C.Text color="interactive">Shuffle accent</C.Text></C.variant.ButtonPrimaryOutlined>
+      <C.variant.ButtonPrimaryOutlined title="Shuffle accent" onPress={shuffleAccent} fullWidth />
 
       {loading ? (
         <C.View style={styles.loader}>

@@ -113,6 +113,51 @@ function collectUndersizedControls (arg) {
   return found;
 }
 
+// Collect visible buttons/tabs/links with no accessible name
+function collectUnnamedControls () {
+  const found = [];
+  const all = document.querySelectorAll('button, [role="button"], [role="tab"], [role="link"]');
+  for (const el of all) {
+    const style = window.getComputedStyle(el);
+    if (style.display === 'none' || style.visibility === 'hidden') {
+      continue;
+    }
+    const rect = el.getBoundingClientRect();
+    if (rect.width <= 0 && rect.height <= 0) {
+      continue;
+    }
+    // Resolve accessible name: aria-label, aria-labelledby target text,
+    // trimmed textContent, contained img alt, or title attribute
+    let name = el.getAttribute('aria-label');
+    if (!name) {
+      const labelledby = el.getAttribute('aria-labelledby');
+      if (labelledby) {
+        const ref = document.getElementById(labelledby);
+        if (ref) {
+          name = (ref.textContent || '').trim();
+        }
+      }
+    }
+    if (!name) {
+      name = (el.textContent || '').trim();
+    }
+    if (!name) {
+      const img = el.querySelector('img');
+      if (img) {
+        name = (img.getAttribute('alt') || '').trim();
+      }
+    }
+    if (!name) {
+      name = el.getAttribute('title');
+    }
+    if (!name) {
+      const cls = (el.className || '').toString().substring(0, 40);
+      found.push(el.tagName.toLowerCase() + ' ' + Math.round(rect.width) + 'x' + Math.round(rect.height) + ' class=' + cls);
+    }
+  }
+  return found;
+}
+
 test.describe('showcase fidelity', function () {
 
   for (const entry of ROUTES) {
@@ -136,6 +181,10 @@ test.describe('showcase fidelity', function () {
       // (c) controls meet the minimum target size
       const undersized = await page.evaluate(collectUndersizedControls, { labels: CONTROL_LABELS, minControl: controlSize });
       expect(undersized, 'undersized controls on ' + entry.route).toEqual([]);
+
+      // (d) every visible button/tab/link has a non-empty accessible name
+      const unnamed = await page.evaluate(collectUnnamedControls);
+      expect(unnamed, 'unnamed controls on ' + entry.route).toEqual([]);
     });
 
   }
