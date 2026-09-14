@@ -75,25 +75,50 @@ for (const route of ROUTES) {
       });
       expect(focusableCount).toBeGreaterThan(0);
 
+      // Capture the computed style of the first focusable element at rest
+      const restStyle = await page.evaluate(function () {
+        const els = document.querySelectorAll('a, button, input, [tabindex]');
+        for (let i = 0; i < els.length; i++) {
+          const rect = els[i].getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            const cs = window.getComputedStyle(els[i]);
+            return {
+              outlineStyle: cs.outlineStyle,
+              boxShadow: cs.boxShadow,
+              borderBottomColor: cs.borderBottomColor,
+              borderColor: cs.borderColor,
+              borderBottomWidth: cs.borderBottomWidth
+            };
+          }
+        }
+        return null;
+      });
+
       // Tab to the first focusable element and check focus visibility
       await page.keyboard.press('Tab');
       await page.waitForTimeout(200);
 
-      const focusVisible = await page.evaluate(function () {
+      const focusVisible = await page.evaluate(function (rest) {
         const el = document.activeElement;
         if (!el || el === document.body) {
           return false;
         }
         const cs = window.getComputedStyle(el);
-        // Visible focus: outline, box-shadow, or a border color that
-        // differs from the element's own background (frame ownership)
-        const hasOutline = cs.outlineStyle !== 'none' || cs.boxShadow !== 'none';
-        const hasBorderFocus = cs.borderBottomWidth !== '0px' &&
-          cs.borderBottomColor !== cs.backgroundColor &&
-          cs.borderBottomColor !== 'rgba(0, 0, 0, 0)';
         const rect = el.getBoundingClientRect();
-        return (hasOutline || hasBorderFocus) && rect.width > 0 && rect.height > 0;
-      });
+        if (rect.width <= 0 || rect.height <= 0) {
+          return false;
+        }
+        // Visible focus: outline is visible while focused, OR a border
+        // color / box-shadow differs between rest and focused. A border
+        // that is identical at rest and on focus must fail.
+        const hasOutline = cs.outlineStyle !== 'none' || cs.boxShadow !== 'none';
+        const borderChanged = rest && (
+          cs.borderBottomColor !== rest.borderBottomColor ||
+          cs.borderColor !== rest.borderColor ||
+          cs.boxShadow !== rest.boxShadow
+        );
+        return hasOutline || borderChanged;
+      }, restStyle);
       expect(focusVisible).toBe(true);
     });
 
