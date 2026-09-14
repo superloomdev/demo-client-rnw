@@ -21,7 +21,7 @@ const EXCLUDED = new Set([
 ]);
 
 const manifest = JSON.parse(readFileSync(
-  join(REPO_ROOT, 'hosts', 'web', 'node_modules', '@superloomdev', 'rnw-components', 'data', 'icon-names.json'),
+  join(__dirname, 'node_modules', '@superloomdev', 'rnw-components', 'data', 'icon-names.json'),
   'utf8'
 ));
 
