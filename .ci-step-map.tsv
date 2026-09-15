@@ -1,0 +1,13 @@
+match_field	pattern	local_gate	note
+name	Portability fence	gate_portability	
+name	G[0-9]+ - .*	gate_verify_gates	
+name	Install and lint	gate_root_install,gate_eslint	
+name	Install and test	gate_unit_isolated	[ISOLATE] CI installs only src/_test; replayed from a working-tree snapshot
+name	Vite build	gate_web_build	
+name	Expo web export	gate_expo_web	
+name	Install root deps	gate_root_install	
+name	Install Playwright browsers	gate_pw_browsers	[WIRE] wired in C.4
+name	Install and build web host	gate_web_build	
+name	Run E2E	gate_e2e	[CI-SETTINGS] workers=1 retries=2 unconditional
+name	Run perf tests	gate_perf	
+name	Run visual tests	gate_visual	

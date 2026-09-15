@@ -10,9 +10,9 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  forbidOnly: true,
+  retries: 2,
+  workers: 1,
   reporter: 'list',
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:4173',
@@ -53,7 +53,7 @@ export default defineConfig({
     command: 'npm run build && npx vite preview --port 4173',
     cwd: 'hosts/web',
     url: 'http://localhost:4173',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 60000
   }
 });

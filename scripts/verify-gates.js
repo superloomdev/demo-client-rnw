@@ -12,86 +12,49 @@
 //   node scripts/verify.js --gates   enforcement gates only
 //   node scripts/verify.js --full    adds the L3 esbuild + Playwright tier
 
-import { readFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const WORKFLOW = path.join(REPO_ROOT, '.github', 'workflows', 'ci.yml');
 
 const GATES_ONLY = process.argv.includes('--gates');
 const FULL = process.argv.includes('--full');
 
 
 /********************************************************************
-Extract every enforcement gate step from the workflow file.
+Extract every enforcement gate step from the census, not by name pattern.
 
-A step looks like:
+The census (`scripts/ci-census.js --json`) enumerates every workflow step
+structurally and resolves each one against `.ci-step-map.tsv`. Steps whose
+`local_gate` includes `gate_verify_gates` are the enforcement gates this
+script replays. The run body and working_directory come from the workflow
+itself, so they can never drift from CI.
 
-      - name: G1 - No accessibilityState
-        run: |
-          <command lines indented further>
-
-@return {Array} - List of { name, script } in workflow order
+@return {Array} - List of { name, script, workdir } in workflow order
 *********************************************************************/
 function getGates () {
 
-  const lines = readFileSync(WORKFLOW, 'utf8').split('\n');
+  const json = execSync('node scripts/ci-census.js --json', {
+    cwd: REPO_ROOT, encoding: 'utf8'
+  });
+  const steps = JSON.parse(json);
   const gates = [];
 
-  for (let i = 0; i < lines.length; i++) {
-
-    // A gate begins at a step whose name starts with G followed by digits
-    const header = lines[i].match(/^(\s+)- name: (G\d+\b.*)$/);
-    if (!header) {
+  for (const step of steps) {
+    const gateList = (step.local_gate || '').split(',').map(function (g) {
+      return g.trim();
+    }).filter(Boolean);
+    if (gateList.indexOf('gate_verify_gates') === -1) {
       continue;
     }
-
-    // The run block must be the next non-blank line, otherwise the step is
-    // something other than an inline script and cannot be replayed
-    const runLine = lines[i + 1];
-    if (!runLine || !/^\s+run: \|/.test(runLine)) {
-      continue;
-    }
-
-    // Collect the block: every line indented deeper than the run key itself
-    const runIndent = runLine.match(/^(\s+)/)[1].length;
-    const body = [];
-
-    for (let j = i + 2; j < lines.length; j++) {
-      const line = lines[j];
-      if (!line.trim()) {
-        body.push('');
-        continue;
-      }
-      const indent = line.match(/^(\s*)/)[1].length;
-      if (indent <= runIndent) {
-        break;
-      }
-      body.push(line);
-    }
-
-    // Strip the common leading indentation so the script runs as written
-    const dedent = Math.min.apply(null, body
-      .filter(function (l) {
-        return Boolean(l.trim());
-      })
-      .map(function (l) {
-        return l.match(/^(\s*)/)[1].length;
-      })
-    );
-
     gates.push({
-      name: header[2].trim(),
-      script: body.map(function (l) {
-        return l.slice(dedent);
-      }).join('\n')
+      name: step.name,
+      script: step.run || '',
+      workdir: step.working_directory || ''
     });
-
   }
 
-  // Return the gates in the order the workflow declares them
   return gates;
 
 }
@@ -141,7 +104,7 @@ if (gates.length < 1) {
   process.exit(1);
 }
 
-process.stdout.write('extracted ' + gates.length + ' enforcement gates from ci.yml\n');
+process.stdout.write('extracted ' + gates.length + ' enforcement gates from census\n');
 
 // Every gate is a `git grep`, which searches tracked content only. An untracked
 // file is invisible to all of them, so a clean local run says nothing about a
@@ -167,7 +130,7 @@ let passed = 0;
 
 for (const gate of gates) {
   const ok = runCheck(gate.name, function () {
-    sh(gate.script);
+    sh(gate.script, gate.workdir ? path.join(REPO_ROOT, gate.workdir) : REPO_ROOT);
   });
   if (ok) {
     passed++;
@@ -175,6 +138,8 @@ for (const gate of gates) {
     failed.push(gate.name);
   }
 }
+
+process.stdout.write('gates run: ' + gates.length + '\n');
 
 if (!GATES_ONLY) {
 

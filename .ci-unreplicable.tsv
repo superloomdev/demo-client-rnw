@@ -1,0 +1,5 @@
+match_field	pattern	reason	signed_by	signed_on
+job	expo-android	native-toolchain: owner decision 2026-09-14 - native Android/iOS builds are not run on this workstation; CI is the only gate for these two jobs	owner	2026-09-14
+job	expo-ios	native-toolchain: owner decision 2026-09-14 - native Android/iOS builds are not run on this workstation; CI is the only gate for these two jobs	owner	2026-09-14
+name	Upload artifact|Upload APK|Upload test results	artifact-upload	owner	2026-09-14
+kind	action	hosted-runner-setup	owner	2026-09-14

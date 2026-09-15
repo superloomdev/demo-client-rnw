@@ -20,14 +20,25 @@ if [ "${1:-}" = "--fast" ]; then
   FAST=1
 fi
 
+# Parity check: every CI step must have a local mapping or a signed
+# unreplicable row. Fail before running any gate if a step is unmapped.
+node scripts/ci-census.js --check-map
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
 FAILED=""
 PASSED=0
+EXECUTED=""
 
 # Run one named gate, record the outcome, and keep going so a single failure
-# does not hide the rest. CI reports every job, so this must too.
+# does not hide the rest. CI reports every job, so this must too. The gate
+# name (first arg after the display name) is appended to EXECUTED so
+# --assert-executed can verify every replayed gate actually ran.
 run_gate () {
   local name="$1"
   shift
+  local gate_name="$1"
   printf '\n\033[1m=== %s ===\033[0m\n' "$name"
   if "$@"; then
     printf '\033[32mPASS\033[0m %s\n' "$name"
@@ -36,6 +47,7 @@ run_gate () {
     printf '\033[31mFAIL\033[0m %s\n' "$name"
     FAILED="${FAILED}  - ${name}"$'\n'
   fi
+  EXECUTED="${EXECUTED} ${gate_name}"
 }
 
 
@@ -69,6 +81,17 @@ gate_unit () {
 }
 
 
+# --------------------- Gate: unit tests (isolated) ------------------------ #
+# CI installs only src/_test for the test job. The workstation has hosts/*
+# installed too, so gate_unit can pass when CI would fail. This gate replays
+# the test from a snapshot of the working tree as git sees it, with only
+# src/_test installed, matching CI's bare checkout.
+
+gate_unit_isolated () {
+  bash scripts/verify-isolated.sh src/_test 'npm ci --silent --cache "$(mktemp -d)" && npm test'
+}
+
+
 # ---------------------------- Gate: web build ----------------------------- #
 
 gate_web_build () {
@@ -83,6 +106,16 @@ gate_expo_web () {
 }
 
 
+# -------------------------- Gate: pw browsers ------------------------------ #
+# CI runs `npx playwright install --with-deps chromium` before E2E. The local
+# runner must do the same so a missing browser binary does not surface as a
+# late failure inside the E2E gate.
+
+gate_pw_browsers () {
+  npx playwright install --with-deps chromium
+}
+
+
 # ------------------------------- Gate: e2e -------------------------------- #
 
 gate_e2e () {
@@ -92,6 +125,7 @@ gate_e2e () {
     printf '\033[31mFAIL stale preview server on 4173; kill it\033[0m\n'
     return 1
   fi
+  printf 'ci parity: playwright workers=1 retries=2 forbidOnly=true reuseExistingServer=false\n'
   npx playwright test --project=chromium
 }
 
@@ -196,15 +230,21 @@ gate_visual () {
 
 # ------------------------------- Run gates -------------------------------- #
 
+gate_verify_gates () {
+  node scripts/verify-gates.js --gates
+}
+
 run_gate 'portability fence' gate_portability
 run_gate 'root install' gate_root_install
-run_gate 'workflow policy gates' node scripts/verify-gates.js --gates
+run_gate 'workflow policy gates' gate_verify_gates
 run_gate 'eslint' gate_eslint
 run_gate 'unit tests (src/_test)' gate_unit
+run_gate 'unit tests (src/_test, isolated snapshot)' gate_unit_isolated
 
 if [ "$FAST" = "0" ]; then
   run_gate 'vite web build' gate_web_build
   run_gate 'expo web export' gate_expo_web
+  run_gate 'playwright browser install' gate_pw_browsers
   run_gate 'playwright e2e' gate_e2e
   run_gate 'playwright perf' gate_perf
   run_gate 'playwright visual' gate_visual
@@ -221,6 +261,21 @@ printf 'passed: %s\n' "$PASSED"
 if [ -n "$FAILED" ]; then
   printf '\033[31mfailed:\033[0m\n%s' "$FAILED"
   exit 1
+fi
+
+# Parity assertion: every replayed gate in the step map must have been
+# executed in this run. In fast mode, the full gate set is not executed,
+# so the assertion is skipped with a reminder.
+if [ "$FAST" = "0" ]; then
+  node scripts/ci-census.js --assert-executed "$(printf '%s' "$EXECUTED" | tr ' ' ',')"
+  if [ $? -ne 0 ]; then
+    exit 1
+  fi
+  # Write the content hash stamp so the pre-push hook can verify it.
+  bash scripts/content-hash.sh > .verify-stamp
+  printf 'verify stamp written\n'
+else
+  printf 'ci parity: fast mode - executed-set assertion skipped; run npm run verify before pushing\n'
 fi
 
 printf '\033[32mall gates passed\033[0m\n'

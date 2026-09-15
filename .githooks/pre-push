@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Info: Pre-push gate. Refuses the push unless a full `npm run verify` has
+# run since the last content change. The stamp is content-based: any edit
+# after verify leaves the stamp stale, so the push is blocked with a
+# message telling the developer to run verify again.
+set -uo pipefail
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+STAMP="$REPO_ROOT/.verify-stamp"
+
+if [ ! -f "$STAMP" ]; then
+  echo "pre-push: .verify-stamp missing. Run npm run verify before pushing."
+  exit 1
+fi
+
+STAMPED_HASH="$(cat "$STAMP" | awk '{print $1}')"
+CURRENT_HASH="$(bash "$REPO_ROOT/scripts/content-hash.sh")"
+
+if [ "$STAMPED_HASH" != "$CURRENT_HASH" ]; then
+  echo "pre-push: .verify-stamp is stale. Run npm run verify before pushing."
+  echo "  stamped: $STAMPED_HASH"
+  echo "  current: $CURRENT_HASH"
+  exit 1
+fi
+
+echo "pre-push: verify stamp is current ($CURRENT_HASH)"
+exit 0
