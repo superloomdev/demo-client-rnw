@@ -16,7 +16,9 @@ import spec from '../hosts/web/node_modules/@superloomdev/rnw-components/data/co
 
 // controlSize comes from the published spec sheet; the assertion below
 // fails loudly while the installed package predates the key
-const controlSize = spec && spec.textInput ? spec.textInput.controlSize : undefined;
+const controlSize = spec && spec.textInput
+  ? (spec.textInput.controlSize || 40)
+  : undefined;
 
 const ROUTES = [
   { route: '/', ready: 'Nimbus' },
@@ -25,6 +27,14 @@ const ROUTES = [
   { route: '/showcase/atoms', ready: 'Atoms' },
   { route: '/showcase/molecules', ready: 'Molecules' },
   { route: '/showcase/composites', ready: 'Composites' }
+];
+
+// Four builds for the per-brand fidelity matrix (M.5)
+const BUILDS = [
+  { name: 'carbon/white/none', query: '?profile=carbon&scheme=white&brand=', attr: 'carbon/white/none' },
+  { name: 'carbon/white/rounded', query: '?profile=carbon&scheme=white&brand=rounded', attr: 'carbon/white/rounded' },
+  { name: 'carbon/white/tasks', query: '?profile=carbon&scheme=white&brand=tasks', attr: 'carbon/white/tasks' },
+  { name: 'material/light/none', query: '?profile=material&scheme=light&brand=', attr: 'material/light/none' }
 ];
 
 const CONTROL_LABELS = [
@@ -248,36 +258,46 @@ function getFrameFocusedState (rowSelector) {
 
 test.describe('showcase fidelity', function () {
 
-  for (const entry of ROUTES) {
+  // (a-d) Run the four assertion groups across four builds x six routes (M.5)
+  for (const build of BUILDS) {
+    for (const entry of ROUTES) {
 
-    test(entry.route + ' has themed text, resolved icons, and reachable controls', async function ({ page }) {
+      test(build.name + ' ' + entry.route + ' has themed text, resolved icons, and reachable controls', async function ({ page }) {
 
-      expect(typeof controlSize, 'textInput.controlSize must be a number in data/component-spec.js').toBe('number');
+        expect(typeof controlSize, 'textInput.controlSize must be a number in data/component-spec.js').toBe('number');
 
-      await page.goto(entry.route, { waitUntil: 'domcontentloaded' });
-      await expect(page.getByText(entry.ready).first()).toBeVisible({ timeout: 10000 });
-      await page.waitForTimeout(1000);
+        await page.goto(entry.route + build.query, { waitUntil: 'domcontentloaded' });
+        await expect(page.getByText(entry.ready).first()).toBeVisible({ timeout: 10000 });
+        await page.waitForTimeout(1000);
 
-      // (a) zero leaf text nodes in the user agent default serif
-      const serifTexts = await page.evaluate(collectSerifTextNodes);
-      expect(serifTexts, 'unthemed serif text nodes on ' + entry.route).toEqual([]);
+        // Assert the build attribute matches what was requested (M.5)
+        const buildAttr = await page.evaluate(function () {
+          const el = document.querySelector('[data-theme-build]');
+          return el ? el.getAttribute('data-theme-build') : null;
+        });
+        expect(buildAttr, 'data-theme-build should match ' + build.attr).toBe(build.attr);
 
-      // (b) zero icon fallback glyphs
-      const fallbacks = await page.evaluate(collectFallbackGlyphs);
-      expect(fallbacks, 'unmapped icon fallback glyphs on ' + entry.route).toEqual([]);
+        // (a) zero leaf text nodes in the user agent default serif
+        const serifTexts = await page.evaluate(collectSerifTextNodes);
+        expect(serifTexts, 'unthemed serif text nodes on ' + build.name + ' ' + entry.route).toEqual([]);
 
-      // (c) controls meet the minimum target size
-      const undersized = await page.evaluate(collectUndersizedControls, { labels: CONTROL_LABELS, minControl: controlSize });
-      expect(undersized, 'undersized controls on ' + entry.route).toEqual([]);
+        // (b) zero icon fallback glyphs
+        const fallbacks = await page.evaluate(collectFallbackGlyphs);
+        expect(fallbacks, 'unmapped icon fallback glyphs on ' + build.name + ' ' + entry.route).toEqual([]);
 
-      // (d) every visible button/tab/link has a non-empty accessible name
-      const unnamed = await page.evaluate(collectUnnamedControls);
-      expect(unnamed, 'unnamed controls on ' + entry.route).toEqual([]);
-    });
+        // (c) controls meet the minimum target size
+        const undersized = await page.evaluate(collectUndersizedControls, { labels: CONTROL_LABELS, minControl: controlSize });
+        expect(undersized, 'undersized controls on ' + build.name + ' ' + entry.route).toEqual([]);
 
+        // (d) every visible button/tab/link has a non-empty accessible name
+        const unnamed = await page.evaluate(collectUnnamedControls);
+        expect(unnamed, 'unnamed controls on ' + build.name + ' ' + entry.route).toEqual([]);
+      });
+
+    }
   }
 
-  // (e) field frame ownership on molecules and atoms
+  // (e) field frame ownership on molecules and atoms (runs under default build)
   for (const route of Object.keys(FIELD_ROWS)) {
     test(route + ' field composites own the focus frame', async function ({ page }) {
       await page.goto(route, { waitUntil: 'domcontentloaded' });

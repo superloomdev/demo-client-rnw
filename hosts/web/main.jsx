@@ -98,9 +98,31 @@ function Router () {
     brand = 'tasks';
   }
 
+  // Query param overrides (M.5): let ?profile=&scheme=&brand= override the
+  // per-route default. An absent key (null) leaves the default untouched;
+  // an empty string means "no value" (e.g., brand= clears the brand).
+  const params = new URLSearchParams(window.location.search);
+  const qp = params.get('profile');
+  const qs = params.get('scheme');
+  const qb = params.get('brand');
+  if (qp !== null) {
+    profile = qp;
+  }
+  if (qs !== null) {
+    scheme = qs;
+  }
+  if (qb !== null) {
+    brand = qb || null;
+  }
+
+  // Record the resolved build on the app root for test assertion (M.5)
+  const buildAttr = profile + '/' + scheme + '/' + (brand || 'none');
+
   return (
     <SafeAreaProvider>
-      <ThemedScreen Screen={Screen} profile={profile} scheme={scheme} brand={brand} />
+      <div data-theme-build={buildAttr}>
+        <ThemedScreen Screen={Screen} profile={profile} scheme={scheme} brand={brand} />
+      </div>
     </SafeAreaProvider>
   );
 }
