@@ -13,9 +13,9 @@ const { Lib } = loader();
 
 const profile = Lib.Themes.profiles.carbon;
 
-test('Carbon profile has id carbon-v11 and contract_version 2', function () {
+test('Carbon profile has id carbon-v11 and contract_version 3', function () {
   assert.equal(profile.id, 'carbon-v11');
-  assert.equal(profile.contract_version, 2);
+  assert.equal(profile.contract_version, 3);
 });
 
 test('Carbon profile has white, g10, g90, g100 schemes', function () {
@@ -25,8 +25,8 @@ test('Carbon profile has white, g10, g90, g100 schemes', function () {
   assert.ok(profile.schemes.g100);
 });
 
-test('Carbon white scheme has 380 tokens', function () {
-  assert.equal(Object.keys(profile.schemes.white.tokens).length, 380);
+test('Carbon white scheme has 385 tokens', function () {
+  assert.equal(Object.keys(profile.schemes.white.tokens).length, 385);
 });
 
 test('Carbon white scheme background is #ffffff', function () {
@@ -58,9 +58,9 @@ test('Carbon g100 scheme text_primary is #f4f4f4', function () {
 
 const materialProfile = Lib.Themes.profiles.material;
 
-test('Material profile has id material-v0_192 and contract_version 2', function () {
+test('Material profile has id material-v0_192 and contract_version 3', function () {
   assert.equal(materialProfile.id, 'material-v0_192');
-  assert.equal(materialProfile.contract_version, 2);
+  assert.equal(materialProfile.contract_version, 3);
 });
 
 test('Material profile has light and dark schemes', function () {
@@ -68,15 +68,15 @@ test('Material profile has light and dark schemes', function () {
   assert.ok(materialProfile.schemes.dark);
 });
 
-test('Material light scheme has 380 tokens', function () {
-  assert.equal(Object.keys(materialProfile.schemes.light.tokens).length, 380);
+test('Material light scheme has 385 tokens', function () {
+  assert.equal(Object.keys(materialProfile.schemes.light.tokens).length, 385);
 });
 
-test('Material dark scheme has 380 tokens', function () {
-  assert.equal(Object.keys(materialProfile.schemes.dark.tokens).length, 380);
+test('Material dark scheme has 385 tokens', function () {
+  assert.equal(Object.keys(materialProfile.schemes.dark.tokens).length, 385);
 });
 
-test('buildTheme with Material light scheme produces 380 tokens', function () {
+test('buildTheme with Material light scheme produces 385 tokens', function () {
   const lightScheme = materialProfile.schemes.light;
   const baseScheme = Lib.Themes.profiles.base.schemes.light;
   const template = {
@@ -86,7 +86,7 @@ test('buildTheme with Material light scheme produces 380 tokens', function () {
   };
   const baseLayer = { name: 'base', tokens: lightScheme.tokens, scales: lightScheme.scales, polarity: lightScheme.polarity };
   const built = Lib.Themer.buildTheme(template, [baseLayer], 'native');
-  assert.equal(Object.keys(built.tokens).length, 380);
+  assert.equal(Object.keys(built.tokens).length, 385);
 });
 
 test('buildTheme with Material light scheme produces no violations', function () {
@@ -138,9 +138,9 @@ test('Material light scheme resolves color.layer_accent_01 to a hex value', func
 
 const baseProfile = Lib.Themes.profiles.base;
 
-test('Base profile has id superloom-base and contract_version 2', function () {
+test('Base profile has id superloom-base and contract_version 3', function () {
   assert.equal(baseProfile.id, 'superloom-base');
-  assert.equal(baseProfile.contract_version, 2);
+  assert.equal(baseProfile.contract_version, 3);
 });
 
 test('Base profile has light and dark schemes', function () {
@@ -148,7 +148,7 @@ test('Base profile has light and dark schemes', function () {
   assert.ok(baseProfile.schemes.dark);
 });
 
-test('buildTheme with base light scheme produces 380 tokens', function () {
+test('buildTheme with base light scheme produces 385 tokens', function () {
   const lightScheme = baseProfile.schemes.light;
   const template = {
     ...lightScheme,
@@ -157,7 +157,7 @@ test('buildTheme with base light scheme produces 380 tokens', function () {
   };
   const baseLayer = { name: 'base', tokens: lightScheme.tokens, scales: lightScheme.scales, polarity: lightScheme.polarity };
   const built = Lib.Themer.buildTheme(template, [baseLayer], 'native');
-  assert.equal(Object.keys(built.tokens).length, 380);
+  assert.equal(Object.keys(built.tokens).length, 385);
 });
 
 
@@ -228,12 +228,12 @@ test('rounded brand layer has exactly two tokens', function () {
 
 // ========================= THEMER BUILD =================================== //
 
-test('buildTheme with white scheme produces 380 tokens', function () {
+test('buildTheme with white scheme produces 385 tokens', function () {
   const whiteTokens = profile.schemes.white.tokens;
   const template = { tokens: whiteTokens };
   const baseLayer = { name: 'base', tokens: whiteTokens };
   const built = Lib.Themer.buildTheme(template, [baseLayer], 'native');
-  assert.equal(Object.keys(built.tokens).length, 380);
+  assert.equal(Object.keys(built.tokens).length, 385);
 });
 
 test('buildTheme with white scheme produces no violations', function () {
