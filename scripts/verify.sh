@@ -178,7 +178,9 @@ gate_visual () {
   fi
 
   printf '  starting preview server...\n'
-  cd "$REPO_ROOT/hosts/web" && npx vite preview --port 4173 >/dev/null 2>&1 &
+  # --host binds beyond loopback: the container reaches the Mac host via
+  # host.docker.internal, which is refused by a default ::1-only bind.
+  cd "$REPO_ROOT/hosts/web" && npx vite preview --port 4173 --host >/dev/null 2>&1 &
   local preview_pid=$!
   cd "$REPO_ROOT"
 
